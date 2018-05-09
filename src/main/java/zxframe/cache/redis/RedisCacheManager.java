@@ -114,7 +114,7 @@ public class RedisCacheManager {
 			key = getNewKey(CacheModelManager.getCacheModelByCacheGroup(group),key);
 			sj = getResource();
 			byte[] bs = sj.get(key.getBytes());
-			CacheModel cm = CacheModelManager.getCacheModelByClass(group);
+			CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
 			Object value=null;
 			if(bs!=null&&cm!=null) {
 				value=SerializeUtils.deSerialize(bs);

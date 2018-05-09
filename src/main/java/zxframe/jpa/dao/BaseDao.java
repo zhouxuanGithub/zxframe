@@ -43,7 +43,7 @@ public class BaseDao {
 		Serializable id = null;
 		try {
 			String group=obj.getClass().getName();
-			CacheModel cm = CacheModelManager.getCacheModelByClass(group);
+			CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
 			//存值
 			ArrayList<Object> argsList=new ArrayList<Object>();
 			StringBuffer sql=new StringBuffer();
@@ -98,7 +98,7 @@ public class BaseDao {
 		String group=clas.getName();
 		T obj =null;
 		//去事务或者缓存中去查
-		CacheModel cm = CacheModelManager.getCacheModelByClass(group);
+		CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
 		if(cm!=null) {
 			obj =(T) ct.get(group, id.toString());
 		}
@@ -148,7 +148,7 @@ public class BaseDao {
 	 */
 	public void delete(Class clas, Serializable id) {
 		String group=clas.getName();
-		CacheModel cm = CacheModelManager.getCacheModelByClass(group);
+		CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
 		String sql = "delete from "+clas.getSimpleName()+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
 		//执行删除
 		execute(CacheModelManager.cacheModelAnnotation.get(group).dsname(),sql,id);
@@ -190,7 +190,7 @@ public class BaseDao {
 			}
 			Field versionField=CacheModelManager.cacheIdVersionMap.get(group);
 			id = (Serializable) idField.get(obj);
-			CacheModel cm = CacheModelManager.getCacheModelByClass(group);
+			CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
 			StringBuffer sql=new StringBuffer();
 			sql.append("update ").append(obj.getClass().getSimpleName()).append(" set ");
 			for (int i = 0; i < length; i++) {

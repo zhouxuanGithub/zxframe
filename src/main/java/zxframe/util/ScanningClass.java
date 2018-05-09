@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import zxframe.cache.annotation.QueryCache;
 import zxframe.cache.mgr.CacheModelManager;
 import zxframe.jpa.annotation.Model;
 
@@ -25,8 +26,8 @@ public class ScanningClass extends ClassLoader {
 				if(clazz.isInterface()){
 					continue;
 				}
-				if(clazz.isAnnotationPresent(Model.class)){
-					CacheModelManager.getCacheModelByClass(clazz.getName());
+				if(clazz.isAnnotationPresent(Model.class)||clazz.isAnnotationPresent(QueryCache.class)){
+					CacheModelManager.loadCacheModelByCacheGroup(clazz.getName());
 				}
 			}catch (Exception e) {
 				e.printStackTrace();

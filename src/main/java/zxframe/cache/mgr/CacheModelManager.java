@@ -2,6 +2,7 @@ package zxframe.cache.mgr;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import zxframe.cache.annotation.Cache;
+import zxframe.cache.annotation.QueryCache;
 import zxframe.cache.model.CacheModel;
 import zxframe.jpa.annotation.Id;
 import zxframe.jpa.annotation.Model;
@@ -54,7 +56,7 @@ public class CacheModelManager {
 	 * @param cls
 	 * @return
 	 */
-	public static CacheModel getCacheModelByClass(String cls) {
+	public static CacheModel loadCacheModelByCacheGroup(String cls) {
 		CacheModel cm = cacheModelMap.get(cls);
 		if(cm!=null) {
 			return cm;
@@ -107,6 +109,7 @@ public class CacheModelManager {
 				sb.append("[no open cache]");
 				isNoHasCacheModelMap.put(cls, true);
 			}
+			boolean isQC=false;
 			for (Annotation anno : clazz.getDeclaredAnnotations()) {//获得所有的注解
 				//缓存注解
 				if(anno.annotationType().equals(Cache.class) ){
@@ -126,6 +129,24 @@ public class CacheModelManager {
 						cacheModelJAnnotation.put(clazz.getSimpleName().toLowerCase(), (Model)anno);
 					}else {
 						throw new JpaRuntimeException("不能存在两个相同的类名，否则无法区分跨库多数据源，请修改类名和表名。"+clazz.getSimpleName());
+					}
+				}
+				//查询缓存
+				if(anno.annotationType().equals(QueryCache.class) ){
+					isQC=true;
+				}
+			}
+			if(isQC) {
+				//如果是查询缓存模型，则执行下里面的方法
+				Method[] methods = clazz.getDeclaredMethods();
+				if(methods!=null) {
+					for (int i = 0; i < methods.length; i++) {
+						try {
+							Method m=methods[i];
+							methods[i].invoke(clazz.newInstance());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
