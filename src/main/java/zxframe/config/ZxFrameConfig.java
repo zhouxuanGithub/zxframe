@@ -21,6 +21,8 @@ public class ZxFrameConfig {
 	public static boolean showlog=false;
 	//控制台输出sql
 	public static boolean showsql=false;
+	//是否使用数据库配置properties
+	public static boolean useDBProperties=false;
 	//传播试事务方法前缀
 	public static String txAdvice;
 	//数据源公共配置
@@ -49,6 +51,7 @@ public class ZxFrameConfig {
             Element root = document.getDocumentElement();
             showsql=root.getElementsByTagName("showsql").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             txAdvice=root.getElementsByTagName("txAdvice").item(0).getFirstChild().getNodeValue();
+            useDBProperties=root.getElementsByTagName("useDBProperties").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             Element commonItem = (Element)root.getElementsByTagName("common").item(0);
             NodeList commonNL = commonItem.getChildNodes();
             for(int i=0;i<commonNL.getLength();i++ ) {
