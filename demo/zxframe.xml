@@ -4,6 +4,8 @@
 	<showsql>true</showsql>
 	<!-- 传播试事务方法前缀 -->
 	<txAdvice>add,save,init,create,insert,upd,del,do</txAdvice>
+	<!-- 使用数据库配置properties，支持全服务热更新 -->
+	<useDBProperties>true</useDBProperties>
 	<!-- druid数据源配置 -->
 	<druid>
 		<!-- 公共数据源配置 -->
