@@ -115,7 +115,7 @@ public class CacheModelManager {
 					cm.setRcCache(gce.rcCache());
 					cm.setRcETime(gce.rcETime());
 					cm.setStrictRW(gce.strictRW());
-					cm.setRwClass(clazz);
+//					cm.setRwClass(clazz);
 					cm.setQueryCache(false);//单模型不能支持查询缓存
 					sb.append(cm.toString());
 					cacheModelMap.put(cls, cm);

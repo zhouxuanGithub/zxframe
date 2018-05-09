@@ -21,8 +21,6 @@ public class ZxFrameStart {
 		DataSourceManager.init();
 		//定期检测读库熔断
 		// TODO: 
-		//定期检测泄漏事务存储
-		// TODO: 
 		//定期检测数据源配置，热更新
 		// TODO:
 	}

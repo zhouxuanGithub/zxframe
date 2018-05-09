@@ -37,10 +37,10 @@ public class CacheModel implements Serializable{
 	 * 非严格读写(默认)，不存在缓存组删除就可以关闭，提升效率
 	 */
 	private boolean strictRW=false;
-	/**
-	 * 读写数据类型
-	 */
-	private Class rwClass=List.class;
+//	/**
+//	 * 读写数据类型
+//	 */
+//	private Class rwClass=List.class;
 	/**
 	 * 是否支持查询缓存
 	 */
@@ -84,12 +84,12 @@ public class CacheModel implements Serializable{
 	public void setStrictRW(boolean strictRW) {
 		this.strictRW = strictRW;
 	}
-	public Class getRwClass() {
-		return rwClass;
-	}
-	public void setRwClass(Class rwClass) {
-		this.rwClass = rwClass;
-	}
+//	public Class getRwClass() {
+//		return rwClass;
+//	}
+//	public void setRwClass(Class rwClass) {
+//		this.rwClass = rwClass;
+//	}
 	public boolean isQueryCache() {
 		return queryCache;
 	}
