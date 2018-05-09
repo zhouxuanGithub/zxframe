@@ -7,7 +7,7 @@
 -->SpringCloudConfigServer高可用成本较高，运维成本提升<br/>
 -->本功能只为降低成本，可选用<br/>
 
-*.支持本地和远程任意缓存存储,支持对缓存组删除<br/>
+*.封装本地和远程任意缓存存储,使用极其简单,支持对缓存组删除<br/>
 -->zxframe.cache.local.LocalCacheManager<br/>
 -->zxframe.cache.redis.RedisCacheManager<br/>
 
