@@ -1,5 +1,5 @@
 # zxframe JAVA框架
-*.JPA继承hibernate的便捷操作，mybatis的sql自由编写；支持乐观锁\t\n
+*.JPA继承hibernate的便捷操作，mybatis的sql自由编写；支持乐观锁<br/>
 *.缓存支持数据本地缓存和远程缓存，查询缓存；融入事务，可回滚
 *.DB多数据源，读写分离，多读数据源熔断
 *.内置布隆算法
