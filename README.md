@@ -4,10 +4,10 @@
 *.支持DB多数据源：分库分表，读写分离，多读数据源熔断<br/>
 *.支持高可用定时器<br/>
 *.支持全服务热更新配置<br/>
--->SpringcloudConfigServer高可用成本较高，运维成本提升<br/>
+-->SpringCloudConfigServer高可用成本较高，运维成本提升<br/>
 -->本功能只为降低成本，可选用<br/>
 
-*.支持本地和远程任意缓存存储<br/>
+*.支持本地和远程任意缓存存储,支持对缓存组删除<br/>
 -->zxframe.cache.local.LocalCacheManager<br/>
 -->zxframe.cache.redis.RedisCacheManager<br/>
 
