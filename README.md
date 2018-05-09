@@ -12,7 +12,8 @@
 -->zxframe.cache.redis.RedisCacheManager<br/>
 
 *.内置工具：<br/>
--->数据库定时备份，防缓存击穿<br/>
+-->数据库定时备份<br/>
+-->防缓存击穿<br/>
 
 即将支持：<br/>
 *.支持通用分布式锁<br/>
