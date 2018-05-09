@@ -7,9 +7,9 @@
 -->SpringcloudConfigServer高可用成本较高，运维成本提升<br/>
 -->本功能只为降低成本，可选用<br/>
 
-*.支持本地和远程任意缓存存储
--->zxframe.cache.local.LocalCacheManager
--->zxframe.cache.redis.RedisCacheManager
+*.支持本地和远程任意缓存存储<br/>
+-->zxframe.cache.local.LocalCacheManager<br/>
+-->zxframe.cache.redis.RedisCacheManager<br/>
 
 *.内置工具：<br/>
 -->数据库定时备份，防缓存击穿<br/>
