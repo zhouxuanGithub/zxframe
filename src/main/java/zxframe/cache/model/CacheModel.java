@@ -28,7 +28,7 @@ public class CacheModel implements Serializable{
 	 */
 	private String cacheGroup="default";
 	/**
-	 * 远程缓存缓存时长，单位秒，默认2小时，-1为永久
+	 * 远程缓存缓存时长，单位秒，默认2小时
 	 */
 	private int rcETime=7200;
 	/**
