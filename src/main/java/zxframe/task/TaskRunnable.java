@@ -9,8 +9,11 @@ public class TaskRunnable {
 	/**
 	 * @preserve
 	 */
-	public void run()
-	{
+	public void run(){
+		
+	}
+	
+	public void init() {
 		
 	}
 }

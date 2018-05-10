@@ -69,10 +69,12 @@ public class CacheTransaction {
 	public void removePSData(String group,String id) {
 		try {
 			String transactionId = Thread.currentThread().getName();
-			if(id!=null) {
-				getGroupMap(transactionId, group).remove(id);
-			}else {
-				getGroupMap(transactionId, group).clear();
+			if(transactionId.startsWith(ServiceAspect.THREADNAMESTARTS)) {
+				if(id!=null) {
+					getGroupMap(transactionId, group).remove(id);
+				}else {
+					getGroupMap(transactionId, group).clear();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -165,6 +167,7 @@ public class CacheTransaction {
 		ConcurrentHashMap<String, ConcurrentHashMap<String, Object>> ctransactionMap = transactionMap.get(transactionId);
 		if(ctransactionMap==null) {
 			logger.error("缓存事务未创建，请在service层使用缓存相关功能");
+			return null;
 		}
 		ConcurrentHashMap<String, Object> groupMap = ctransactionMap.get(group);
 		if(groupMap==null) {

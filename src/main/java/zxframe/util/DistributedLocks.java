@@ -16,7 +16,8 @@ public class DistributedLocks {
 	@Resource
 	private RedisCacheManager redisCacheManager;
 	/**
-	 * 尝试获得锁，不阻塞
+	 * 尝试获得锁
+	 * 获取成功或失败都会返回，不阻塞
 	 * @param key key
 	 * @param seconds 有效时间，秒
 	 * @return
@@ -26,14 +27,12 @@ public class DistributedLocks {
 		ShardedJedis resource = null;
 		try {
 			resource = redisCacheManager.getShardedJedis();
-			long r = resource.setnx(key, String.valueOf(System.currentTimeMillis()+seconds*1000));
-			if(r==1) {
+			if(resource.setnx(key, String.valueOf(System.currentTimeMillis()+seconds*1000))==1) {
 				success=true;
 			}else {
-				if(Long.valueOf(resource.get(key))<System.currentTimeMillis()) {
-					String newExpireTime=String.valueOf(System.currentTimeMillis()+seconds*1000);
-					String currentExpireTime = resource.getSet(key,newExpireTime);
-					if(newExpireTime.equals(currentExpireTime)) {
+				String oldExpireTime=resource.get(key);
+				if(Long.valueOf(oldExpireTime)<System.currentTimeMillis()) {
+					if(resource.getSet(key,String.valueOf(System.currentTimeMillis()+seconds*1000)).equals(oldExpireTime)) {
 						success=true;
 					}
 				}
@@ -48,7 +47,7 @@ public class DistributedLocks {
 		return success;
 	}
 	/**
-	 * 强制获得锁，阻塞
+	 * 强制获得锁，直到获取到锁为止，阻塞
 	 * @param key key
 	 * @param seconds 有效时间，秒
 	 * @return

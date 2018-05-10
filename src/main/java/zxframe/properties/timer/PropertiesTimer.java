@@ -11,8 +11,9 @@ import zxframe.properties.PropertiesCache;
 import zxframe.properties.service.PropertiesService;
 import zxframe.task.TaskRunnable;
 import zxframe.task.ThreadResource;
+import zxframe.task.Timer;
 import zxframe.util.ServiceLocator;
-@Component
+@Timer
 public class PropertiesTimer extends TaskRunnable{
 	private static PropertiesService propertiesService;
 	public void run() {
@@ -25,12 +26,11 @@ public class PropertiesTimer extends TaskRunnable{
 			PropertiesCache.init();
 		}
 	}
-	@PostConstruct
-	public void start() {
+	public void init() {
 		if(ZxFrameConfig.useDBProperties) {
 			long initialDelay = 60*5;// 第一次延迟多少秒开始执行
 			long delay = 60;// 间隔多少秒执行一次
-			ThreadResource.getTaskPool().scheduleWithFixedDelay(new PropertiesTimer(), initialDelay,
+			ThreadResource.getTaskPool().scheduleWithFixedDelay(this, initialDelay,
 							delay, TimeUnit.SECONDS);
 		}
 	}

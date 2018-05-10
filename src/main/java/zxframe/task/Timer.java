@@ -1,0 +1,14 @@
+package zxframe.task;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import zxframe.annotation.ScanningAnnotation;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@ScanningAnnotation
+public @interface Timer {
+
+}
