@@ -49,13 +49,13 @@ public class DistributedLocks {
 	/**
 	 * 强制获得锁，直到获取到锁为止，阻塞
 	 * @param key key
-	 * @param seconds 有效时间，秒
+	 * @param ms 有效时间，毫秒
 	 * @return
 	 */
-	public void mustGetLock(String key,int seconds) {
+	public void mustGetLock(String key,int ms) {
 		boolean success=false;
 		while(!success) {
-			success = getLock(key,seconds);
+			success = getLock(key,ms);
 			if(!success) {
 				try {
 					Thread.sleep(100);
