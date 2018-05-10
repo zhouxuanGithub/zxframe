@@ -2,10 +2,6 @@ package zxframe.properties.timer;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.stereotype.Component;
-
 import zxframe.config.ZxFrameConfig;
 import zxframe.properties.PropertiesCache;
 import zxframe.properties.service.PropertiesService;
