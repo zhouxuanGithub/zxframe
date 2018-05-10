@@ -47,6 +47,7 @@ public class DataTransaction {
 						}
 					}
 				} catch (SQLException e) {
+					//提交失败，记录日志？
 					throw new JpaRuntimeException(e);
 				}
 			}
@@ -71,6 +72,7 @@ public class DataTransaction {
 							logger.info("db transaction rollback:"+transactionId+" dsname:"+dsname+" dataTransactionSize:"+DataSourceManager.uwwcMap.size());
 						}
 					} catch (Exception e) {
+						//回滚失败，记录日志？
 						e.printStackTrace();
 					}
 				}
@@ -97,6 +99,7 @@ public class DataTransaction {
 							logger.info("db transaction close:"+transactionId+" dsname:"+dsname);
 						}
 					} catch (SQLException e) {
+						//close失败，记录日志？
 						e.printStackTrace();
 					}
 					
