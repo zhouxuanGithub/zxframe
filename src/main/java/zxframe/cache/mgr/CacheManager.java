@@ -83,6 +83,19 @@ public class CacheManager {
 		}
 	}
 	/**
+	 * 获得组
+	 * @param clas
+	 * @return
+	 */
+	public String getGroup(Class clas) {
+		CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(clas.getName());
+		if(cm==null) {
+			logger.error("此Class不是缓存模型，不能获取Group");
+			return null;
+		}
+		return cm.getCacheGroup();
+	}
+	/**
 	 * 清理查询缓存
 	 * @param cm 缓存模型
 	 * @param args sql参数
