@@ -32,11 +32,11 @@ public class CacheManager {
 			return;
 		}
 		if(!CacheModelManager.checkCacheModel(cm)) {
-			logger.error("CacheManager.put失败,无效的CacheGroup,请给["+cm.getCacheGroup()+"]该对象添加Cache注解。");
+			logger.error("CacheManager.put失败,无效的Group,请给["+cm.getGroup()+"]该对象添加Cache注解。");
 			return;
 		}
 		if(cm.isLcCache()) {
-			lcm.put(cm.getCacheGroup(), id, value);
+			lcm.put(cm.getGroup(), id, value);
 		}
 		if(cm.isRcCache()) {
 			rcm.put(cm, id, value);
@@ -44,7 +44,7 @@ public class CacheManager {
 	}
 
 	public Object get(String group,String id) {
-		CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
+		CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
 		if(cm.isLcCache()&&cm.isRcCache()) {
 			Object o = lcm.get(group, id);
 			if(o==null) {
@@ -62,7 +62,7 @@ public class CacheManager {
 		//清理事务中的数据
 		ct.removePSData(group, null);
 		//删除缓存中的数据
-		CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
+		CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
 		if(cm.isLcCache()) {
 			lcm.remove(group);
 		}
@@ -74,7 +74,7 @@ public class CacheManager {
 		//清理事务中的数据
 		ct.removePSData(group, key);
 		//删除缓存中的数据
-		CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
+		CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
 		if(cm.isLcCache()) {
 			lcm.remove(group,key);
 		}
@@ -88,12 +88,12 @@ public class CacheManager {
 	 * @return
 	 */
 	public String getGroup(Class clas) {
-		CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(clas.getName());
+		CacheModel cm = CacheModelManager.getCacheModelByGroup(clas.getName());
 		if(cm==null) {
 			logger.error("此Class不是缓存模型，不能获取Group");
 			return null;
 		}
-		return cm.getCacheGroup();
+		return cm.getGroup();
 	}
 	/**
 	 * 清理查询缓存
@@ -102,7 +102,7 @@ public class CacheManager {
 	 */
 	public void removeQueryCache(CacheModel cm,Object... args) {
 		if(cm.isQueryCache()) {
-			remove(cm.getCacheGroup(),getQueryKey(cm.getSql(), args));
+			remove(cm.getGroup(),getQueryKey(cm.getSql(), args));
 		}
 	}
 	/**

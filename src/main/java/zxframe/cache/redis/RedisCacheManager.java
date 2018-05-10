@@ -111,10 +111,10 @@ public class RedisCacheManager {
 	public Object get(String group,String key) {
 		ShardedJedis sj=null;
 		try {
-			key = getNewKey(CacheModelManager.getCacheModelByCacheGroup(group),key);
+			key = getNewKey(CacheModelManager.getCacheModelByGroup(group),key);
 			sj = getResource();
 			byte[] bs = sj.get(key.getBytes());
-			CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
+			CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
 			Object value=null;
 			if(bs!=null&&cm!=null) {
 				value=SerializeUtils.deSerialize(bs);
@@ -137,7 +137,7 @@ public class RedisCacheManager {
 	public void remove(String group,String key) {
 		ShardedJedis sj=null;
 		try {
-			key = getNewKey(CacheModelManager.getCacheModelByCacheGroup(group),key);
+			key = getNewKey(CacheModelManager.getCacheModelByGroup(group),key);
 			sj = getResource();
 			sj.del(key.getBytes());
 			if(ZxFrameConfig.showlog) {
@@ -161,13 +161,13 @@ public class RedisCacheManager {
 	public void remove(String group){
 		ShardedJedis sj=null;
 		try {
-			CacheModel cm = CacheModelManager.getCacheModelByCacheGroup(group);
+			CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
 			if(!cm.isStrictRW()) {
 //				logger.error("此缓存模型需要开启严格读写(strictRW=true)才能进行删除, "+cm.toString());
 				logger.error("This caching model needs to open strict read and write (strictRW=true) to delete, "+cm.toString());
 				return;
 			}
-			String key=cm.getCacheGroup()+"_vs";
+			String key=cm.getGroup()+"_vs";
 			String groupVersion=getNewGroupVersion();
 			sj=getResource();
 			sj.set(key, groupVersion);
@@ -243,13 +243,13 @@ public class RedisCacheManager {
 			ShardedJedis resource = null;
 			try {
 				resource=getResource();
-				String key=cm.getCacheGroup()+"_vs";
+				String key=cm.getGroup()+"_vs";
 				String groupVersion = resource.get(key);
 				if(groupVersion==null) {
 					groupVersion=getNewGroupVersion();
 					resource.set(key, groupVersion);
 				}
-				return cm.getCacheGroup()+"_"+groupVersion;
+				return cm.getGroup()+"_"+groupVersion;
 			} catch (Exception e) {
 				throw new JpaRuntimeException(e);
 			}finally {
@@ -260,7 +260,7 @@ public class RedisCacheManager {
 				}
 			}
 		}else {
-			return cm.getCacheGroup();
+			return cm.getGroup();
 		}
 	}
 	

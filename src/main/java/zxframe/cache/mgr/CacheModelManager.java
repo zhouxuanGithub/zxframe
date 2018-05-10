@@ -44,19 +44,19 @@ public class CacheModelManager {
 	//模型注解保存-key为简单名称
 	public static ConcurrentMap<String, Model> cacheModelJAnnotation=new ConcurrentHashMap<String, Model>();
 	/**
-	 * 根据CacheGroup获取缓存模型获取
+	 * 根据Group获取缓存模型获取
 	 * @param group
 	 * @return
 	 */
-	public static CacheModel getCacheModelByCacheGroup(String cacheGroup) {
-		return cacheModelMap.get(cacheGroup);
+	public static CacheModel getCacheModelByGroup(String group) {
+		return cacheModelMap.get(group);
 	}
 	/**
 	 * 根据class获取缓存模型获取
 	 * @param cls
 	 * @return
 	 */
-	public static CacheModel loadCacheModelByCacheGroup(String cls) {
+	public static CacheModel loadCacheModelByGroup(String cls) {
 		CacheModel cm = cacheModelMap.get(cls);
 		if(cm!=null) {
 			return cm;
@@ -72,7 +72,7 @@ public class CacheModelManager {
 //		}
 		try {
 			cm=new CacheModel();
-			cm.setCacheGroup(cls);
+			cm.setGroup(cls);
 			//未加载过，尝试获取
 			Class clazz = Class.forName(cls);
 			ConcurrentHashMap<String,Field> groupflds = new ConcurrentHashMap<String,Field>();
@@ -163,7 +163,7 @@ public class CacheModelManager {
 	 * @return
 	 */
 	public static boolean checkCacheModel(CacheModel cm) {
-		if(cm==null||isNoHasCacheModelMap.containsKey(cm.getCacheGroup())) {
+		if(cm==null||isNoHasCacheModelMap.containsKey(cm.getGroup())) {
 			return false;
 		}
 		return true;
@@ -173,12 +173,12 @@ public class CacheModelManager {
 	 * @param cm
 	 */
 	public static void addQueryCacheModel(CacheModel cm) {
-		if(!cacheModelMap.containsKey(cm.getCacheGroup())) {
+		if(!cacheModelMap.containsKey(cm.getGroup())) {
 			StringBuffer sb=new StringBuffer();
-			sb.append("load model >>>> ").append(cm.getCacheGroup()).append(" ");
+			sb.append("load model >>>> ").append(cm.getGroup()).append(" ");
 			sb.append(cm.toString());
 			logger.info(sb.toString());
-			cacheModelMap.put(cm.getCacheGroup(), cm);
+			cacheModelMap.put(cm.getGroup(), cm);
 		}
 	}
 }

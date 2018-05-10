@@ -39,7 +39,7 @@ public class CacheTransaction {
 			String transactionId = Thread.currentThread().getName();
 			if(transactionId.startsWith(ServiceAspect.THREADNAMESTARTS)) {
 				if(value!=null&&CacheModelManager.checkCacheModel(cacheModel)) {
-					getGroupMap(transactionId, cacheModel.getCacheGroup()).put(id, value);
+					getGroupMap(transactionId, cacheModel.getGroup()).put(id, value);
 				}
 			}else {
 				logger.error("cache put失败，未进入事务中。");
@@ -126,7 +126,7 @@ public class CacheTransaction {
 					while(keys.hasMoreElements()) {
 						String id = keys.nextElement();
 						Object value = kvMap.get(id);
-						cmm.put(CacheModelManager.getCacheModelByCacheGroup(group), id, value);
+						cmm.put(CacheModelManager.getCacheModelByGroup(group), id, value);
 					}
 				}
 			}else {

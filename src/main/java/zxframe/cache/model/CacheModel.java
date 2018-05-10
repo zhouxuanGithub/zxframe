@@ -24,9 +24,9 @@ public class CacheModel implements Serializable{
 	 */
 	private boolean rcCache=false;
 	/**
-	 * cacheGroup 缓存组，用于主动删除缓存使用
+	 * group 缓存组，用于主动删除缓存使用
 	 */
-	private String cacheGroup="default";
+	private String group="default";
 	/**
 	 * 远程缓存缓存时长，单位秒，默认2小时
 	 */
@@ -66,11 +66,11 @@ public class CacheModel implements Serializable{
 	public void setRcCache(boolean rcCache) {
 		this.rcCache = rcCache;
 	}
-	public String getCacheGroup() {
-		return cacheGroup;
+	public String getGroup() {
+		return group;
 	}
-	public void setCacheGroup(String cacheGroup) {
-		this.cacheGroup = cacheGroup;
+	public void setGroup(String group) {
+		this.group = group;
 	}
 	public int getRcETime() {
 		return rcETime;

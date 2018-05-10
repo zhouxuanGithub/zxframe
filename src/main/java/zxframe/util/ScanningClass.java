@@ -31,7 +31,7 @@ public class ScanningClass extends ClassLoader {
 					continue;
 				}
 				if(clazz.isAnnotationPresent(Model.class)||clazz.isAnnotationPresent(QueryCache.class)){
-					CacheModelManager.loadCacheModelByCacheGroup(clazz.getName());
+					CacheModelManager.loadCacheModelByGroup(clazz.getName());
 				}
 			}catch (Exception e) {
 				e.printStackTrace();
