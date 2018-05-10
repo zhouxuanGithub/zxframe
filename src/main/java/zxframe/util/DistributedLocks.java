@@ -19,20 +19,20 @@ public class DistributedLocks {
 	 * 尝试获得锁
 	 * 获取成功或失败都会返回，不阻塞
 	 * @param key key
-	 * @param seconds 有效时间，秒
+	 * @param ms 有效时间，毫秒
 	 * @return
 	 */
-	public boolean getLock(String key,int seconds) {
+	public boolean getLock(String key,int ms) {
 		boolean success=false;
 		ShardedJedis resource = null;
 		try {
 			resource = redisCacheManager.getShardedJedis();
-			if(resource.setnx(key, String.valueOf(System.currentTimeMillis()+seconds*1000))==1) {
+			if(resource.setnx(key, String.valueOf(System.currentTimeMillis()+ms))==1) {
 				success=true;
 			}else {
 				String oldExpireTime=resource.get(key);
 				if(Long.valueOf(oldExpireTime)<System.currentTimeMillis()) {
-					if(resource.getSet(key,String.valueOf(System.currentTimeMillis()+seconds*1000)).equals(oldExpireTime)) {
+					if(resource.getSet(key,String.valueOf(System.currentTimeMillis()+ms)).equals(oldExpireTime)) {
 						success=true;
 					}
 				}
