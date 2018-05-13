@@ -197,6 +197,24 @@ public final class StringUtil {
 		}
 		return value;
 	}
+	/**
+	 * 判断字段真实长度的实例(中文2个字符,英文1个字符)
+	 * @param value
+	 * @return
+	 */
+	public static int strLength(String value) {
+		 int valueLength = 0;
+		 String chinese = "[\u4e00-\u9fa5]";
+		 for (int i = 0; i < value.length(); i++) {
+			  String temp = value.substring(i, i + 1);
+			  if (temp.matches(chinese)) {
+				  valueLength += 2;
+			  } else {
+				  valueLength += 1;
+			  }
+		 }
+		 return valueLength;
+	}
 	public static void main(String[] args) {
 		System.out.println(StringUtil.changMoney("111.11"));
 	}
