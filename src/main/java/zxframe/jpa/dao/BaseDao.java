@@ -24,6 +24,7 @@ import zxframe.cache.transaction.CacheTransaction;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.annotation.Id;
 import zxframe.jpa.datasource.DataSourceManager;
+import zxframe.jpa.ex.DataExpiredException;
 import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.util.SQLParsing;
 import zxframe.util.JsonUtil;
@@ -229,7 +230,7 @@ public class BaseDao {
 				//版本控制出现问题
 				logger.warn("StaleObjectStateException :"+JsonUtil.obj2Json(obj));
 				ct.remove(group, id.toString());
-				throw new JpaRuntimeException("数据 version 已过期。");
+				throw new DataExpiredException("数据 version 已过期。");
 			}
 			//更新成功，更新版本
 			if(versionField!=null) {
