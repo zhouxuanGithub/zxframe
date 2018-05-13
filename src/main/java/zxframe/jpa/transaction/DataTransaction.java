@@ -48,7 +48,7 @@ public class DataTransaction {
 					}
 				} catch (SQLException e) {
 					//提交失败，记录日志？
-					throw new JpaRuntimeException(e);
+					logger.error("事务提交失败",e);
 				}
 			}
 		}
@@ -73,7 +73,7 @@ public class DataTransaction {
 						}
 					} catch (Exception e) {
 						//回滚失败，记录日志？
-						e.printStackTrace();
+						logger.error("事务回滚失败",e);
 					}
 				}
 			}
@@ -100,9 +100,8 @@ public class DataTransaction {
 						}
 					} catch (SQLException e) {
 						//close失败，记录日志？
-						e.printStackTrace();
+						logger.error("事务close失败",e);
 					}
-					
 				}
 			}
 			DataSourceManager.uwwcMap.remove(transactionId);
