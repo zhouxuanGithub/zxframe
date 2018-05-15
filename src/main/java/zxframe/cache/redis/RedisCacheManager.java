@@ -16,9 +16,9 @@ import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 import zxframe.aop.ServiceAspect;
 import zxframe.cache.mgr.CacheModelManager;
-import zxframe.cache.model.CacheModel;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.ex.JpaRuntimeException;
+import zxframe.jpa.model.DataModel;
 import zxframe.util.CServerUUID;
 import zxframe.util.JsonUtil;
 import zxframe.util.SerializeUtils;
@@ -89,7 +89,7 @@ public class RedisCacheManager {
         // 构造池 
         pool = new ShardedJedisPool(config, jdsInfoList); 
 	}
-	public void put(CacheModel cm,String key,Object value) {
+	public void put(DataModel cm,String key,Object value) {
 		ShardedJedis sj=null;
 		try {
 			key = getNewKey(cm,key);
@@ -111,10 +111,10 @@ public class RedisCacheManager {
 	public Object get(String group,String key) {
 		ShardedJedis sj=null;
 		try {
-			key = getNewKey(CacheModelManager.getCacheModelByGroup(group),key);
+			key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
 			sj = getResource();
 			byte[] bs = sj.get(key.getBytes());
-			CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			Object value=null;
 			if(bs!=null&&cm!=null) {
 				value=SerializeUtils.deSerialize(bs);
@@ -137,7 +137,7 @@ public class RedisCacheManager {
 	public void remove(String group,String key) {
 		ShardedJedis sj=null;
 		try {
-			key = getNewKey(CacheModelManager.getCacheModelByGroup(group),key);
+			key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
 			sj = getResource();
 			sj.del(key.getBytes());
 			if(ZxFrameConfig.showlog) {
@@ -161,7 +161,7 @@ public class RedisCacheManager {
 	public void remove(String group){
 		ShardedJedis sj=null;
 		try {
-			CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			if(!cm.isStrictRW()) {
 //				logger.error("此缓存模型需要开启严格读写(strictRW=true)才能进行删除, "+cm.toString());
 				logger.error("This caching model needs to open strict read and write (strictRW=true) to delete, "+cm.toString());
@@ -238,7 +238,7 @@ public class RedisCacheManager {
 	 * @param cm
 	 * @return
 	 */
-	private String getNewGroup(CacheModel cm) {
+	private String getNewGroup(DataModel cm) {
 		if(cm.isStrictRW()) {
 			ShardedJedis resource = null;
 			try {
@@ -270,7 +270,7 @@ public class RedisCacheManager {
 	 * @param key
 	 * @return
 	 */
-	private String getNewKey(CacheModel cm,String key) {
+	private String getNewKey(DataModel cm,String key) {
 		return getNewGroup(cm)+"_"+key;
 	}
 	/**

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import zxframe.jpa.dao.BaseDao;
+import zxframe.properties.mapper.PropertiesMapper;
 import zxframe.properties.model.Properties;
 
 @Service
@@ -18,10 +19,10 @@ public class PropertiesService{
 	private BaseDao baseDao;
 	
 	public List<Properties> getList() {
-		return baseDao.getList(Properties.class,"select * from Properties");
+		return baseDao.getList(Properties.class,PropertiesMapper.propertiesAll);
 	}
 	
 	public String getListVersion() {
-		return baseDao.get(String.class,"select value from Properties where `key`= ?","system-version");
+		return baseDao.get(String.class,PropertiesMapper.propertiesByKey,"system-version");
 	}
 }

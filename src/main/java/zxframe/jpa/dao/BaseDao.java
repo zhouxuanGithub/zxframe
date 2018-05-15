@@ -19,13 +19,13 @@ import org.springframework.stereotype.Repository;
 
 import zxframe.cache.mgr.CacheManager;
 import zxframe.cache.mgr.CacheModelManager;
-import zxframe.cache.model.CacheModel;
 import zxframe.cache.transaction.CacheTransaction;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.annotation.Id;
 import zxframe.jpa.datasource.DataSourceManager;
 import zxframe.jpa.ex.DataExpiredException;
 import zxframe.jpa.ex.JpaRuntimeException;
+import zxframe.jpa.model.DataModel;
 import zxframe.jpa.util.SQLParsing;
 import zxframe.util.JsonUtil;
 
@@ -35,6 +35,8 @@ public class BaseDao {
 	private Logger logger = LoggerFactory.getLogger(BaseDao.class);  
 	@Resource
 	CacheTransaction ct;
+	@Resource
+	private CacheManager cacheManager;
 	/**
 	 * 增：保存对象
 	 * @param obj 需要保存的对象
@@ -44,7 +46,7 @@ public class BaseDao {
 		Serializable id = null;
 		try {
 			String group=obj.getClass().getName();
-			CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			//存值
 			ArrayList<Object> argsList=new ArrayList<Object>();
 			StringBuffer sql=new StringBuffer();
@@ -99,7 +101,7 @@ public class BaseDao {
 		String group=clas.getName();
 		T obj =null;
 		//去事务或者缓存中去查
-		CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm!=null) {
 			obj =(T) ct.get(group, id.toString());
 		}
@@ -117,24 +119,19 @@ public class BaseDao {
 	/**
 	 * 查询对象
 	 * @param clas 对象class
-	 * @param sql sql
+	 * @param group group
 	 * @param args sql参数
 	 * @return
 	 */
-	public <T> T get(Class<T> clas, String sql,Object... args) {
-		return get(clas,sql,null,args);
+	public <T> T get(Class<T> clas, String group,Object... args) {
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
+		if(cm==null) {
+			throw new JpaRuntimeException("请配置数据模型，可能你忘了加@DataMapper注解，group:"+group);
+		}
+		return get(clas,cm.getSql(),cm,args);
 	}
-	/**
-	 * 查询对象
-	 * @param clas 对象class
-	 * @param cacheModel 缓存模型
-	 * @param args sql参数
-	 * @return
-	 */
-	public <T> T get(Class<T> clas, CacheModel cacheModel,Object... args) {
-		return get(clas,cacheModel.getSql(),cacheModel,args);
-	}
-	private <T> T get(Class<T> clas, String sql,CacheModel cacheModel,Object... args) {
+
+	private <T> T get(Class<T> clas, String sql,DataModel cacheModel,Object... args) {
 		List<T> list = getList(clas, sql,cacheModel,args);
 		if(list==null||list.size()==0) {
 			return null;
@@ -149,7 +146,7 @@ public class BaseDao {
 	 */
 	public void delete(Class clas, Serializable id) {
 		String group=clas.getName();
-		CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		String sql = "delete from "+clas.getSimpleName()+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
 		//执行删除
 		execute(CacheModelManager.cacheModelAnnotation.get(group).dsname(),sql,id);
@@ -191,7 +188,7 @@ public class BaseDao {
 			}
 			Field versionField=CacheModelManager.cacheIdVersionMap.get(group);
 			id = (Serializable) idField.get(obj);
-			CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			StringBuffer sql=new StringBuffer();
 			sql.append("update ").append(obj.getClass().getSimpleName()).append(" set ");
 			for (int i = 0; i < length; i++) {
@@ -225,7 +222,7 @@ public class BaseDao {
 				args[i]=argsList.get(i);  
 			}
 			//执行
-			int execute = (int) execute(CacheModelManager.cacheModelAnnotation.get(group).dsname(),sql.toString(),args);
+			int execute = (int) execute(CacheModelManager.cacheModelAnnotation.get(group).dsname(),sql.toString(),null,args);
 			if(execute<1) {
 				//版本控制出现问题
 				logger.warn("StaleObjectStateException :"+JsonUtil.obj2Json(obj));
@@ -247,21 +244,15 @@ public class BaseDao {
 	/**
 	 * 查：根据sql查询对象集合
 	 * @param clas class
-	 * @param sql sql语句
+	 * @param group group
 	 * @param args 参数
 	 */
-	public <T> List<T> getList(Class<T> clas,String sql, Object... args) {
-		return getList(clas, sql,null,args);
-	}
-	/**
-	 * 查：根据sql查询对象集合
-	 * @param clas class
-	 * @param cacheModel 缓存模型
-	 * @param args 参数
-	 * @return 查询出的对象集合
-	 */
-	public <T> List<T> getList(Class<T> clas,CacheModel cacheModel, Object... args) {
-		return getList(clas, cacheModel.getSql(),cacheModel,args);
+	public <T> List<T> getList(Class<T> clas,String group, Object... args) {
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
+		if(cm==null) {
+			throw new JpaRuntimeException("请配置数据模型[getList]，可能你忘了加@DataMapper注解，group:"+group);
+		}
+		return getList(clas,cm.getSql(), cm ,args);
 	}
 	/**
 	 * 查：根据sql查询对象集合
@@ -270,7 +261,7 @@ public class BaseDao {
 	 * @param args 参数
 	 * @return 查询出的对象集合
 	 */
-	private <T> List<T> getList(Class<T> clas,String sql,CacheModel cacheModel, Object... args) {
+	private <T> List<T> getList(Class<T> clas,String sql,DataModel cacheModel, Object... args) {
 		Connection con =null;
 		ResultSet rs=null;
 		try {
@@ -291,7 +282,7 @@ public class BaseDao {
 			con = DataSourceManager.getRConnection(dsname);
 			//去数据库获得数据
 			rs = getResult(con,sql,args);
-			Map<String, Field> fieldMap = CacheModelManager.cacheFieldsMap.get(group);
+			Map<String, Field> fieldMap =CacheModelManager.cacheFieldsMap.get(group);
 			Iterator<String> iterator=null;
 			Field field=null;
 			list = new ArrayList<T>();//此处创建对象是为了能让本地和远程缓存存空集合
@@ -313,6 +304,17 @@ public class BaseDao {
 			if(list!=null&&cacheModel!=null&&cacheModel.isQueryCache()) {
 				ct.put(cacheModel, cid, list);
 			}
+			//执行后清理指定组缓存
+			try {
+				if(cacheModel!=null&&cacheModel.getFlushOnExecute()!=null) {
+					List<String> l = cacheModel.getFlushOnExecute();
+					for (int i = 0; i < l.size(); i++) {
+						cacheManager.remove(l.get(i));
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return list;
 		} catch (Exception e) {
 			throw new JpaRuntimeException(e);
@@ -323,11 +325,26 @@ public class BaseDao {
 	/**
 	 * 数据更新(增删改)
 	 * @param dsname 数据源名
-	 * @param sql 要执行的SQL语句
+	 * @param group 数据模型组
 	 * @param args 赋值的参数集合
 	 * @return 执行状态
 	 */
-	public Object execute(String dsname,String sql, Object... args) {
+	public Object execute(String dsname,String group, Object... args) {
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
+		if(cm==null) {
+			throw new JpaRuntimeException("请配置数据模型[execute]，可能你忘了加@DataMapper注解，group:"+group);
+		}
+		return execute(dsname,cm.getSql(),cm,args);
+	}
+	/**
+	 * 数据更新(增删改)
+	 * @param dsname 数据源名
+	 * @param sql 数据模型组
+	 * @param cm 数据模型
+	 * @param args 赋值的参数集合
+	 * @return 执行状态
+	 */
+	private Object execute(String dsname,String sql,DataModel cm, Object... args) {
 		if(ZxFrameConfig.showsql) {
 			logger.info(sql+" args "+JsonUtil.obj2Json(args));
 		}
@@ -346,6 +363,17 @@ public class BaseDao {
 			setValues(ps, args);
 			// 4.执行更新(向数据库发送指令)
 			int count= ps.executeUpdate();
+			//执行后清理指定组缓存
+			try {
+				if(cm!=null&&cm.getFlushOnExecute()!=null) {
+					List<String> l = cm.getFlushOnExecute();
+					for (int i = 0; i < l.size(); i++) {
+						cacheManager.remove(l.get(i));
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return count;
 		}catch (Exception e) {
 			throw new JpaRuntimeException(e);
@@ -353,6 +381,7 @@ public class BaseDao {
 			// 5.关闭连接
 			closeAll(null, ps, rs);
 		}
+		
 	}
 	/**
 	 * 通有的查询方法

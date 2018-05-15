@@ -1,5 +1,6 @@
 package zxframe.jpa.util;
 
+import zxframe.cache.mgr.CacheManager;
 import zxframe.cache.mgr.CacheModelManager;
 import zxframe.jpa.annotation.Model;
 

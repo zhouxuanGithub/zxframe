@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import zxframe.cache.local.LocalCacheManager;
-import zxframe.cache.model.CacheModel;
 import zxframe.cache.redis.RedisCacheManager;
 import zxframe.cache.transaction.CacheTransaction;
+import zxframe.jpa.ex.JpaRuntimeException;
+import zxframe.jpa.model.DataModel;
 import zxframe.util.JsonUtil;
 
 /**
@@ -26,12 +27,12 @@ public class CacheManager {
 	RedisCacheManager rcm;
 	@Resource
 	LocalCacheManager lcm;
-	public void put(CacheModel cm,String id,Object value) {
+	public void put(DataModel cm,String id,Object value) {
 		if(cm==null) {
-			logger.error("CacheManager.put失败,CacheModel不能为空");
+			logger.error("CacheManager.put失败,DataModel不能为空");
 			return;
 		}
-		if(!CacheModelManager.checkCacheModel(cm)) {
+		if(!CacheModelManager.checkDataModel(cm)) {
 			logger.error("CacheManager.put失败,无效的Group,请给["+cm.getGroup()+"]该对象添加Cache注解。");
 			return;
 		}
@@ -44,7 +45,7 @@ public class CacheManager {
 	}
 
 	public Object get(String group,String id) {
-		CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm.isLcCache()&&cm.isRcCache()) {
 			Object o = lcm.get(group, id);
 			if(o==null) {
@@ -62,7 +63,7 @@ public class CacheManager {
 		//清理事务中的数据
 		ct.removePSData(group, null);
 		//删除缓存中的数据
-		CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm.isLcCache()) {
 			lcm.remove(group);
 		}
@@ -74,7 +75,7 @@ public class CacheManager {
 		//清理事务中的数据
 		ct.removePSData(group, key);
 		//删除缓存中的数据
-		CacheModel cm = CacheModelManager.getCacheModelByGroup(group);
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm.isLcCache()) {
 			lcm.remove(group,key);
 		}
@@ -83,28 +84,19 @@ public class CacheManager {
 		}
 	}
 	/**
-	 * 获得组
-	 * @param clas
-	 * @return
-	 */
-	public String getGroup(Class clas) {
-		CacheModel cm = CacheModelManager.getCacheModelByGroup(clas.getName());
-		if(cm==null) {
-			logger.error("此Class不是缓存模型，不能获取Group");
-			return null;
-		}
-		return cm.getGroup();
-	}
-	/**
 	 * 清理查询缓存
 	 * @param cm 缓存模型
 	 * @param args sql参数
 	 */
-	public void removeQueryCache(CacheModel cm,Object... args) {
+	public void removeQueryCache(String group,Object... args) {
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm.isQueryCache()) {
 			remove(cm.getGroup(),getQueryKey(cm.getSql(), args));
+		}else {
+			throw new JpaRuntimeException("查询缓存清理失败，未开启查询缓存【group:"+group+"】");
 		}
 	}
+	
 	/**
 	 * 获得查询key
 	 * @param sql

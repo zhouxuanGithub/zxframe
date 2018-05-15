@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import zxframe.aop.ServiceAspect;
 import zxframe.cache.mgr.CacheManager;
 import zxframe.cache.mgr.CacheModelManager;
-import zxframe.cache.model.CacheModel;
 import zxframe.config.ZxFrameConfig;
+import zxframe.jpa.model.DataModel;
 
 /**
  * 缓存事务管理
@@ -34,11 +34,11 @@ public class CacheTransaction {
 	 * @param id
 	 * @param value
 	 */
-	public void put(CacheModel cacheModel,String id,Object value) {
+	public void put(DataModel cacheModel,String id,Object value) {
 		try {
 			String transactionId = Thread.currentThread().getName();
 			if(transactionId.startsWith(ServiceAspect.THREADNAMESTARTS)) {
-				if(value!=null&&CacheModelManager.checkCacheModel(cacheModel)) {
+				if(value!=null&&CacheModelManager.checkDataModel(cacheModel)) {
 					getGroupMap(transactionId, cacheModel.getGroup()).put(id, value);
 				}
 			}else {
@@ -126,7 +126,7 @@ public class CacheTransaction {
 					while(keys.hasMoreElements()) {
 						String id = keys.nextElement();
 						Object value = kvMap.get(id);
-						cmm.put(CacheModelManager.getCacheModelByGroup(group), id, value);
+						cmm.put(CacheModelManager.getDataModelByGroup(group), id, value);
 					}
 				}
 			}else {

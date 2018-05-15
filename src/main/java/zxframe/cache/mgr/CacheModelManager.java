@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import zxframe.cache.annotation.Cache;
-import zxframe.cache.annotation.QueryCache;
-import zxframe.cache.model.CacheModel;
+import zxframe.jpa.model.DataModel;
+import zxframe.jpa.annotation.DataMapper;
 import zxframe.jpa.annotation.Id;
 import zxframe.jpa.annotation.Model;
 import zxframe.jpa.annotation.Transient;
@@ -28,9 +28,9 @@ import zxframe.jpa.ex.JpaRuntimeException;
 public class CacheModelManager {
 	private static Logger logger = LoggerFactory.getLogger(CacheModelManager.class);  
 	//缓存模型
-	private static ConcurrentMap<String, CacheModel> cacheModelMap=new ConcurrentHashMap<String, CacheModel>();
+	private static ConcurrentMap<String, DataModel> cacheModelMap=new ConcurrentHashMap<String, DataModel>();
 	//未开启缓存的模型
-	private static ConcurrentMap<String, Boolean> isNoHasCacheModelMap=new ConcurrentHashMap<String, Boolean>();
+	private static ConcurrentMap<String, Boolean> isNoHasDataModelMap=new ConcurrentHashMap<String, Boolean>();
 	//模型主键字段
 	public static ConcurrentMap<String, Field> cacheIdFieldMap=new ConcurrentHashMap<String, Field>();
 	//模型id字段
@@ -48,7 +48,7 @@ public class CacheModelManager {
 	 * @param group
 	 * @return
 	 */
-	public static CacheModel getCacheModelByGroup(String group) {
+	public static DataModel getDataModelByGroup(String group) {
 		return cacheModelMap.get(group);
 	}
 	/**
@@ -56,22 +56,22 @@ public class CacheModelManager {
 	 * @param cls
 	 * @return
 	 */
-	public static CacheModel loadCacheModelByGroup(String cls) {
-		CacheModel cm = cacheModelMap.get(cls);
+	public static DataModel loadDataModelByGroup(String cls) {
+		DataModel cm = cacheModelMap.get(cls);
 		if(cm!=null) {
 			return cm;
 		}
-		if(isNoHasCacheModelMap.containsKey(cls)) {
+		if(isNoHasDataModelMap.containsKey(cls)) {
 			return null;
 		}
 //		else {
 //			if(!cls.startsWith("zxframe")) {//并非自身程序的对象
-//				isNoHasCacheModelMap.put(cls, true);
+//				isNoHasDataModelMap.put(cls, true);
 //				return null;
 //			}
 //		}
 		try {
-			cm=new CacheModel();
+			cm=new DataModel();
 			cm.setGroup(cls);
 			//未加载过，尝试获取
 			Class clazz = Class.forName(cls);
@@ -107,7 +107,7 @@ public class CacheModelManager {
 			sb.append("load model >>>> ").append(cls).append(" ");
 			if(!clazz.isAnnotationPresent(Cache.class)) {
 				sb.append("[no open cache]");
-				isNoHasCacheModelMap.put(cls, true);
+				isNoHasDataModelMap.put(cls, true);
 			}
 			boolean isQC=false;
 			for (Annotation anno : clazz.getDeclaredAnnotations()) {//获得所有的注解
@@ -132,7 +132,7 @@ public class CacheModelManager {
 					}
 				}
 				//查询缓存
-				if(anno.annotationType().equals(QueryCache.class) ){
+				if(anno.annotationType().equals(DataMapper.class) ){
 					isQC=true;
 				}
 			}
@@ -143,7 +143,7 @@ public class CacheModelManager {
 					for (int i = 0; i < methods.length; i++) {
 						try {
 							Method m=methods[i];
-							methods[i].invoke(clazz.newInstance());
+							CacheModelManager.addQueryDataModel((DataModel) methods[i].invoke(clazz.newInstance()));;
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -162,8 +162,8 @@ public class CacheModelManager {
 	 * @param cm
 	 * @return
 	 */
-	public static boolean checkCacheModel(CacheModel cm) {
-		if(cm==null||isNoHasCacheModelMap.containsKey(cm.getGroup())) {
+	public static boolean checkDataModel(DataModel cm) {
+		if(cm==null||isNoHasDataModelMap.containsKey(cm.getGroup())) {
 			return false;
 		}
 		return true;
@@ -172,7 +172,7 @@ public class CacheModelManager {
 	 * 添加查询缓存模型
 	 * @param cm
 	 */
-	public static void addQueryCacheModel(CacheModel cm) {
+	public static void addQueryDataModel(DataModel cm) {
 		if(!cacheModelMap.containsKey(cm.getGroup())) {
 			StringBuffer sb=new StringBuffer();
 			sb.append("load model >>>> ").append(cm.getGroup()).append(" ");
