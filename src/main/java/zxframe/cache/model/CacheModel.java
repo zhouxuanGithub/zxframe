@@ -9,7 +9,7 @@ import zxframe.config.ZxFrameConfig;
  * @author zx
  *
  */
-public class CacheModel implements Serializable,Cloneable{
+public class CacheModel implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	/**
@@ -93,9 +93,5 @@ public class CacheModel implements Serializable,Cloneable{
 	@Override
 	public String toString() {
 		return "[strictRW=" + strictRW + ", lcCache=" + lcCache + ", rcCache=" + rcCache + ", rcETime=" + rcETime  + "]";
-	}
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
 	}
 }
