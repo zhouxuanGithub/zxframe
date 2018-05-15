@@ -1,6 +1,8 @@
-package zxframe.cache.model;
+package zxframe.jpa.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import zxframe.config.ZxFrameConfig;
 
@@ -9,7 +11,7 @@ import zxframe.config.ZxFrameConfig;
  * @author zx
  *
  */
-public class CacheModel implements Serializable{
+public class DataModel implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	/**
@@ -42,6 +44,10 @@ public class CacheModel implements Serializable{
 	 * 查询缓存SQL
 	 */
 	private String sql;
+	/**
+	 * 执行此数据模型，则删除对应的组
+	 */
+	private List<String> flushOnExecute;
 	
 	public boolean isLcCache() {
 		return lcCache;
@@ -89,6 +95,16 @@ public class CacheModel implements Serializable{
 	}
 	public void setSql(String sql) {
 		this.sql = sql;
+	}
+	
+	public List<String> getFlushOnExecute() {
+		return flushOnExecute;
+	}
+	public void addFlushOnExecute(String group) {
+		if(this.flushOnExecute==null) {
+			this.flushOnExecute=new ArrayList<String>();
+		}
+		this.flushOnExecute.add(group);
 	}
 	@Override
 	public String toString() {
