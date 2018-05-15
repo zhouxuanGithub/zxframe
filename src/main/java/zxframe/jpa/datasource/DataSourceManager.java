@@ -119,6 +119,9 @@ public class DataSourceManager {
 			Connection connection = map.get(dsname);
 			if(connection==null) {
 				connection = DataSourceManager.wDataSource.get(dsname).getConnection();
+				if(connection==null) {
+					throw new JpaRuntimeException(dsname+"写数据源为空，未配置");
+				}
 				connection.setAutoCommit(false);// 更改JDBC事务的默认提交方式 
 				map.put(dsname, connection);
 			}
@@ -138,6 +141,9 @@ public class DataSourceManager {
 		}
 		try {
 			ArrayList<DataSource> list = rDataSource.get(dsname);
+			if(list==null) {
+				throw new JpaRuntimeException(dsname+"读数据源为空，未配置");
+			}
 			return list.get(new Random().nextInt(list.size())).getConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
