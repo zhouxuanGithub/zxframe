@@ -49,7 +49,15 @@ public class CacheModelManager {
 	 * @return
 	 */
 	public static CacheModel getCacheModelByGroup(String group) {
-		return cacheModelMap.get(group);
+		CacheModel cacheModel = cacheModelMap.get(group);
+		if(cacheModel!=null) {
+			try {
+				cacheModel=(CacheModel) cacheModel.clone();
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+		}
+		return cacheModel;
 	}
 	/**
 	 * 根据class获取缓存模型获取

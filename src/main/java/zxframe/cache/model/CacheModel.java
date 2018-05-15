@@ -1,7 +1,6 @@
 package zxframe.cache.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 import zxframe.config.ZxFrameConfig;
 
@@ -10,10 +9,8 @@ import zxframe.config.ZxFrameConfig;
  * @author zx
  *
  */
-public class CacheModel implements Serializable{
-	/**
-	 * 
-	 */
+public class CacheModel implements Serializable,Cloneable{
+
 	private static final long serialVersionUID = 1L;
 	/**
 	 * 使用本地缓存
@@ -37,10 +34,6 @@ public class CacheModel implements Serializable{
 	 * 非严格读写(默认)，不存在缓存组删除就可以关闭，提升效率
 	 */
 	private boolean strictRW=false;
-//	/**
-//	 * 读写数据类型
-//	 */
-//	private Class rwClass=List.class;
 	/**
 	 * 是否支持查询缓存
 	 */
@@ -84,12 +77,6 @@ public class CacheModel implements Serializable{
 	public void setStrictRW(boolean strictRW) {
 		this.strictRW = strictRW;
 	}
-//	public Class getRwClass() {
-//		return rwClass;
-//	}
-//	public void setRwClass(Class rwClass) {
-//		this.rwClass = rwClass;
-//	}
 	public boolean isQueryCache() {
 		return queryCache;
 	}
@@ -106,5 +93,9 @@ public class CacheModel implements Serializable{
 	@Override
 	public String toString() {
 		return "[strictRW=" + strictRW + ", lcCache=" + lcCache + ", rcCache=" + rcCache + ", rcETime=" + rcETime  + "]";
+	}
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }
