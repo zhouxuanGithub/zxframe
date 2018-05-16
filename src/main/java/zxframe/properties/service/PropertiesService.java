@@ -19,10 +19,10 @@ public class PropertiesService{
 	private BaseDao baseDao;
 	
 	public List<Properties> getList() {
-		return baseDao.getList(Properties.class,PropertiesMapper.propertiesAll);
+		return baseDao.getList(PropertiesMapper.propertiesAll);
 	}
 	
 	public String getListVersion() {
-		return baseDao.get(String.class,PropertiesMapper.propertiesByKey,"system-version");
+		return (String) baseDao.get(PropertiesMapper.propertiesByKey,"system-version");
 	}
 }

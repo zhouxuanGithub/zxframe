@@ -105,7 +105,11 @@ public class CacheModelManager {
 			//解析类上面的注解
 			StringBuffer sb=new StringBuffer();
 			sb.append("load model >>>> ").append(cls).append(" ");
-			if(!clazz.isAnnotationPresent(Cache.class)) {
+			if(clazz.isAnnotationPresent(DataMapper.class)) {
+				sb.append("[mapper]");
+				isNoHasDataModelMap.put(cls, true);
+			}
+			else if(!clazz.isAnnotationPresent(Cache.class)) {
 				sb.append("[no open cache]");
 				isNoHasDataModelMap.put(cls, true);
 			}
@@ -118,7 +122,6 @@ public class CacheModelManager {
 					cm.setRcCache(gce.rcCache());
 					cm.setRcETime(gce.rcETime());
 					cm.setStrictRW(gce.strictRW());
-//					cm.setRwClass(clazz);
 					cm.setQueryCache(false);//单模型不能支持查询缓存
 					sb.append(cm.toString());
 					cacheModelMap.put(cls, cm);

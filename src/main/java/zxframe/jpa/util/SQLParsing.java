@@ -1,13 +1,18 @@
 package zxframe.jpa.util;
 
-import zxframe.cache.mgr.CacheManager;
 import zxframe.cache.mgr.CacheModelManager;
 import zxframe.jpa.annotation.Model;
 
 public class SQLParsing {
 	//解析类，获取数据源名
-	public static String getDSName(Class clas) {
-		Model model = CacheModelManager.cacheModelAnnotation.get(clas.getName());
+	public static String getDSName(Class dsClass,Class resultClass) {
+		Model model = null;
+		if(dsClass!=null) {
+			model = CacheModelManager.cacheModelAnnotation.get(dsClass.getName());
+		}
+		else if(resultClass!=null) {
+			model = CacheModelManager.cacheModelAnnotation.get(resultClass.getName());
+		}
 		if(model==null) {
 			return "default";
 		}else {
@@ -15,10 +20,13 @@ public class SQLParsing {
 		}
 	}
 	//解析sql，获取数据源名
-	public static String getDSName(Class clas,String sql) {
+	public static String getDSName(Class dsClass,Class resultClass,String sql) {
 		Model model = null;
-		if(clas!=null) {
-			model = CacheModelManager.cacheModelAnnotation.get(clas.getName());
+		if(dsClass!=null) {
+			model = CacheModelManager.cacheModelAnnotation.get(dsClass.getName());
+		}
+		else if(resultClass!=null) {
+			model = CacheModelManager.cacheModelAnnotation.get(resultClass.getName());
 		}
 		if(model==null) {
 			if(sql.indexOf("where")!=-1) {

@@ -82,7 +82,7 @@ public class BaseDao {
 				sql.append("?");
 			}
 			sql.append(")");
-			execute(CacheModelManager.cacheModelAnnotation.get(group).dsname(),sql.toString(),args);
+			execute(SQLParsing.getDSName(null, obj.getClass()),sql.toString(),cm,args);
 			//缓存事务操作
 			if(cm!=null&&id!=null) {
 				ct.put(cm, id.toString(), obj);
@@ -118,17 +118,16 @@ public class BaseDao {
 	}
 	/**
 	 * 查询对象
-	 * @param clas 对象class
 	 * @param group group
 	 * @param args sql参数
 	 * @return
 	 */
-	public <T> T get(Class<T> clas, String group,Object... args) {
+	public Object get(String group,Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		return get(clas,cm.getSql(),cm,args);
+		return get(cm.getResultClass(),cm.getSql(),cm,args);
 	}
 
 	private <T> T get(Class<T> clas, String sql,DataModel cacheModel,Object... args) {
@@ -149,7 +148,7 @@ public class BaseDao {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		String sql = "delete from "+clas.getSimpleName()+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
 		//执行删除
-		execute(CacheModelManager.cacheModelAnnotation.get(group).dsname(),sql,id);
+		execute(SQLParsing.getDSName(null, clas),sql,id);
 		if(cm!=null) {
 			ct.remove(group, id.toString());
 		}
@@ -222,7 +221,7 @@ public class BaseDao {
 				args[i]=argsList.get(i);  
 			}
 			//执行
-			int execute = (int) execute(CacheModelManager.cacheModelAnnotation.get(group).dsname(),sql.toString(),null,args);
+			int execute = (int) execute(SQLParsing.getDSName(null,obj.getClass()),sql.toString(),null,args);
 			if(execute<1) {
 				//版本控制出现问题
 				logger.warn("StaleObjectStateException :"+JsonUtil.obj2Json(obj));
@@ -247,12 +246,12 @@ public class BaseDao {
 	 * @param group group
 	 * @param args 参数
 	 */
-	public <T> List<T> getList(Class<T> clas,String group, Object... args) {
+	public List getList(String group, Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[getList]，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		return getList(clas,cm.getSql(), cm ,args);
+		return getList(cm.getResultClass(),cm.getSql(), cm ,args);
 	}
 	/**
 	 * 查：根据sql查询对象集合
@@ -277,7 +276,7 @@ public class BaseDao {
 				}
 			}
 			//计算数据源
-			String dsname=SQLParsing.getDSName(clas,sql);
+			String dsname=SQLParsing.getDSName(cacheModel!=null?cacheModel.getDsClass():null,clas,sql);
 			//打开连接
 			con = DataSourceManager.getRConnection(dsname);
 			//去数据库获得数据
@@ -307,9 +306,14 @@ public class BaseDao {
 			//执行后清理指定组缓存
 			try {
 				if(cacheModel!=null&&cacheModel.getFlushOnExecute()!=null) {
-					List<String> l = cacheModel.getFlushOnExecute();
+					List l = cacheModel.getFlushOnExecute();
 					for (int i = 0; i < l.size(); i++) {
-						cacheManager.remove(l.get(i));
+						Object o = l.get(i);
+						if(o instanceof Class) {
+							cacheManager.remove(((Class) o).getName());
+						}else {
+							cacheManager.remove(o.toString());
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -329,12 +333,12 @@ public class BaseDao {
 	 * @param args 赋值的参数集合
 	 * @return 执行状态
 	 */
-	public Object execute(String dsname,String group, Object... args) {
+	public Object execute(String group, Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[execute]，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		return execute(dsname,cm.getSql(),cm,args);
+		return execute(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),null),cm.getSql(),cm,args);
 	}
 	/**
 	 * 数据更新(增删改)
@@ -366,9 +370,14 @@ public class BaseDao {
 			//执行后清理指定组缓存
 			try {
 				if(cm!=null&&cm.getFlushOnExecute()!=null) {
-					List<String> l = cm.getFlushOnExecute();
+					List l = cm.getFlushOnExecute();
 					for (int i = 0; i < l.size(); i++) {
-						cacheManager.remove(l.get(i));
+						Object o = l.get(i);
+						if(o instanceof Class) {
+							cacheManager.remove(((Class) o).getName());
+						}else {
+							cacheManager.remove(o.toString());
+						}
 					}
 				}
 			} catch (Exception e) {

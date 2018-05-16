@@ -15,12 +15,14 @@ public class PropertiesMapper {
 		DataModel cm =new DataModel();
 		cm.setSql("select * from Properties");
 		cm.setGroup(propertiesAll);
+		cm.setResultClass(Properties.class);
 		return cm;
 	}
 	public DataModel initPropertiesByKey() {
 		DataModel cm =new DataModel();
 		cm.setSql("select value from Properties where `key`= ?");
 		cm.setGroup(propertiesByKey);
+		cm.setResultClass(String.class);
 		return cm;
 	}
 }

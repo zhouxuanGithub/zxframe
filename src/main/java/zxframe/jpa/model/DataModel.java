@@ -47,7 +47,16 @@ public class DataModel implements Serializable{
 	/**
 	 * 执行此数据模型，则删除对应的组
 	 */
-	private List<String> flushOnExecute;
+	private List<Object> flushOnExecute;
+	/**
+	 * 返回结果class
+	 */
+	private Class resultClass;
+	/**
+	 * 使用的数据源class
+	 * 使用数据源的优先顺序1.dsClass 2.resultClass 3.解析SQL
+	 */
+	private Class dsClass;
 	
 	public boolean isLcCache() {
 		return lcCache;
@@ -97,17 +106,33 @@ public class DataModel implements Serializable{
 		this.sql = sql;
 	}
 	
-	public List<String> getFlushOnExecute() {
+	public List<Object> getFlushOnExecute() {
 		return flushOnExecute;
 	}
-	public void addFlushOnExecute(String group) {
+	public void addFlushOnExecute(Object group) {
 		if(this.flushOnExecute==null) {
-			this.flushOnExecute=new ArrayList<String>();
+			this.flushOnExecute=new ArrayList<Object>();
 		}
 		this.flushOnExecute.add(group);
 	}
+	public Class getResultClass() {
+		return resultClass;
+	}
+	public void setResultClass(Class resultClass) {
+		this.resultClass = resultClass;
+	}
+	
+	public Class getDsClass() {
+		return dsClass;
+	}
+	public void setDsClass(Class dsClass) {
+		this.dsClass = dsClass;
+	}
 	@Override
 	public String toString() {
-		return "[strictRW=" + strictRW + ", lcCache=" + lcCache + ", rcCache=" + rcCache + ", rcETime=" + rcETime  + "]";
+		return " [lcCache=" + lcCache + ", rcCache=" + rcCache + ", group=" + group + ", rcETime=" + rcETime
+				+ ", strictRW=" + strictRW + ", queryCache=" + queryCache + ", flushOnExecute=" + flushOnExecute
+				+ ", resultClass=" + resultClass + ", dsClass=" + dsClass + "]";
 	}
+	
 }
