@@ -34,7 +34,7 @@ import zxframe.util.JsonUtil;
 public class BaseDao {
 	private Logger logger = LoggerFactory.getLogger(BaseDao.class);  
 	@Resource
-	CacheTransaction ct;
+	private CacheTransaction ct;
 	@Resource
 	private CacheManager cacheManager;
 	/**
@@ -123,13 +123,22 @@ public class BaseDao {
 	 * @return
 	 */
 	public Object get(String group,Object... args) {
+		return get(group,null,args);
+	}
+	/**
+	 * 查询对象
+	 * @param group group
+	 * @param Map sql增强部分替换
+	 * @param args sql参数
+	 * @return
+	 */
+	public Object get(String group,Map<String,String> map,Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		return get(cm.getResultClass(),cm.getSql(),cm,args);
+		return get(cm.getResultClass(),SQLParsing.replaceSQL(cm.getSql(),map),cm,args);
 	}
-
 	private <T> T get(Class<T> clas, String sql,DataModel cacheModel,Object... args) {
 		List<T> list = getList(clas, sql,cacheModel,args);
 		if(list==null||list.size()==0) {
@@ -242,24 +251,26 @@ public class BaseDao {
 	}
 	/**
 	 * 查：根据sql查询对象集合
-	 * @param clas class
 	 * @param group group
 	 * @param args 参数
 	 */
 	public List getList(String group, Object... args) {
+		return getList(group,null,args);
+	}
+	/**
+	 * 查：根据sql查询对象集合
+	 * @param group group
+	 * @param map sql增强部分替换
+	 * @param args 参数
+	 */
+	public List getList(String group,Map<String,String> map, Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[getList]，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		return getList(cm.getResultClass(),cm.getSql(), cm ,args);
+		return getList(cm.getResultClass(),SQLParsing.replaceSQL(cm.getSql(),map), cm ,args);
 	}
-	/**
-	 * 查：根据sql查询对象集合
-	 * @param sql sql语句
-	 * @param cacheModel 缓存模型 null则不存入缓存
-	 * @param args 参数
-	 * @return 查询出的对象集合
-	 */
+	
 	private <T> List<T> getList(Class<T> clas,String sql,DataModel cacheModel, Object... args) {
 		Connection con =null;
 		ResultSet rs=null;
@@ -328,17 +339,26 @@ public class BaseDao {
 	}
 	/**
 	 * 数据更新(增删改)
-	 * @param dsname 数据源名
 	 * @param group 数据模型组
 	 * @param args 赋值的参数集合
 	 * @return 执行状态
 	 */
 	public Object execute(String group, Object... args) {
+		return execute(group,null,args);
+	}
+	/**
+	 * 数据更新(增删改)
+	 * @param group 数据模型组
+	 * @param map sql增强部分替换
+	 * @param args 赋值的参数集合
+	 * @return 执行状态
+	 */
+	public Object execute(String group,Map<String,String> map, Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[execute]，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		return execute(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),null),cm.getSql(),cm,args);
+		return execute(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),null),SQLParsing.replaceSQL(cm.getSql(),map),cm,args);
 	}
 	/**
 	 * 数据更新(增删改)
@@ -427,7 +447,7 @@ public class BaseDao {
 	 * @param args
 	 * @throws Exception
 	 */
-	public void setValues(PreparedStatement ps, Object... args){
+	private void setValues(PreparedStatement ps, Object... args){
 		// 赋值(由于在CreateReadUpdateDelete每一种操作都会涉及到赋值)
 		// 为了保证代码严禁，所有先做非空检查
 		if (ps != null && args != null) {
@@ -444,7 +464,7 @@ public class BaseDao {
 		}
 	}
 
-	public void closeAll(Connection con, PreparedStatement ps,ResultSet rs){
+	private void closeAll(Connection con, PreparedStatement ps,ResultSet rs){
 		try {
 			if (rs != null) {
 				rs.close();
