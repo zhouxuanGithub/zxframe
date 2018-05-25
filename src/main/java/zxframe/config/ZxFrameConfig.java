@@ -37,6 +37,8 @@ public class ZxFrameConfig {
 	public static int rMaxIdle;
 	//redis maxTotal
 	public static int rMaxTotal;
+	//redis key前缀
+	public static String rKeyPrefix="default";
 	//redis servers;
 	public static ArrayList<String> rList=new ArrayList<String>();
 	public static void loadZxFrameConfig() {
@@ -105,8 +107,9 @@ public class ZxFrameConfig {
             			rMaxIdle=Integer.parseInt(child.getTextContent());
             		}else if(child.getNodeName().equals("maxTotal")) {
             			rMaxTotal=Integer.parseInt(child.getTextContent());
+            		}else if(child.getNodeName().equals("keyPrefix")) {
+            			rKeyPrefix=child.getTextContent();
             		}
-            		
             	}
             }
             ServiceAspect.requiredTx=txAdvice.split(",");

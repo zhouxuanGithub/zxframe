@@ -167,7 +167,7 @@ public class RedisCacheManager {
 				logger.error("This caching model needs to open strict read and write (strictRW=true) to delete, "+cm.toString());
 				return;
 			}
-			String key=cm.getGroup()+"_vs";
+			String key=getGroupVsKey(cm);
 			String groupVersion=getNewGroupVersion();
 			sj=getResource();
 			sj.set(key, groupVersion);
@@ -243,7 +243,7 @@ public class RedisCacheManager {
 			ShardedJedis resource = null;
 			try {
 				resource=getResource();
-				String key=cm.getGroup()+"_vs";
+				String key=getGroupVsKey(cm);
 				String groupVersion = resource.get(key);
 				if(groupVersion==null) {
 					groupVersion=getNewGroupVersion();
@@ -271,7 +271,7 @@ public class RedisCacheManager {
 	 * @return
 	 */
 	private String getNewKey(DataModel cm,String key) {
-		return getNewGroup(cm)+"_"+key;
+		return ZxFrameConfig.rKeyPrefix+"_"+getNewGroup(cm)+"_"+key;
 	}
 	/**
 	 * 获得group版本号
@@ -279,5 +279,8 @@ public class RedisCacheManager {
 	 */
 	private String getNewGroupVersion() {
 		return new Random().nextInt(100000)+"_"+CServerUUID.getSequenceId();
+	}
+	private String getGroupVsKey(DataModel cm) {
+		return ZxFrameConfig.rKeyPrefix+"_"+cm.getGroup()+"_vs";
 	}
 }
