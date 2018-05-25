@@ -9,6 +9,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import zxframe.config.ZxFrameConfig;
 import zxframe.util.JsonUtil;
+import zxframe.util.SerializeUtils;
 /**
  * 数据本地缓存
  * 设计：存储不经常改变的数据，定时清理
@@ -25,7 +26,8 @@ public class LocalCacheManager {
 		Cache cache = getCache(group);
 		Element element = cache.get(key);
 		if(element!=null) {
-			Object value = element.getObjectValue();
+			byte[] bytes = (byte[]) element.getObjectValue();
+			Object value =SerializeUtils.deSerialize(bytes);
 			if(ZxFrameConfig.showlog) {
 				logger.info("ehcache get key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
 			}
@@ -35,7 +37,7 @@ public class LocalCacheManager {
 	}
 	public void put(String group,String key,Object value) {
 		Cache cache = getCache(group);
-		Element element = new Element(key, value);
+		Element element = new Element(key,SerializeUtils.serialize(value));
 		cache.put(element);
 		if(ZxFrameConfig.showlog) {
 			logger.info("ehcache put key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
