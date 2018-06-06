@@ -169,17 +169,43 @@ public final class StringUtil {
 
 	}
 	/**
-	 * 替换字符  防止script恶意代码
+	 * 防XSS攻击
 	 * @param str 需要处理的字符串
 	 * @return
 	 */
-	public static String replaceStr(String str)
+	public static String cleanXSS(String s)
 	{
-		str=str.replace(">", "&gt;");
-		str=str.replace("<", "&lt;");
-		str=str.replace("\"","&quot;");
-		str=str.replace("\'", "&prime;");
-		return str;
+		StringBuilder sb = new StringBuilder(s.length() + 16);  
+        for (int i = 0; i < s.length(); i++) {  
+            char c = s.charAt(i);  
+            switch (c) {  
+            case '>':  
+                sb.append("＞");// 转义大于号  
+                break;  
+            case '<':  
+                sb.append("＜");// 转义小于号  
+                break;  
+            case 10:
+            case 13:
+                break;
+            case '\'':  
+                sb.append("＇");// 转义单引号  
+                break;  
+            case '\"':  
+                sb.append("＂");// 转义双引号  
+                break;  
+            case '&':  
+                sb.append("＆");// 转义&  
+                break;  
+            case '#':  
+                sb.append("＃");// 转义#  
+                break; 
+            default:  
+                sb.append(c);  
+                break;  
+            }  
+        }
+        return sb.toString();
 	}
 	/**
 	 * 清除 String的NULL异常和左右空格
