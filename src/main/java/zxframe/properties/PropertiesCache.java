@@ -14,7 +14,6 @@ import zxframe.util.ServiceLocator;
 
 
 public final class PropertiesCache{
-	private static Logger logger = LoggerFactory.getLogger(PropertiesCache.class);  
 	private static ConcurrentMap<String, String> properties=new ConcurrentHashMap<String, String>();
 	private static PropertiesService propertiesService;
 	static{
@@ -46,7 +45,6 @@ public final class PropertiesCache{
 		}
 	}
 	public static void init(){
-		//long time = System.currentTimeMillis();
 		ConcurrentMap<String, String> propertieMap=new ConcurrentHashMap<String, String>();
 		if(propertiesService==null) {
 			propertiesService = ServiceLocator.getSpringBean("propertiesService");
@@ -57,6 +55,5 @@ public final class PropertiesCache{
 			propertieMap.put(p.getKey(), p.getValue());
 		}
 		properties=propertieMap;
-		//logger.info("资源加载成功 >>>> 键值对读取 >>>> 键值对数："+properties.size()+" [耗时:"+(System.currentTimeMillis()-time)+" ms]");
 	}
 }
