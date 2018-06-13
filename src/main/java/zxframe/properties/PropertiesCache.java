@@ -16,12 +16,18 @@ import zxframe.util.ServiceLocator;
 public final class PropertiesCache{
 	private static Logger logger = LoggerFactory.getLogger(PropertiesCache.class);  
 	private static ConcurrentMap<String, String> properties=new ConcurrentHashMap<String, String>();
+	private static PropertiesService propertiesService;
 	static{
 		init();
 	}
 	public final static String get(String key)
 	{
 		return properties.get(key);
+	}
+	//存在性能和线程安全问题，只提供基本的键值操作,不做频繁更新
+	public final static void update(String key,String value) {
+		propertiesService.updateProperties(key, value);
+		init();
 	}
 	public final static int getInt(String key)
 	{
@@ -40,15 +46,17 @@ public final class PropertiesCache{
 		}
 	}
 	public static void init(){
-		long time = System.currentTimeMillis();
+		//long time = System.currentTimeMillis();
 		ConcurrentMap<String, String> propertieMap=new ConcurrentHashMap<String, String>();
-		PropertiesService propertiesService = ServiceLocator.getSpringBean("propertiesService");
+		if(propertiesService==null) {
+			propertiesService = ServiceLocator.getSpringBean("propertiesService");
+		}
 		List<Properties> list = propertiesService.getList();
 		for (int i = 0; i < list.size(); i++) {
 			Properties p = list.get(i);
 			propertieMap.put(p.getKey(), p.getValue());
 		}
 		properties=propertieMap;
-		logger.info("资源加载成功 >>>> 键值对读取 >>>> 键值对数："+properties.size()+" [耗时:"+(System.currentTimeMillis()-time)+" ms]");
+		//logger.info("资源加载成功 >>>> 键值对读取 >>>> 键值对数："+properties.size()+" [耗时:"+(System.currentTimeMillis()-time)+" ms]");
 	}
 }

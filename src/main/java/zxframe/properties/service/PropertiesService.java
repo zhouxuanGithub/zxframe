@@ -25,4 +25,9 @@ public class PropertiesService{
 	public String getListVersion() {
 		return (String) baseDao.get(PropertiesMapper.propertiesByKey,"system-version");
 	}
+	
+	public void updateProperties(String key,String value){
+		baseDao.execute(PropertiesMapper.propertiesUpdateValue,value,key);
+		baseDao.execute(PropertiesMapper.propertiesVersionAdd);
+	}
 }
