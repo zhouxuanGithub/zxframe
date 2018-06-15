@@ -13,9 +13,6 @@ import java.io.IOException;
  * 
  */
 public final class FileUtil {
-
-	
-	
 	/**
 	 * wingdows/linux操作文件夹
 	 * 
@@ -60,69 +57,35 @@ public final class FileUtil {
 			myFile.delete();
 		}
 	}
-	/**
-	 * wingdows/linux直接向路径文件里写内容,覆盖以前的内容
-	 * 
-	 * @param path
-	 *            路径和文件名
-	 * @param content
-	 *            内容
-	 */
-	public static void inContext(String path, byte[] content) {
-		FileOutputStream fos = null;
-		File f =null ;
-		try {
-			f = new File(path);
-			f.createNewFile();
-			fos = new FileOutputStream(f);
-			fos.write(content);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(fos!=null)
-				{
-					fos.flush();
-					fos.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 
 	/**
 	 * wingdows/linux追加内容，向路径文件里写内容,覆盖以前的内容
-	 * 
-	 * @param path
-	 *            路径
-	 * @param split
-	 *            分割符
-	 * @param content
-	 *            追加内容
+	 * 无文件会创建文件，无目录会报错
+	 * 注：多个服务对一个文件操作会有并发问题
+	 * @param path 路径
+	 * @param split 分割符
+	 * @param content 内容
+	 * @param append 是否追加到文件末尾
 	 */
-	public static void apendContext(String path, String split, String content) {
-		FileOutputStream fos = null;
-		String s=readFile(path, split);
-		try {
-			File f = new File(path);
-			fos = new FileOutputStream(f);
-			fos.write((s + content).getBytes("UTF-8"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+	public static void inContext(String path, String split, String content,boolean append) {
+		synchronized (LockStringUtil.getLock(path)) {
+			FileOutputStream fos = null;
 			try {
-				if(fos!=null)
-				{
-					fos.flush();
-					fos.close();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				File f = new File(path);
+				fos = new FileOutputStream(f,append);
+				fos.write(content.getBytes("UTF-8"));
+			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					if(fos!=null){
+						fos.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-
 	}
 
 	/**
