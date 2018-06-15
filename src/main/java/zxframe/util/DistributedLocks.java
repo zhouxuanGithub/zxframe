@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.ShardedJedis;
 import zxframe.cache.redis.RedisCacheManager;
+import zxframe.config.ZxFrameConfig;
 
 /**
  * 分布式锁
@@ -23,6 +24,9 @@ public class DistributedLocks {
 	 * @return
 	 */
 	public boolean getLock(String key,int ms) {
+		if(!ZxFrameConfig.ropen) {
+			throw new RuntimeException("请先开启redis缓存才能使用分布式锁！");
+		}
 		boolean success=false;
 		ShardedJedis resource = null;
 		try {
@@ -53,6 +57,9 @@ public class DistributedLocks {
 	 * @return
 	 */
 	public void mustGetLock(String key,int ms) {
+		if(!ZxFrameConfig.ropen) {
+			throw new RuntimeException("请先开启redis缓存才能使用分布式锁！");
+		}
 		boolean success=false;
 		while(!success) {
 			success = getLock(key,ms);
@@ -70,6 +77,9 @@ public class DistributedLocks {
 	 * @param key key
 	 */
 	public void unLock(String key) {
+		if(!ZxFrameConfig.ropen) {
+			throw new RuntimeException("请先开启redis缓存才能使用分布式锁！");
+		}
 		ShardedJedis resource = null;
 		try {
 			resource = redisCacheManager.getShardedJedis();
