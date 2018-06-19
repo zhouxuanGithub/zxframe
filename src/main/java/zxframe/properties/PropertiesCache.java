@@ -20,7 +20,7 @@ public final class PropertiesCache{
 	{
 		return properties.get(key);
 	}
-	//存在性能和线程安全问题，只提供基本的键值操作,不做频繁更新
+	//存在性能和线程安全问题，只提供基本的键值操作,不做频繁更新，慎用
 	public final static void update(String key,String value) {
 		propertiesService.updateProperties(key, value);
 		init();
