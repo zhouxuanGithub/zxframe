@@ -358,7 +358,8 @@ public class BaseDao {
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[execute]，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		return execute(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),null),SQLParsing.replaceSQL(cm.getSql(),map),cm,args);
+		String sql=SQLParsing.replaceSQL(cm.getSql(),map);
+		return execute(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),sql),sql,cm,args);
 	}
 	/**
 	 * 数据更新(增删改)
