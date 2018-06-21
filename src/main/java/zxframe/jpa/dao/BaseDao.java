@@ -82,7 +82,7 @@ public class BaseDao {
 				sql.append("?");
 			}
 			sql.append(")");
-			execute(SQLParsing.getDSName(null, obj.getClass(),null),sql.toString(),cm,args);
+			execute(SQLParsing.getDSName(obj.getClass(),null,null),sql.toString(),cm,args);
 			//缓存事务操作
 			if(cm!=null&&id!=null) {
 				ct.put(cm, id.toString(), obj);
@@ -157,7 +157,7 @@ public class BaseDao {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		String sql = "delete from "+clas.getSimpleName()+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
 		//执行删除
-		execute(SQLParsing.getDSName(null, clas,null),sql,id);
+		execute(SQLParsing.getDSName(clas, null ,null),sql,id);
 		if(cm!=null) {
 			ct.remove(group, id.toString());
 		}
@@ -230,7 +230,7 @@ public class BaseDao {
 				args[i]=argsList.get(i);  
 			}
 			//执行
-			int execute = (int) execute(SQLParsing.getDSName(null,obj.getClass(),null),sql.toString(),null,args);
+			int execute = (int) execute(SQLParsing.getDSName(obj.getClass(),null,null),sql.toString(),null,args);
 			if(execute<1) {
 				//版本控制出现问题
 				logger.warn("StaleObjectStateException :"+JsonUtil.obj2Json(obj));
