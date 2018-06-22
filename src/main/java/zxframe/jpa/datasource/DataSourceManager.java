@@ -73,18 +73,26 @@ public class DataSourceManager {
 					}
 				}
 		        if(pattern.indexOf("r")!=-1) {
-		        	ArrayList<DataSource> arrayList = rDataSource.get(key);
-		        	if(arrayList==null) {
-		        		arrayList=new ArrayList<DataSource>();
-		        		rDataSource.put(key, arrayList);
-		        	}
-		        	arrayList.add(datasource);
+		        	String[] keysplit = key.split(",");
+		        	for (int j = 0; j < keysplit.length; j++) {
+		        		String keysplitValue = keysplit[j];//数据源支持逗号分割
+		        		ArrayList<DataSource> arrayList = rDataSource.get(keysplitValue);
+			        	if(arrayList==null) {
+			        		arrayList=new ArrayList<DataSource>();
+			        		rDataSource.put(keysplitValue, arrayList);
+			        	}
+			        	arrayList.add(datasource);
+					}
 		        }
 		        if(pattern.indexOf("w")!=-1) {
-		        	if(wDataSource.get(key)==null) {
-		        		wDataSource.put(key, datasource);
-		        	}else {
-		        		throw new JpaRuntimeException("已经存在写的数据源，只允许配置一个相同dsnane的写数据源："+key);
+		        	String[] keysplit = key.split(",");
+		        	for (int j = 0; j < keysplit.length; j++) {
+		        		String keysplitValue = keysplit[j];
+		        		if(wDataSource.get(keysplitValue)==null) {
+			        		wDataSource.put(keysplitValue, datasource);
+			        	}else {
+			        		logger.error("已经存在写的数据源，只允许配置一个相同dsnane的写数据源："+key);
+			        	}
 		        	}
 		        }
 			}
