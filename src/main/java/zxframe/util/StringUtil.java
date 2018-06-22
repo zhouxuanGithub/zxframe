@@ -175,6 +175,9 @@ public final class StringUtil {
 	 */
 	public static String cleanXSS(String s)
 	{
+		if(s==null) {
+			return null;
+		}
 		StringBuilder sb = new StringBuilder(s.length() + 16);  
         for (int i = 0; i < s.length(); i++) {  
             char c = s.charAt(i);  
