@@ -40,7 +40,7 @@ public class CacheManager {
 			lcm.put(cm.getGroup(), id, value);
 		}
 		if(cm.isRcCache()) {
-			rcm.put(cm, id, value);
+			rcm.put(cm.getGroup(), id, value);
 		}
 	}
 

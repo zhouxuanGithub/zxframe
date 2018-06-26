@@ -89,7 +89,8 @@ public class RedisCacheManager {
         // 构造池 
         pool = new ShardedJedisPool(config, jdsInfoList); 
 	}
-	public void put(DataModel cm,String key,Object value) {
+	public void put(String group,String key,Object value) {
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		ShardedJedis sj=null;
 		try {
 			key = getNewKey(cm,key);
