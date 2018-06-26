@@ -19,6 +19,6 @@ public class LockStringUtil {
 		}  
 	}
 	public static Object getLock(String key) {
-		return lockKeys.get(key.hashCode() % keysize);
+		return lockKeys.get(Math.abs(key.hashCode()) % keysize);
 	}
 }
