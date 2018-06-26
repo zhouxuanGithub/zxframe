@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class LockStringUtil {
 	private static List<Object> lockKeys = new ArrayList<Object>();
-	private static int keysize=1000;
+	private static int keysize=2000;
 	static {
 		for(int i= 0;i<keysize;i++) {  
 		   Object lockKey = new Object();  
