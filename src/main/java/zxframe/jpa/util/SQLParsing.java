@@ -36,7 +36,7 @@ public class SQLParsing {
 			String modelName=sql.trim().toLowerCase();
 			model = CacheModelManager.cacheModelJAnnotation.get(modelName);
 		}
-		if(model==null) {
+		if(model==null || model.dsname().length()==0) {
 			return "default";
 		}else {
 			return model.dsname();
