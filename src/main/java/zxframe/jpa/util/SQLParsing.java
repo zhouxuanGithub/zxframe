@@ -28,13 +28,26 @@ public class SQLParsing {
 		}
 		if(model==null) {
 			//增删改查语句解析
-			if(sql.indexOf("where")!=-1) {
-				sql=sql.substring(sql.indexOf("from ")+5, sql.indexOf(" where"));
-			}else {
-				sql=sql.substring(sql.indexOf("from ")+5, sql.length());
+			sql=sql.trim().toLowerCase();
+			String modelName=null;
+			if(sql.startsWith("insert")) {
+				modelName=sql.substring(sql.indexOf("into ")+5, sql.indexOf("("));
+			}else if(sql.startsWith("update")) {
+				modelName=sql.substring(7, sql.indexOf("set"));
+			}else if(sql.startsWith("select")||sql.startsWith("delete")) {
+				if(sql.indexOf("where")!=-1) {
+					modelName=sql.substring(sql.indexOf("from ")+5, sql.indexOf(" where"));
+				}else if(sql.indexOf("order by")!=-1) {
+					modelName=sql.substring(sql.indexOf("from ")+5, sql.indexOf(" order by"));
+				}else if(sql.indexOf("group by")!=-1) {
+					modelName=sql.substring(sql.indexOf("from ")+5, sql.indexOf(" group by"));
+				}else {
+					modelName=sql.substring(sql.indexOf("from ")+5, sql.length());
+				}
 			}
-			String modelName=sql.trim().toLowerCase();
-			model = CacheModelManager.cacheModelJAnnotation.get(modelName);
+			if(modelName!=null) {
+				model = CacheModelManager.cacheModelJAnnotation.get(modelName.trim());
+			}
 		}
 		if(model==null || model.dsname().length()==0) {
 			return "default";
