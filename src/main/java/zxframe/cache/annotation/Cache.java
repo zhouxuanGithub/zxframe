@@ -26,4 +26,8 @@ public @interface Cache {
 	 * 非严格读写(默认)，不存在缓存组删除就可以关闭，提升效率
 	 */
 	boolean strictRW() default false;
+	/**
+	 * 本地缓存里的数据每次都是克隆取出，一份新的数据
+	 */
+	boolean lcCacheDataClone() default true;
 }

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import zxframe.cache.mgr.CacheModelManager;
 import zxframe.config.ZxFrameConfig;
+import zxframe.jpa.model.DataModel;
 import zxframe.util.JsonUtil;
 import zxframe.util.SerializeUtils;
 /**
@@ -25,9 +27,14 @@ public class LocalCacheManager {
 	public Object get(String group,String key) {
 		Cache cache = getCache(group);
 		Element element = cache.get(key);
+		DataModel dm = CacheModelManager.getDataModelByGroup(group);
 		if(element!=null) {
-			byte[] bytes = (byte[]) element.getObjectValue();
-			Object value =SerializeUtils.deSerialize(bytes);
+			Object value = null;
+			if(dm.isLcCacheDataClone()) {
+				value =SerializeUtils.deSerialize((byte[]) element.getObjectValue());
+			}else {
+				value=element.getObjectValue();
+			}
 			if(ZxFrameConfig.showlog) {
 				logger.info("ehcache get key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
 			}
@@ -37,7 +44,13 @@ public class LocalCacheManager {
 	}
 	public void put(String group,String key,Object value) {
 		Cache cache = getCache(group);
-		Element element = new Element(key,SerializeUtils.serialize(value));
+		DataModel dm = CacheModelManager.getDataModelByGroup(group);
+		Element element=null;
+		if(dm.isLcCacheDataClone()) {
+			element = new Element(key,SerializeUtils.serialize(value));
+		}else {
+			element = new Element(key,value);
+		}
 		cache.put(element);
 		if(ZxFrameConfig.showlog) {
 			logger.info("ehcache put key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());

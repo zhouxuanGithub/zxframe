@@ -57,6 +57,10 @@ public class DataModel implements Serializable{
 	 * 使用数据源的优先顺序1.dsClass 2.resultClass 3.解析SQL
 	 */
 	private Class dsClass;
+	/**
+	 * 本地缓存里的数据每次都是克隆取出，一份新的数据
+	 */
+	private boolean lcCacheDataClone=true;
 	
 	public boolean isLcCache() {
 		return lcCache;
@@ -127,6 +131,12 @@ public class DataModel implements Serializable{
 	}
 	public void setDsClass(Class dsClass) {
 		this.dsClass = dsClass;
+	}
+	public boolean isLcCacheDataClone() {
+		return lcCacheDataClone;
+	}
+	public void setLcCacheDataClone(boolean lcCacheDataClone) {
+		this.lcCacheDataClone = lcCacheDataClone;
 	}
 	@Override
 	public String toString() {
