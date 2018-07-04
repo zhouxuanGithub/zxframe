@@ -5,15 +5,11 @@ package zxframe.task;
  * @preserve
  * @author zhoux
  */
-public class TaskRunnable {
+public interface TaskRunnable {
 	/**
 	 * @preserve
 	 */
-	public void run(){
-		
-	}
+	public void run();
 	
-	public void init() {
-		
-	}
+	public void init();
 }

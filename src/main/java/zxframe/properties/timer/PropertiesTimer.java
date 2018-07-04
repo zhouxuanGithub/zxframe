@@ -10,7 +10,7 @@ import zxframe.task.ThreadResource;
 import zxframe.task.Timer;
 import zxframe.util.ServiceLocator;
 @Timer
-public class PropertiesTimer extends TaskRunnable{
+public class PropertiesTimer implements TaskRunnable{
 	private static PropertiesService propertiesService;
 	public void run() {
 		String version=PropertiesCache.get("system-version");
