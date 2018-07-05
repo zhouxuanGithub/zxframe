@@ -263,7 +263,7 @@ public class BaseDao {
 	 * @param map sql增强部分替换
 	 * @param args 参数
 	 */
-	public List getList(String group,Map<String,String> map, Object... args) {
+	public List getList(String group,Map map, Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[getList]，可能你忘了加@DataMapper注解，group:"+group);

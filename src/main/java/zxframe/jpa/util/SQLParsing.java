@@ -56,12 +56,12 @@ public class SQLParsing {
 		}
 	}
 	//sql参数部分增强
-	public static String replaceSQL(String sql, Map<String, String> map) {
+	public static String replaceSQL(String sql, Map map) {
 		if(map!=null) {
 			Iterator<String> iterator = map.keySet().iterator();
 			while(iterator.hasNext()) {
 				String key = iterator.next();
-				sql=sql.replaceAll("@"+key+"@",map.get(key));
+				sql=sql.replaceAll("@"+key+"@",String.valueOf(map.get(key)));
 			}
 		}
 		return sql;
