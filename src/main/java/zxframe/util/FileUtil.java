@@ -59,8 +59,7 @@ public final class FileUtil {
 	}
 
 	/**
-	 * wingdows/linux追加内容，向路径文件里写内容,覆盖以前的内容
-	 * 无文件会创建文件，无目录会报错
+	 * wingdows/linux 向文件写入内容
 	 * 注：多个服务对一个文件操作会有并发问题
 	 * @param path 路径
 	 * @param split 分割符
@@ -69,11 +68,18 @@ public final class FileUtil {
 	 */
 	public static void inContext(String path, String split, String content,boolean append) {
 		synchronized (LockStringUtil.getLock(path)) {
+			//目录创建
+            File dc=new File(path.substring(0, path.lastIndexOf(File.separator)));
+            if(!dc.exists()) {
+            	dc.mkdirs();
+            }
+            //写入文件
 			FileOutputStream fos = null;
 			try {
 				File f = new File(path);
 				fos = new FileOutputStream(f,append);
 				fos.write(content.getBytes("UTF-8"));
+				fos.write(split.getBytes("UTF-8"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
