@@ -17,6 +17,9 @@ public class MathUtil {
 	 * @throws ParseException
 	 */
 	public static boolean isSuccess(String v) throws ParseException {
+		if(v==null) {
+			return false;
+		}
 		return isSuccess((double)NumberFormat.getPercentInstance().parse(v));
 	}
 	/**
