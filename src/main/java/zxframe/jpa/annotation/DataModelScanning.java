@@ -10,6 +10,6 @@ import zxframe.annotation.ScanningAnnotation;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ScanningAnnotation
-public @interface DataMapper {
+public @interface DataModelScanning {
 
 }

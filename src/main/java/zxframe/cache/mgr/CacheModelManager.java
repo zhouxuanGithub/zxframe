@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import zxframe.cache.annotation.Cache;
 import zxframe.jpa.model.DataModel;
-import zxframe.jpa.annotation.DataMapper;
+import zxframe.jpa.annotation.DataModelScanning;
 import zxframe.jpa.annotation.Id;
 import zxframe.jpa.annotation.Model;
 import zxframe.jpa.annotation.Transient;
@@ -105,7 +105,7 @@ public class CacheModelManager {
 			//解析类上面的注解
 			StringBuffer sb=new StringBuffer();
 			sb.append("load model >>>> ").append(cls).append(" ");
-			if(clazz.isAnnotationPresent(DataMapper.class)) {
+			if(clazz.isAnnotationPresent(DataModelScanning.class)) {
 				sb.append("[mapper]");
 				isNoHasDataModelMap.put(cls, true);
 			}
@@ -135,7 +135,7 @@ public class CacheModelManager {
 					}
 				}
 				//查询缓存
-				if(anno.annotationType().equals(DataMapper.class) ){
+				if(anno.annotationType().equals(DataModelScanning.class) ){
 					isQC=true;
 				}
 			}

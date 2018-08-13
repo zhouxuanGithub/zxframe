@@ -2,10 +2,10 @@ package zxframe.properties.mapper;
 
 
 import zxframe.jpa.model.DataModel;
-import zxframe.jpa.annotation.DataMapper;
+import zxframe.jpa.annotation.DataModelScanning;
 import zxframe.properties.model.Properties;
 
-@DataMapper
+@DataModelScanning
 public class PropertiesMapper {
 	//查询所有配置
 	public static final String propertiesAll=Properties.class.getName()+"-propertiesAll";
