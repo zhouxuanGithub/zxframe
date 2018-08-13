@@ -91,65 +91,72 @@ public class RedisCacheManager {
 	}
 	public void put(String group,String key,Object value) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
-		ShardedJedis sj=null;
-		try {
-			key = getNewKey(cm,key);
-			sj = getResource();
-			sj.setex(key.getBytes(),cm.getRcETime(),SerializeUtils.serialize(value));
-			if(ZxFrameConfig.showlog) {
-				logger.info("redis put key:"+key+" , value:"+JsonUtil.obj2Json(value));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
-				if(sj!=null) {
-					sj.close();
+		if(cm.isRcCache()) {
+			ShardedJedis sj=null;
+			try {
+				key = getNewKey(cm,key);
+				sj = getResource();
+				sj.setex(key.getBytes(),cm.getRcETime(),SerializeUtils.serialize(value));
+				if(ZxFrameConfig.showlog) {
+					logger.info("redis put key:"+key+" , value:"+JsonUtil.obj2Json(value));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
+					if(sj!=null) {
+						sj.close();
+					}
 				}
 			}
 		}
 	}
 	public Object get(String group,String key) {
-		ShardedJedis sj=null;
-		try {
-			key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
-			sj = getResource();
-			byte[] bs = sj.get(key.getBytes());
-			DataModel cm = CacheModelManager.getDataModelByGroup(group);
-			Object value=null;
-			if(bs!=null&&cm!=null) {
-				value=SerializeUtils.deSerialize(bs);
-			}
-			if(ZxFrameConfig.showlog) {
-				logger.info("redis get key:"+key+" , value:"+(value==null?"":JsonUtil.obj2Json(value)));
-			}
-			return value;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
-				if(sj!=null) {
-					sj.close();
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
+		if(cm.isRcCache()) {
+			ShardedJedis sj=null;
+			try {
+				key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
+				sj = getResource();
+				byte[] bs = sj.get(key.getBytes());
+				Object value=null;
+				if(bs!=null&&cm!=null) {
+					value=SerializeUtils.deSerialize(bs);
+				}
+				if(ZxFrameConfig.showlog) {
+					logger.info("redis get key:"+key+" , value:"+(value==null?"":JsonUtil.obj2Json(value)));
+				}
+				return value;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
+					if(sj!=null) {
+						sj.close();
+					}
 				}
 			}
 		}
 		return null;
 	}
 	public void remove(String group,String key) {
-		ShardedJedis sj=null;
-		try {
-			key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
-			sj = getResource();
-			sj.del(key.getBytes());
-			if(ZxFrameConfig.showlog) {
-				logger.info("redis get remove key:"+key);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
-				if(sj!=null) {
-					sj.close();
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
+		if(cm.isRcCache()) {
+			ShardedJedis sj=null;
+			try {
+				key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
+				sj = getResource();
+				sj.del(key.getBytes());
+				if(ZxFrameConfig.showlog) {
+					logger.info("redis get remove key:"+key);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
+					if(sj!=null) {
+						sj.close();
+					}
 				}
 			}
 		}
@@ -160,25 +167,27 @@ public class RedisCacheManager {
 	 * @param group
 	 */
 	public void remove(String group){
-		ShardedJedis sj=null;
-		try {
-			DataModel cm = CacheModelManager.getDataModelByGroup(group);
-			if(!cm.isStrictRW()) {
-//				logger.error("此缓存模型需要开启严格读写(strictRW=true)才能进行删除, "+cm.toString());
-				logger.error("This caching model needs to open strict read and write (strictRW=true) to delete, "+cm.toString());
-				return;
-			}
-			String key=getGroupVsKey(cm);
-			String groupVersion=getNewGroupVersion();
-			sj=getResource();
-			sj.set(key, groupVersion);
-			logger.info("redis get remove group:"+key);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
-				if(sj!=null) {
-					sj.close();
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
+		if(cm.isRcCache()) {
+			ShardedJedis sj=null;
+			try {
+				if(!cm.isStrictRW()) {
+	//				logger.error("此缓存模型需要开启严格读写(strictRW=true)才能进行删除, "+cm.toString());
+					logger.error("This caching model needs to open strict read and write (strictRW=true) to delete, "+cm.toString());
+					return;
+				}
+				String key=getGroupVsKey(cm);
+				String groupVersion=getNewGroupVersion();
+				sj=getResource();
+				sj.set(key, groupVersion);
+				logger.info("redis get remove group:"+key);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
+					if(sj!=null) {
+						sj.close();
+					}
 				}
 			}
 		}

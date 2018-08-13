@@ -25,49 +25,60 @@ public class LocalCacheManager {
 		cacheManager = CacheManager.create();
 	}
 	public Object get(String group,String key) {
-		Cache cache = getCache(group);
-		Element element = cache.get(key);
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
-		if(element!=null) {
-			Object value = null;
-			if(dm.isLcCacheDataClone()) {
-				value =SerializeUtils.deSerialize((byte[]) element.getObjectValue());
-			}else {
-				value=element.getObjectValue();
+		if(dm.isLcCache()) {
+			Cache cache = getCache(group);
+			Element element = cache.get(key);
+			if(element!=null) {
+				Object value = null;
+				if(dm.isLcCacheDataClone()) {
+					value =SerializeUtils.deSerialize((byte[]) element.getObjectValue());
+				}else {
+					value=element.getObjectValue();
+				}
+				if(ZxFrameConfig.showlog) {
+					logger.info("ehcache get key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
+				}
+				return value;
 			}
-			if(ZxFrameConfig.showlog) {
-				logger.info("ehcache get key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
-			}
-			return value;
 		}
 		return null;
 	}
 	public void put(String group,String key,Object value) {
-		Cache cache = getCache(group);
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
-		Element element=null;
-		if(dm.isLcCacheDataClone()) {
-			element = new Element(key,SerializeUtils.serialize(value));
-		}else {
-			element = new Element(key,value);
+		if(dm.isLcCache()) {
+			Cache cache = getCache(group);
+			Element element=null;
+			if(dm.isLcCacheDataClone()) {
+				element = new Element(key,SerializeUtils.serialize(value));
+			}else {
+				element = new Element(key,value);
+			}
+			cache.put(element);
+			if(ZxFrameConfig.showlog) {
+				logger.info("ehcache put key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
+			}
 		}
-		cache.put(element);
-		if(ZxFrameConfig.showlog) {
-			logger.info("ehcache put key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
-		}
+		
 	}
 	public void remove(String group,String key) {
-		Cache cache = getCache(group);
-		cache.remove(key);
-		if(ZxFrameConfig.showlog) {
-			logger.info("ehcache remove key:"+key+" lcacheSize:"+cache.getSize());
+		DataModel dm = CacheModelManager.getDataModelByGroup(group);
+		if(dm.isLcCache()) {
+			Cache cache = getCache(group);
+			cache.remove(key);
+			if(ZxFrameConfig.showlog) {
+				logger.info("ehcache remove key:"+key+" lcacheSize:"+cache.getSize());
+			}
 		}
 	}
 	public void remove(String group){
-		Cache cache = getCache(group);
-		cache.removeAll();
-		if(ZxFrameConfig.showlog) {
-			logger.info("ehcache remove group:"+group+" lcacheSize:"+cache.getSize());
+		DataModel dm = CacheModelManager.getDataModelByGroup(group);
+		if(dm.isLcCache()) {
+			Cache cache = getCache(group);
+			cache.removeAll();
+			if(ZxFrameConfig.showlog) {
+				logger.info("ehcache remove group:"+group+" lcacheSize:"+cache.getSize());
+			}
 		}
 	}
 	private Cache getCache(String group) {
