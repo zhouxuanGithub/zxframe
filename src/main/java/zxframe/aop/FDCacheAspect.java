@@ -35,7 +35,12 @@ public class FDCacheAspect {
 	public Object aroundMethod(ProceedingJoinPoint pjd) throws Exception{
 		Object result = null;
 		String startKey = getFnKeyStarts(pjd);
-		String key=startKey+JsonUtil.obj2Json(pjd.getArgs()[0]);
+		String key=null;
+		if(pjd.getArgs().length>0) {
+			key=startKey+JsonUtil.obj2Json(pjd.getArgs()[0]);
+		}else {
+			key=startKey;
+		}
 		FDCache fdCache = chm.get(startKey);
 		if(fdCache==null) {
 			String methodName=pjd.getSignature().getName();
@@ -79,6 +84,6 @@ public class FDCacheAspect {
 
     private static String getFnKeyStarts(ProceedingJoinPoint joinPoint) {
 		Class cls = joinPoint.getSignature().getDeclaringType();
-		return ZxFrameConfig.rKeyPrefix+cls.getSimpleName()+"_"+cls.getName().hashCode()+"_"+joinPoint.getSignature().getName()+"_";
+		return cls.getSimpleName()+"_"+cls.getName().hashCode()+"_"+joinPoint.getSignature().getName()+"_";
     }
 }
