@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import zxframe.cache.annotation.FDCache;
 import zxframe.cache.local.LocalCacheManager;
 import zxframe.cache.redis.RedisCacheManager;
-import zxframe.config.ZxFrameConfig;
 import zxframe.util.JsonUtil;
 
 /**
