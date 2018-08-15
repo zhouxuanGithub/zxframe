@@ -98,30 +98,32 @@ public class ZxFrameConfig {
                 }
             }
 //            eopen=root.getElementsByTagName("ehcache").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
-            NodeList childNodes = root.getElementsByTagName("redis").item(0).getChildNodes();
-            for(int i=0;i<childNodes.getLength();i++ ) {
-            	Node node = childNodes.item(i);
-            	if(node.getNodeType() == Node.ELEMENT_NODE){  
-            		Element child = (Element) node;
-            		if(child.getNodeName().equals("open")) {
-            			ropen=child.getTextContent().equals("true")?true:false;
-            		}else if(child.getNodeName().equals("servers")) {
-            			NodeList childNodes2 = child.getChildNodes();
-            			for(int j=0;j<childNodes2.getLength();j++ ) {
-            				Node node2 = childNodes2.item(j);
-                        	if(node2.getNodeType() == Node.ELEMENT_NODE){  
-                        		Element child2 = (Element) node2;
-                        		rList.add(child2.getTextContent());
-                        	}
-            			}
-            		}else if(child.getNodeName().equals("maxIdle")) {
-            			rMaxIdle=Integer.parseInt(child.getTextContent());
-            		}else if(child.getNodeName().equals("maxTotal")) {
-            			rMaxTotal=Integer.parseInt(child.getTextContent());
-            		}else if(child.getNodeName().equals("keyPrefix")) {
-            			rKeyPrefix=child.getTextContent();
-            		}
-            	}
+            if(root.getElementsByTagName("redis").getLength()>0) {
+            	NodeList childNodes = root.getElementsByTagName("redis").item(0).getChildNodes();
+                for(int i=0;i<childNodes.getLength();i++ ) {
+                	Node node = childNodes.item(i);
+                	if(node.getNodeType() == Node.ELEMENT_NODE){  
+                		Element child = (Element) node;
+                		if(child.getNodeName().equals("open")) {
+                			ropen=child.getTextContent().equals("true")?true:false;
+                		}else if(child.getNodeName().equals("servers")) {
+                			NodeList childNodes2 = child.getChildNodes();
+                			for(int j=0;j<childNodes2.getLength();j++ ) {
+                				Node node2 = childNodes2.item(j);
+                            	if(node2.getNodeType() == Node.ELEMENT_NODE){  
+                            		Element child2 = (Element) node2;
+                            		rList.add(child2.getTextContent());
+                            	}
+                			}
+                		}else if(child.getNodeName().equals("maxIdle")) {
+                			rMaxIdle=Integer.parseInt(child.getTextContent());
+                		}else if(child.getNodeName().equals("maxTotal")) {
+                			rMaxTotal=Integer.parseInt(child.getTextContent());
+                		}else if(child.getNodeName().equals("keyPrefix")) {
+                			rKeyPrefix=child.getTextContent();
+                		}
+                	}
+                }
             }
             ServiceAspect.requiredTx=txAdvice.split(",");
             ServiceAspect.rl=ServiceAspect.requiredTx.length;
