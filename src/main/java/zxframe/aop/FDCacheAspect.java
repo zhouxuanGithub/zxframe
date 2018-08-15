@@ -18,7 +18,6 @@ import zxframe.util.JsonUtil;
 
 /**
  * 方法级缓存
- * 方法第一个参数为key值使用，其他参数任意
  * @author zx
  *
  */
@@ -34,12 +33,6 @@ public class FDCacheAspect {
 	public Object aroundMethod(ProceedingJoinPoint pjd) throws Exception{
 		Object result = null;
 		String startKey = getFnKeyStarts(pjd);
-		String key=null;
-		if(pjd.getArgs().length>0) {
-			key=startKey+JsonUtil.obj2Json(pjd.getArgs()[0]);
-		}else {
-			key=startKey;
-		}
 		FDCache fdCache = chm.get(startKey);
 		if(fdCache==null) {
 			String methodName=pjd.getSignature().getName();
@@ -48,6 +41,14 @@ public class FDCacheAspect {
 			Method objMethod=classTarget.getMethod(methodName, par);
 		    fdCache=objMethod.getAnnotation(FDCache.class);
 		}
+		StringBuffer keySbs=new StringBuffer();
+		keySbs.append(startKey);
+		Object[] args = pjd.getArgs();
+		for (int i = 0; i < args.length; i++) {
+			keySbs.append("-");
+			keySbs.append(JsonUtil.obj2Json(pjd.getArgs()[i]));
+		}
+		String key=keySbs.toString();
 		//执行目标方法
 		try {
 			try {
