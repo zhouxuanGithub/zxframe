@@ -16,6 +16,9 @@ public class JsonUtil {
     	if(object==null) {
     		return "";
     	}
+    	if(object instanceof String || object instanceof Integer || object instanceof Float|| object instanceof Double) {
+    		return object.toString();
+    	}
         String json = null;
         try {
             json = mapper.writeValueAsString(object);
