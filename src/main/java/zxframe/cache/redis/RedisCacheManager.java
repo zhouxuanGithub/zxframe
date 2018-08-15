@@ -97,8 +97,8 @@ public class RedisCacheManager {
 				key = getNewKey(cm,key);
 				sj = getResource();
 				sj.setex(key.getBytes(),cm.getRcETime(),SerializeUtils.serialize(value));
-				if(ZxFrameConfig.showlog) {
-					logger.info("redis put key:"+key+" , value:"+JsonUtil.obj2Json(value));
+				if(ZxFrameConfig.showcache) {
+					logger.info("redis put group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -123,8 +123,8 @@ public class RedisCacheManager {
 				if(bs!=null&&cm!=null) {
 					value=SerializeUtils.deSerialize(bs);
 				}
-				if(ZxFrameConfig.showlog) {
-					logger.info("redis get key:"+key+" , value:"+(value==null?"":JsonUtil.obj2Json(value)));
+				if(ZxFrameConfig.showcache) {
+					logger.info("redis get group:"+group+" key:"+key+" , value:"+(value==null?"":JsonUtil.obj2Json(value)));
 				}
 				return value;
 			} catch (Exception e) {
@@ -147,8 +147,8 @@ public class RedisCacheManager {
 				key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
 				sj = getResource();
 				sj.del(key.getBytes());
-				if(ZxFrameConfig.showlog) {
-					logger.info("redis get remove key:"+key);
+				if(ZxFrameConfig.showcache) {
+					logger.info("redis remove group:"+group+" key:"+key);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -180,7 +180,9 @@ public class RedisCacheManager {
 				String groupVersion=getNewGroupVersion();
 				sj=getResource();
 				sj.set(key, groupVersion);
-				logger.info("redis get remove group:"+key);
+				if(ZxFrameConfig.showcache) {
+					logger.info("redis remove group:"+group);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {

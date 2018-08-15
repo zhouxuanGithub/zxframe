@@ -36,8 +36,8 @@ public class LocalCacheManager {
 				}else {
 					value=element.getObjectValue();
 				}
-				if(ZxFrameConfig.showlog) {
-					logger.info("ehcache get key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
+				if(ZxFrameConfig.showcache) {
+					logger.info("ehcache get group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
 				}
 				return value;
 			}
@@ -55,8 +55,8 @@ public class LocalCacheManager {
 				element = new Element(key,value);
 			}
 			cache.put(element);
-			if(ZxFrameConfig.showlog) {
-				logger.info("ehcache put key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
+			if(ZxFrameConfig.showcache) {
+				logger.info("ehcache put group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
 			}
 		}
 		
@@ -66,8 +66,8 @@ public class LocalCacheManager {
 		if(dm.isLcCache()) {
 			Cache cache = getCache(group);
 			cache.remove(key);
-			if(ZxFrameConfig.showlog) {
-				logger.info("ehcache remove key:"+key+" lcacheSize:"+cache.getSize());
+			if(ZxFrameConfig.showcache) {
+				logger.info("ehcache remove group:"+group+" key:"+key+" lcacheSize:"+cache.getSize());
 			}
 		}
 	}
@@ -76,7 +76,7 @@ public class LocalCacheManager {
 		if(dm.isLcCache()) {
 			Cache cache = getCache(group);
 			cache.removeAll();
-			if(ZxFrameConfig.showlog) {
+			if(ZxFrameConfig.showcache) {
 				logger.info("ehcache remove group:"+group+" lcacheSize:"+cache.getSize());
 			}
 		}

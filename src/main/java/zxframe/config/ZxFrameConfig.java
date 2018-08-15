@@ -19,6 +19,8 @@ import zxframe.aop.ServiceAspect;
 public class ZxFrameConfig {
 	//是否输出系统日志
 	public static boolean showlog=false;
+	//控制台输出缓存信息
+	public static boolean showcache=false;
 	//控制台输出sql
 	public static boolean showsql=false;
 	//是否使用数据库配置properties
@@ -51,9 +53,18 @@ public class ZxFrameConfig {
             Document document = builder.parse(new File(ClassLoader.getSystemResource("zxframe.xml").getPath()));  
             //4.获得zxframe
             Element root = document.getDocumentElement();
-            showsql=root.getElementsByTagName("showsql").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
-            txAdvice=root.getElementsByTagName("txAdvice").item(0).getFirstChild().getNodeValue();
-            useDBProperties=root.getElementsByTagName("useDBProperties").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
+            if(root.getElementsByTagName("showsql").getLength()>0) {
+            	showsql=root.getElementsByTagName("showsql").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
+            }
+            if(root.getElementsByTagName("showcache").getLength()>0) {
+            	showcache=root.getElementsByTagName("showcache").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
+            }
+            if(root.getElementsByTagName("txAdvice").getLength()>0) {
+            	txAdvice=root.getElementsByTagName("txAdvice").item(0).getFirstChild().getNodeValue();
+            }
+            if(root.getElementsByTagName("useDBProperties").getLength()>0) {
+            	useDBProperties=root.getElementsByTagName("useDBProperties").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
+            }
             Element commonItem = (Element)root.getElementsByTagName("common").item(0);
             NodeList commonNL = commonItem.getChildNodes();
             for(int i=0;i<commonNL.getLength();i++ ) {
