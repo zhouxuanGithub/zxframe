@@ -65,36 +65,38 @@ public class ZxFrameConfig {
             if(root.getElementsByTagName("useDBProperties").getLength()>0) {
             	useDBProperties=root.getElementsByTagName("useDBProperties").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             }
-            Element commonItem = (Element)root.getElementsByTagName("common").item(0);
-            NodeList commonNL = commonItem.getChildNodes();
-            for(int i=0;i<commonNL.getLength();i++ ) {
-            	Node node = commonNL.item(i);
-            	if(node.getNodeType() == Node.ELEMENT_NODE){  
-            		Element child = (Element) node;  
-            		common.put(child.getNodeName(), child.getTextContent());
-            	}
-            }
-            NodeList datasourceNodeList = root.getElementsByTagName("datasource");
-            for(int j=0;j<datasourceNodeList.getLength();j++ ) {
-            	if(datasourceNodeList.item(j).getNodeType() != Node.ELEMENT_NODE){
-            		continue;
-            	}
-            	Element datasourceItem = (Element)datasourceNodeList.item(j);
-            	String key=datasourceItem.getElementsByTagName("dsname").item(0).getFirstChild().getNodeValue();
-            	ArrayList<ConcurrentHashMap<String, String>> list = datasources.get(key);
-        		if(list==null) {
-        			list=new ArrayList<ConcurrentHashMap<String, String>>();
-        			datasources.put(key, list);
-        		}
-        		ConcurrentHashMap concurrentHashMap=new ConcurrentHashMap<String, String>();
-        		list.add(concurrentHashMap);
-        		NodeList datasourceNL = datasourceItem.getChildNodes();
-                for(int i=0;i<datasourceNL.getLength();i++ ) {
-                	Node node = datasourceNL.item(i);
+            if(root.getElementsByTagName("druid").getLength()>0) {
+            	Element commonItem = (Element)root.getElementsByTagName("common").item(0);
+                NodeList commonNL = commonItem.getChildNodes();
+                for(int i=0;i<commonNL.getLength();i++ ) {
+                	Node node = commonNL.item(i);
                 	if(node.getNodeType() == Node.ELEMENT_NODE){  
                 		Element child = (Element) node;  
-                		concurrentHashMap.put(child.getNodeName(), child.getTextContent());
+                		common.put(child.getNodeName(), child.getTextContent());
                 	}
+                }
+                NodeList datasourceNodeList = root.getElementsByTagName("datasource");
+                for(int j=0;j<datasourceNodeList.getLength();j++ ) {
+                	if(datasourceNodeList.item(j).getNodeType() != Node.ELEMENT_NODE){
+                		continue;
+                	}
+                	Element datasourceItem = (Element)datasourceNodeList.item(j);
+                	String key=datasourceItem.getElementsByTagName("dsname").item(0).getFirstChild().getNodeValue();
+                	ArrayList<ConcurrentHashMap<String, String>> list = datasources.get(key);
+            		if(list==null) {
+            			list=new ArrayList<ConcurrentHashMap<String, String>>();
+            			datasources.put(key, list);
+            		}
+            		ConcurrentHashMap concurrentHashMap=new ConcurrentHashMap<String, String>();
+            		list.add(concurrentHashMap);
+            		NodeList datasourceNL = datasourceItem.getChildNodes();
+                    for(int i=0;i<datasourceNL.getLength();i++ ) {
+                    	Node node = datasourceNL.item(i);
+                    	if(node.getNodeType() == Node.ELEMENT_NODE){  
+                    		Element child = (Element) node;  
+                    		concurrentHashMap.put(child.getNodeName(), child.getTextContent());
+                    	}
+                    }
                 }
             }
 //            eopen=root.getElementsByTagName("ehcache").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
