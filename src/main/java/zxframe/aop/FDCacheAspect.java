@@ -30,7 +30,7 @@ public class FDCacheAspect {
 	@Resource
 	private RedisCacheManager rcm;
 	private static ConcurrentHashMap<String,FDCache> chm=new ConcurrentHashMap<>();
-	@Pointcut("@within(org.springframework.stereotype.Service)")
+	@Pointcut("@annotation(zxframe.cache.annotation.FDCache)")
 	public void getAopPointcut() {
 	}
 	@Around(value="getAopPointcut()")
