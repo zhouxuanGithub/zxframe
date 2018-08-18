@@ -84,7 +84,7 @@ public class DataTransaction {
 	 * @param joinPoint 
 	 * @param transactionId
 	 */
-	public void clear(JoinPoint joinPoint) {
+	public void clear() {
 		String transactionId = Thread.currentThread().getName();
 		ConcurrentMap<String, Connection> cmap = DataSourceManager.uwwcMap.get(transactionId);
 		if(cmap!=null) {

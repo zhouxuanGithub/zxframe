@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,10 @@ public class FDCacheAspect {
 	@Resource
 	private RedisCacheManager rcm;
 	private static ConcurrentHashMap<String,FDCache> chm=new ConcurrentHashMap<>();
-	@Around("@within(zxframe.cache.annotation.FDCache)")
+	@Pointcut("@within(org.springframework.stereotype.Service)")
+	public void getAopPointcut() {
+	}
+	@Around(value="getAopPointcut()")
 	public Object aroundMethod(ProceedingJoinPoint pjd) throws Exception{
 		Object result = null;
 		String startKey = getFnKeyStarts(pjd);

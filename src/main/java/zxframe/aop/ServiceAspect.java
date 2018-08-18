@@ -99,7 +99,7 @@ public class ServiceAspect {
   		}
   		//清理无用数据
   		if(transactionAopTread(joinPoint)) {
-  			dt.clear(joinPoint);
+  			dt.clear();
   		}
   		ct.clear();
   		//改变线程状态
@@ -120,8 +120,7 @@ public class ServiceAspect {
      * @return
      */
     private boolean currentAopTreadName(JoinPoint joinPoint) {
-    	String transactionId = Thread.currentThread().getName();
-		if(transactionId.startsWith(ServiceAspect.getThreadNameStarts(joinPoint))) {
+		if(Thread.currentThread().getName().startsWith(ServiceAspect.getThreadNameStarts(joinPoint))) {
 			return true;
 		}
 		return false;
