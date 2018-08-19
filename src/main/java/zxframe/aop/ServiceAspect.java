@@ -1,7 +1,5 @@
 package zxframe.aop;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.annotation.Resource;
 
 import org.aspectj.lang.JoinPoint;
@@ -14,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import zxframe.cache.annotation.FDCache;
 import zxframe.cache.transaction.CacheTransaction;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.transaction.DataTransaction;
@@ -62,9 +59,8 @@ public class ServiceAspect {
                     , returning = "result")  
     public void afterRunningMethod(JoinPoint joinPoint , Object result){ 
     	if(currentAopTreadName(joinPoint)) {
-    		String transactionId = Thread.currentThread().getName();
     		if(ZxFrameConfig.showlog) {
-    			logger.info("service aspect commit:"+transactionId);
+    			logger.info("service aspect commit:"+Thread.currentThread().getName());
     		}
     		if(transactionAopTread(joinPoint)) {
     			dt.commit(joinPoint);
@@ -82,9 +78,8 @@ public class ServiceAspect {
                       , throwing="ex")  
     public void afterThrowingMethod(JoinPoint joinPoint,Throwable ex){
     	if(currentAopTreadName(joinPoint)) {
-    		String transactionId = Thread.currentThread().getName();
 			if(ZxFrameConfig.showlog) {
-				logger.info("service aspect rollback:"+transactionId);
+				logger.info("service aspect rollback:"+Thread.currentThread().getName());
 			}
 			if(transactionAopTread(joinPoint)) {
 				dt.rollback(joinPoint);
@@ -94,9 +89,8 @@ public class ServiceAspect {
     	}
     } 
     private void clear(JoinPoint joinPoint) {
-    	String transactionId = Thread.currentThread().getName();
   		if(ZxFrameConfig.showlog) {
-  			logger.info("service aspect clear:"+transactionId);
+  			logger.info("service aspect clear:"+Thread.currentThread().getName());
   		}
   		//清理无用数据
   		if(transactionAopTread(joinPoint)) {
@@ -104,7 +98,7 @@ public class ServiceAspect {
   		}
   		ct.clear();
   		//改变线程状态
-  		Thread.currentThread().setName("clear:"+transactionId);
+  		Thread.currentThread().setName("clear:"+Thread.currentThread().getName());
     }
     /**
      * 获得切面唯一ID
@@ -112,8 +106,7 @@ public class ServiceAspect {
      * @return
      */
     public static String getJoinPointUUID(JoinPoint joinPoint) {
-		Class cls = joinPoint.getSignature().getDeclaringType();
-		return ServiceAspect.THREADNAMESTARTS+"_"+cls.getName()+"_"+joinPoint.getSignature().getName();
+		return ServiceAspect.THREADNAMESTARTS+"_"+joinPoint.getSignature().getDeclaringType().getName()+"_"+joinPoint.getSignature().getName();
     }
     /**
      * 是否是开启AOP的线程当前名
