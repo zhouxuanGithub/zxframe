@@ -1,5 +1,7 @@
 package zxframe.aop;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.annotation.Resource;
 
 import org.aspectj.lang.JoinPoint;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import zxframe.cache.annotation.FDCache;
 import zxframe.cache.transaction.CacheTransaction;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.transaction.DataTransaction;
@@ -37,13 +40,11 @@ public class ServiceAspect {
 	@Pointcut("@within(org.springframework.stereotype.Service)")
 	public void getAopPointcut() {
 	}
-	
 	//声明该方法是一个前置通知：在目标方法开始之前执行
-	//@Before("execution(public int com.yl.spring.aop.impl.ArithmeticCalculatorImpl.add(int, int))")
 	@Before("getAopPointcut()")
 	public void beforeMethod(JoinPoint joinPoint) {
 		if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
-			String transactionId= ServiceAspect.getThreadNameStarts(joinPoint)+"_"+CServerUUID.getSequenceId();
+			String transactionId= ServiceAspect.getJoinPointUUID(joinPoint)+"_"+CServerUUID.getSequenceId();
 			Thread.currentThread().setName(transactionId);
 			if(ZxFrameConfig.showlog) {
 				logger.info("service aspect start:"+transactionId);
@@ -106,13 +107,13 @@ public class ServiceAspect {
   		Thread.currentThread().setName("clear:"+transactionId);
     }
     /**
-     * 获得切面线程前缀
+     * 获得切面唯一ID
      * @param joinPoint
      * @return
      */
-    public static String getThreadNameStarts(JoinPoint joinPoint) {
+    public static String getJoinPointUUID(JoinPoint joinPoint) {
 		Class cls = joinPoint.getSignature().getDeclaringType();
-		return ServiceAspect.THREADNAMESTARTS+"_"+cls.getSimpleName()+"_"+cls.getName().hashCode()+"_"+joinPoint.getSignature().getName();
+		return ServiceAspect.THREADNAMESTARTS+"_"+cls.getName()+"_"+joinPoint.getSignature().getName();
     }
     /**
      * 是否是开启AOP的线程当前名
@@ -120,7 +121,7 @@ public class ServiceAspect {
      * @return
      */
     private boolean currentAopTreadName(JoinPoint joinPoint) {
-		if(Thread.currentThread().getName().startsWith(ServiceAspect.getThreadNameStarts(joinPoint))) {
+		if(Thread.currentThread().getName().equals(ServiceAspect.getJoinPointUUID(joinPoint))) {
 			return true;
 		}
 		return false;
