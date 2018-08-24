@@ -1,0 +1,227 @@
+package zxframe.aop;
+
+import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Resource;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import zxframe.cache.annotation.ServiceFnCache;
+import zxframe.cache.local.LocalCacheManager;
+import zxframe.cache.redis.RedisCacheManager;
+import zxframe.cache.transaction.CacheTransaction;
+import zxframe.config.ZxFrameConfig;
+import zxframe.jpa.transaction.DataTransaction;
+import zxframe.util.CServerUUID;
+import zxframe.util.JsonUtil;
+
+/**
+ * 业务逻辑层切面，控制redis的事务，防止缓存错误
+ * @author zx
+ *
+ */
+@Aspect
+@Component
+public class ServiceAspect {
+	@Resource
+	CacheTransaction ct;
+	@Resource
+	DataTransaction dt;
+	@Resource
+	private LocalCacheManager lcm;
+	@Resource
+	private RedisCacheManager rcm;
+	private  Logger logger = LoggerFactory.getLogger(ServiceAspect.class); 
+	public final static String THREADNAMESTARTS="zxframe";
+	public static String[] requiredTx= {};
+	public static int rl=0;
+	private static ConcurrentHashMap<String,ConcurrentHashMap<String,ServiceFnCache>> serviceFnMap=new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<String,ConcurrentHashMap<String,Boolean>> serviceFnMapNoCache=new ConcurrentHashMap<>();
+	@Pointcut("@within(org.springframework.stereotype.Service)")
+	public void getAopPointcut() {
+	}
+	@Around(value="getAopPointcut()")
+	public Object aroundMethod(ProceedingJoinPoint pjd) throws Throwable{
+		Object result = null;
+		String group =null;
+		String key =null;
+		Object sfc = getServiceFnCache(pjd);
+		if(sfc instanceof ServiceFnCache) {
+			group=((ServiceFnCache)sfc).group();
+			key=getCacheKey(pjd);
+		}
+		if(group!=null) {
+			try {
+				result=lcm.get(group,key);
+				if(result==null) {
+					result=rcm.get(group, key);
+					if(result!=null) {
+						lcm.put(group, key, result);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			if(result==null) {
+				beforeMethod(pjd);//前置通知
+				result = pjd.proceed();//执行
+				afterRunningMethod(pjd,result);//返回通知
+				if(result!=null&&group!=null) {
+					try {
+						lcm.put(group, key, result);
+						rcm.put(group, key, result);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} catch (Throwable e) {
+			afterThrowingMethod(pjd,e);//异常通知
+			throw e;
+		}
+		return result;
+	}
+	//获得缓存key
+	private String getCacheKey(ProceedingJoinPoint pjd) {
+		String startKey = ServiceAspect.getJoinPointUUID(pjd);
+		StringBuffer keySbs=new StringBuffer();
+		keySbs.append(startKey);
+		Object[] args = pjd.getArgs();
+		for (int i = 0; i < args.length; i++) {
+			keySbs.append("-");
+			keySbs.append(JsonUtil.obj2Json(pjd.getArgs()[i]));
+		}
+		return keySbs.toString();
+	}
+	//获得方法缓存配置
+	private Object getServiceFnCache(ProceedingJoinPoint joinPoint) throws NoSuchMethodException, SecurityException {
+		ConcurrentHashMap<String, Boolean> sfbm = serviceFnMapNoCache.get(joinPoint.getSignature().getDeclaringType().getName());
+		if(sfbm==null) {
+			sfbm=new ConcurrentHashMap<>();
+			serviceFnMapNoCache.put(joinPoint.getSignature().getDeclaringType().getName(), sfbm);
+		}
+		Boolean b = sfbm.get(joinPoint.getSignature().getName());
+		if(b !=null && b==false) {
+			return false;
+		}
+		ConcurrentHashMap<String, ServiceFnCache> sfcm = serviceFnMap.get(joinPoint.getSignature().getDeclaringType().getName());
+		if(sfcm==null) {
+			sfcm=new ConcurrentHashMap<>();
+			serviceFnMap.put(joinPoint.getSignature().getDeclaringType().getName(), sfcm);
+		}
+		ServiceFnCache serviceFnCache = sfcm.get(joinPoint.getSignature().getName());
+		if(serviceFnCache==null) {
+			String methodName=joinPoint.getSignature().getName();
+			Class<?> classTarget=joinPoint.getTarget().getClass();
+			Class<?>[] par=((MethodSignature) joinPoint.getSignature()).getParameterTypes();
+			Method objMethod=classTarget.getMethod(methodName, par);
+			serviceFnCache = objMethod.getAnnotation(ServiceFnCache.class);
+			if(serviceFnCache==null) {
+				sfbm.put(joinPoint.getSignature().getName(), false);
+				return false;
+		    }else {
+		    	sfcm.put(joinPoint.getSignature().getName(), serviceFnCache);
+		    }
+		}
+		return serviceFnCache;
+	}
+	//声明该方法是一个前置通知：在目标方法开始之前执行
+	private void beforeMethod(ProceedingJoinPoint joinPoint) {
+		if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
+			String transactionId= ServiceAspect.getJoinPointUUID(joinPoint)+"_"+CServerUUID.getSequenceId();
+			Thread.currentThread().setName(transactionId);
+			if(ZxFrameConfig.showlog) {
+				logger.info("service aspect start:"+transactionId);
+			}
+			ct.begin();
+			if(transactionAopTread(joinPoint)) {
+				dt.begin(joinPoint);
+			}
+		}
+	}
+	
+	//返回通知：在目标方法正常结束执行后的通知  
+	private void afterRunningMethod(ProceedingJoinPoint joinPoint , Object result){ 
+    	if(currentAopTreadName(joinPoint)) {
+    		if(ZxFrameConfig.showlog) {
+    			logger.info("service aspect commit:"+Thread.currentThread().getName());
+    		}
+    		if(transactionAopTread(joinPoint)) {
+    			dt.commit(joinPoint);
+    		}
+        	ct.commit();
+    		clear(joinPoint);
+    	}
+    }
+      
+      
+    //在目标方法出现异常时会执行的代码，  
+	private void afterThrowingMethod(ProceedingJoinPoint joinPoint,Throwable ex){
+    	if(currentAopTreadName(joinPoint)) {
+			if(ZxFrameConfig.showlog) {
+				logger.info("service aspect rollback:"+Thread.currentThread().getName());
+			}
+			if(transactionAopTread(joinPoint)) {
+				dt.rollback(joinPoint);
+			}
+	    	ct.rollback();
+			clear(joinPoint);
+    	}
+    } 
+    private void clear(JoinPoint joinPoint) {
+  		if(ZxFrameConfig.showlog) {
+  			logger.info("service aspect clear:"+Thread.currentThread().getName());
+  		}
+  		//清理无用数据
+  		if(transactionAopTread(joinPoint)) {
+  			dt.clear();
+  		}
+  		ct.clear();
+  		//改变线程状态
+  		Thread.currentThread().setName("clear:"+Thread.currentThread().getName());
+    }
+    /**
+     * 获得切面唯一ID
+     * @param joinPoint
+     * @return
+     */
+    private static String getJoinPointUUID(JoinPoint joinPoint) {
+		return ServiceAspect.THREADNAMESTARTS+"_"+joinPoint.getSignature().getDeclaringType().getName()+"_"+joinPoint.getSignature().getName();
+    }
+    /**
+     * 是否是开启AOP的线程当前名
+     * @param joinPoint
+     * @return
+     */
+    private boolean currentAopTreadName(JoinPoint joinPoint) {
+		if(Thread.currentThread().getName().equals(ServiceAspect.getJoinPointUUID(joinPoint))) {
+			return true;
+		}
+		return false;
+    }
+    /**
+	 * 是否符合传播式事务切面的方法名
+	 * @param joinPoint
+	 * @return
+	 */
+	private boolean transactionAopTread(JoinPoint joinPoint) {
+		String name = joinPoint.getSignature().getName();
+		for (int i = 0; i < rl; i++) {
+			if(name.startsWith(requiredTx[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
