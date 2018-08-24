@@ -114,7 +114,7 @@ public class ServiceAspect {
      * @return
      */
     private boolean currentAopTreadName(JoinPoint joinPoint) {
-		if(Thread.currentThread().getName().equals(ServiceAspect.getJoinPointUUID(joinPoint))) {
+		if(Thread.currentThread().getName().startsWith(ServiceAspect.getJoinPointUUID(joinPoint))) {
 			return true;
 		}
 		return false;
