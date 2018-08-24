@@ -64,9 +64,7 @@ public class ServiceAspect {
 				result=lcm.get(group,key);
 				if(result==null) {
 					result=rcm.get(group, key);
-					if(result!=null) {
-						lcm.put(group, key, result);
-					}
+					lcm.put(group, key, result);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

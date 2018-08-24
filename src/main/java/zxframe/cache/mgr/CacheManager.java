@@ -50,6 +50,8 @@ public class CacheManager {
 			Object o = lcm.get(group, id);
 			if(o==null) {
 				o=rcm.get(group, id);
+				//填补本地缓存
+				lcm.put(group, id, o);
 			}
 			return o;
 		}else if(cm.isLcCache()) {

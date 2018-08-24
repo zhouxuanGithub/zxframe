@@ -45,6 +45,9 @@ public class LocalCacheManager {
 		return null;
 	}
 	public void put(String group,String key,Object value) {
+		if(value==null) {
+			return;
+		}
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
 		if(dm.isLcCache()) {
 			Cache cache = getCache(group);

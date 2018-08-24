@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.datasource.DataSourceManager;
-import zxframe.jpa.ex.JpaRuntimeException;
 
 @Component
 public class DataTransaction {

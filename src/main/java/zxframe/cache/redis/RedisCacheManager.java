@@ -90,6 +90,9 @@ public class RedisCacheManager {
         pool = new ShardedJedisPool(config, jdsInfoList); 
 	}
 	public void put(String group,String key,Object value) {
+		if(value==null) {
+			return;
+		}
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm.isRcCache()) {
 			ShardedJedis sj=null;
