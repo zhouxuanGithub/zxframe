@@ -4,11 +4,11 @@ import zxframe.jpa.annotation.DataModelScanning;
 import zxframe.jpa.model.DataModel;
 
 @DataModelScanning
-public class FDCacheDataModel {
-	public static String zxframeFdcacheDefault="zxframe-fdcache-default";
+public class FnCacheDataModel {
+	public static String zxframeFncacheDefault="zxframe-fncache-default";
 	public DataModel initZxframeFdcacheDefault() {
 		DataModel cm =new DataModel();
-		cm.setLcCacheDataClone(false);
+		cm.setGroup(zxframeFncacheDefault);
 		cm.setLcCache(true);
 		cm.setRcCache(true);
 		return cm;
