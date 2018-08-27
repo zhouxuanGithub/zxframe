@@ -179,15 +179,15 @@ public class BaseDao {
 			int length=fields.length;
 			Map<String, Field> fieldMap = CacheModelManager.cacheFieldsMap.get(group);
 			if(length<=0) {
-//				throw new JpaRuntimeException("更新提示：请填写更新字段，指定想更新的字段！列如：update(user,\"name\",\"age\");");
+				throw new JpaRuntimeException("更新提示：请填写更新字段，指定想更新的字段！列如：update(user,\"name\",\"age\");");
 				//没传参就进行全部更新
-				length=fieldMap.size();
-				fields=new String[length];
-				Iterator<String> iterator = fieldMap.keySet().iterator();
-				int i=0;
-				while(iterator.hasNext()) {
-					fields[i++]=iterator.next();
-				}
+//				length=fieldMap.size();
+//				fields=new String[length];
+//				Iterator<String> iterator = fieldMap.keySet().iterator();
+//				int i=0;
+//				while(iterator.hasNext()) {
+//					fields[i++]=iterator.next();
+//				}
 			}
 			//执行更新
 			ArrayList<Object> argsList=new ArrayList<Object>();
