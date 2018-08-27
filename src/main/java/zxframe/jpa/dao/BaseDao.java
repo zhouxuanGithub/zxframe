@@ -163,11 +163,12 @@ public class BaseDao {
 		}
 	}
 	/**
-	 * 改：更新数据
+	 * 改：更新数据，判断和修改版本
 	 * @param obj 需要更新的对象
+	 * @param updateVersion 是否更新版本号
 	 * @param fields 需要更新的字段，不传则全更新
 	 */
-	public void update(Object obj,String... fields) {
+	private void updateExec(Object obj,boolean updateVersion,String... fields) {
 		if(obj==null) {
 			logger.error("更新错误，更新对象不能为空！");
 			return;
@@ -211,7 +212,7 @@ public class BaseDao {
 			}
 			//乐观锁更新
 			int cversion=0;
-			if(versionField!=null) {
+			if(versionField!=null && updateVersion) {
 				sql.append(" , ");
 				sql.append(versionField.getName()).append(" = ? ");
 				cversion=1+Integer.parseInt(versionField.get(obj).toString());
@@ -219,7 +220,7 @@ public class BaseDao {
 			}
 			sql.append(" where ").append(idField.getName()).append(" = ? ");
 			argsList.add(idField.get(obj));
-			if(versionField!=null) {
+			if(versionField!=null && updateVersion) {
 				//乐观锁判断
 				sql.append(" and ").append(versionField.getName()).append(" = ? ");
 				argsList.add(versionField.get(obj));
@@ -231,14 +232,14 @@ public class BaseDao {
 			}
 			//执行
 			int execute = (int) execute(SQLParsing.getDSName(obj.getClass(),null,null),sql.toString(),null,args);
-			if(execute<1) {
+			if(execute<1 && updateVersion) {
 				//版本控制出现问题
 				logger.warn("StaleObjectStateException :"+JsonUtil.obj2Json(obj));
 				ct.remove(group, id.toString());
 				throw new DataExpiredException("数据 version 已过期。");
 			}
 			//更新成功，更新版本
-			if(versionField!=null) {
+			if(versionField!=null && updateVersion) {
 				versionField.set(obj, cversion);
 			}
 			if(cm!=null) {
@@ -248,6 +249,22 @@ public class BaseDao {
 			ct.remove(group, id.toString());
 			throw new JpaRuntimeException(e);
 		}
+	}
+	/**
+	 * 改：更新数据
+	 * @param obj 需要更新的对象
+	 * @param fields 需要更新的字段，不传则全更新
+	 */
+	public void update(Object obj,String... fields) {
+		updateExec(obj,true,fields);
+	}
+	/**
+	 * 改：更新数据，无乐观锁
+	 * @param obj 需要更新的对象
+	 * @param fields 需要更新的字段，不传则全更新
+	 */
+	public void updateNoLock(Object obj,String... fields) {
+		updateExec(obj,false,fields);
 	}
 	/**
 	 * 查：根据sql查询对象集合
