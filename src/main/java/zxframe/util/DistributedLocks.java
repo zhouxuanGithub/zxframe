@@ -1,10 +1,7 @@
 package zxframe.util;
 
-import javax.annotation.Resource;
-
 import org.springframework.stereotype.Component;
 
-import redis.clients.jedis.ShardedJedis;
 import zxframe.cache.redis.RedisCacheManager;
 import zxframe.config.ZxFrameConfig;
 
@@ -14,8 +11,6 @@ import zxframe.config.ZxFrameConfig;
  */
 @Component
 public class DistributedLocks {
-	@Resource
-	private RedisCacheManager redisCacheManager;
 	/**
 	 * 尝试获得锁
 	 * 获取成功或失败都会返回，不阻塞
@@ -28,25 +23,19 @@ public class DistributedLocks {
 			throw new RuntimeException("请先开启redis缓存才能使用分布式锁！");
 		}
 		boolean success=false;
-		ShardedJedis resource = null;
 		try {
-			resource = redisCacheManager.getShardedJedis();
-			if(resource.setnx(key, String.valueOf(System.currentTimeMillis()+ms))==1) {
+			if(RedisCacheManager.cluster.setnx(key, String.valueOf(System.currentTimeMillis()+ms))==1) {
 				success=true;
 			}else {
-				String oldExpireTime=resource.get(key);
+				String oldExpireTime=RedisCacheManager.cluster.get(key);
 				if(Long.valueOf(oldExpireTime)<System.currentTimeMillis()) {
-					if(resource.getSet(key,String.valueOf(System.currentTimeMillis()+ms)).equals(oldExpireTime)) {
+					if(RedisCacheManager.cluster.getSet(key,String.valueOf(System.currentTimeMillis()+ms)).equals(oldExpireTime)) {
 						success=true;
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
-			if(resource!=null){
-				resource.close();
-			}
 		}
 		return success;
 	}
@@ -80,16 +69,10 @@ public class DistributedLocks {
 		if(!ZxFrameConfig.ropen) {
 			throw new RuntimeException("请先开启redis缓存才能使用分布式锁！");
 		}
-		ShardedJedis resource = null;
 		try {
-			resource = redisCacheManager.getShardedJedis();
-			resource.del(key);
+			RedisCacheManager.cluster.del(key);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
-			if(resource!=null){
-				resource.close();
-			}
 		}
 	}
 }

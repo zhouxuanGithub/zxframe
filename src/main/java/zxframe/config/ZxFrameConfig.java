@@ -31,18 +31,14 @@ public class ZxFrameConfig {
 	public static ConcurrentMap<String, String> common=new ConcurrentHashMap<String, String>();
 	//数据源具体配置
 	public static ConcurrentMap<String, ArrayList<ConcurrentHashMap<String, String>>> datasources=new ConcurrentHashMap<String, ArrayList<ConcurrentHashMap<String, String>>>();
-	//ehcache open
-//	public static boolean eopen=false;
 	//redis open
 	public static boolean ropen=false;
-	//redis maxIdle
-	public static int rMaxIdle;
-	//redis maxTotal
-	public static int rMaxTotal;
+	//redis password
+	public static String rPassword;
 	//redis key前缀
 	public static String rKeyPrefix="default";
-	//redis servers;
-	public static ArrayList<String> rList=new ArrayList<String>();
+	//redis clusters;
+	public static String rClusters;
 	public static void loadZxFrameConfig() {
 		 //1.获取jaxp工厂  
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -108,19 +104,10 @@ public class ZxFrameConfig {
                 		Element child = (Element) node;
                 		if(child.getNodeName().equals("open")) {
                 			ropen=child.getTextContent().equals("true")?true:false;
-                		}else if(child.getNodeName().equals("servers")) {
-                			NodeList childNodes2 = child.getChildNodes();
-                			for(int j=0;j<childNodes2.getLength();j++ ) {
-                				Node node2 = childNodes2.item(j);
-                            	if(node2.getNodeType() == Node.ELEMENT_NODE){  
-                            		Element child2 = (Element) node2;
-                            		rList.add(child2.getTextContent());
-                            	}
-                			}
-                		}else if(child.getNodeName().equals("maxIdle")) {
-                			rMaxIdle=Integer.parseInt(child.getTextContent());
-                		}else if(child.getNodeName().equals("maxTotal")) {
-                			rMaxTotal=Integer.parseInt(child.getTextContent());
+                		}else if(child.getNodeName().equals("clusters")) {
+                			rClusters=child.getTextContent();
+                		}else if(child.getNodeName().equals("password")) {
+                			rPassword=child.getTextContent();
                 		}else if(child.getNodeName().equals("keyPrefix")) {
                 			rKeyPrefix=child.getTextContent();
                 		}
