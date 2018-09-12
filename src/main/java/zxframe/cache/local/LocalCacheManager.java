@@ -20,7 +20,7 @@ import zxframe.util.SerializeUtils;
 @Component
 public class LocalCacheManager {
 	private static final Logger logger = LoggerFactory.getLogger(LocalCacheManager.class);  
-	private static CacheManager  cacheManager=null;
+	public static CacheManager  cacheManager=null;
 	static {
 		cacheManager = CacheManager.create();
 	}
@@ -84,7 +84,7 @@ public class LocalCacheManager {
 			}
 		}
 	}
-	private Cache getCache(String group) {
+	public Cache getCache(String group) {
 		Cache cache = cacheManager.getCache(group);
 		if(cache==null) {
 			cacheManager.addCache(group);
