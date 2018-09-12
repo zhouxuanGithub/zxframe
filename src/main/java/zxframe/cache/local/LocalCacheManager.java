@@ -20,9 +20,9 @@ import zxframe.util.SerializeUtils;
 @Component
 public class LocalCacheManager {
 	private static final Logger logger = LoggerFactory.getLogger(LocalCacheManager.class);  
-	public static CacheManager  localCache=null;
+	public static CacheManager  ehcache=null;
 	static {
-		localCache = CacheManager.create();
+		ehcache = CacheManager.create();
 	}
 	public Object get(String group,String key) {
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
@@ -85,10 +85,10 @@ public class LocalCacheManager {
 		}
 	}
 	public Cache getCache(String group) {
-		Cache cache = localCache.getCache(group);
+		Cache cache = ehcache.getCache(group);
 		if(cache==null) {
-			localCache.addCache(group);
-			cache = localCache.getCache(group);
+			ehcache.addCache(group);
+			cache = ehcache.getCache(group);
 			logger.info("ehcache cache init :"+cache.toString());
 		}
 		return cache;
