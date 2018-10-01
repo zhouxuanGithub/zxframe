@@ -27,7 +27,7 @@ public class ZXDataMapper {
 	}
 	public DataModel initUpdateById() {
 		DataModel cm =new DataModel();
-		cm.setSql("update @table@ set v=? where id=? and version=?");
+		cm.setSql("update @table@ set v=? , `version`=`version`+1 where id=? and version=?");
 		cm.setGroup(updateById);
 		return cm;
 	}
