@@ -8,6 +8,7 @@ import zxframe.zxdata.model.ZXData;
 public class ZXDataMapper {
 	public static final String insert=ZXData.class.getName()+"-insert";
 	public static final String updateById=ZXData.class.getName()+"-updateById";
+	public static final String updateByIdNoLock=ZXData.class.getName()+"-updateByIdNoLock";
 	public static final String deleteById=ZXData.class.getName()+"-deleteById";
 	public static final String selectById=ZXData.class.getName()+"-selectById";
 	public static final String selectByGroup=ZXData.class.getName()+"-selectByGroup";
@@ -28,6 +29,12 @@ public class ZXDataMapper {
 		DataModel cm =new DataModel();
 		cm.setSql("update @table@ set v=? where id=? and version=?");
 		cm.setGroup(updateById);
+		return cm;
+	}
+	public DataModel updateByIdNoLock() {
+		DataModel cm =new DataModel();
+		cm.setSql("update @table@ set v=? where id=?");
+		cm.setGroup(updateByIdNoLock);
 		return cm;
 	}
 	public DataModel initDeleteById() {

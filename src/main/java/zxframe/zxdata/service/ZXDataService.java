@@ -53,10 +53,14 @@ public class ZXDataService {
 		if(o!=null) {
 			Map<String,String> map=new HashMap<String,String>();
 			map.put("table", "ZXData"+getTableCode(group,true));
-			rcount= (int) baseDao.execute(ZXDataMapper.updateById,map,value,id,version);
-			if(rcount<1) {
-				//版本控制出现问题
-				throw new DataExpiredException("数据 version 已过期。");
+			if(version==null) {
+				rcount= (int) baseDao.execute(ZXDataMapper.updateByIdNoLock,map,value,id);
+			}else {
+				rcount= (int) baseDao.execute(ZXDataMapper.updateById,map,value,id,version);
+				if(rcount<1) {
+					//版本控制出现问题
+					throw new DataExpiredException("数据 version 已过期。");
+				}
 			}
 		}
 		return rcount;
