@@ -44,6 +44,8 @@ public class SQLParsing {
 				}else {
 					modelName=sql.substring(sql.indexOf("from ")+5, sql.length());
 				}
+			}else if(sql.startsWith("create table if not exists")){//表创建
+				modelName=sql.substring(26, sql.indexOf("("));
 			}
 			if(modelName!=null) {
 				model = CacheModelManager.cacheModelJAnnotation.get(modelName.trim());

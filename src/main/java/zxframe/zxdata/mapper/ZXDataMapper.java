@@ -51,25 +51,23 @@ public class ZXDataMapper {
 	
 	public DataModel initZxdata() {
 		DataModel cm =new DataModel();
-		cm.setSql("CREATE TABLE IF NOT EXISTS `zxdata` (" + 
+		cm.setSql("CREATE TABLE IF NOT EXISTS zxdatag2t (" + 
 				"  `key` int(11) NOT NULL," + 
 				"  `value` int(11) DEFAULT NULL," + 
 				"  PRIMARY KEY (`key`)" + 
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		cm.setGroup(initZxdata);
-		cm.setDsClass(Properties.class);
 		return cm;
 	}
 	public DataModel initZxdataInfo() {
 		DataModel cm =new DataModel();
-		cm.setSql("insert  into `zxdata`(`key`,`value`) values (-2,0),(-1,0);");
+		cm.setSql("insert  into zxdatag2t(`key`,`value`) values (-2,0),(-1,0);");
 		cm.setGroup(initZxdataInfo);
-		cm.setDsClass(Properties.class);
 		return cm;
 	}
 	public DataModel initZxdatax() {
 		DataModel cm =new DataModel();
-		cm.setSql("CREATE TABLE IF NOT EXISTS `zxdata@code@` (\r\n" + 
+		cm.setSql("CREATE TABLE IF NOT EXISTS zxdata@code@ (\r\n" + 
 				"  `id` char(36) NOT NULL,\r\n" + 
 				"  `group` varchar(255) NOT NULL,\r\n" + 
 				"  `value` text NOT NULL,\r\n" + 
@@ -81,12 +79,11 @@ public class ZXDataMapper {
 				"  KEY `NewIndex2` (`eTime`)\r\n" + 
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		cm.setGroup(initZxdatax);
-		cm.setDsClass(Properties.class);
 		return cm;
 	}
 	public DataModel initZxdataxBak() {
 		DataModel cm =new DataModel();
-		cm.setSql("CREATE TABLE IF NOT EXISTS `zxdatabak@code@` (\r\n" + 
+		cm.setSql("CREATE TABLE IF NOT EXISTS zxdatabak@code@ (\r\n" + 
 				"  `id` char(36) NOT NULL,\r\n" + 
 				"  `group` varchar(255) NOT NULL,\r\n" + 
 				"  `value` text NOT NULL,\r\n" + 
@@ -97,7 +94,6 @@ public class ZXDataMapper {
 				"  KEY `NewIndex2` (`group`)\r\n" + 
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		cm.setGroup(initZxdataxBak);
-		cm.setDsClass(Properties.class);
 		return cm;
 	}
 }
