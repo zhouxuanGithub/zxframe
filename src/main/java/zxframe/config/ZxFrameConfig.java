@@ -11,11 +11,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import zxframe.aop.ServiceAspect;  
+import org.w3c.dom.NodeList;  
  
-
 public class ZxFrameConfig {
 	//是否输出系统日志
 	public static boolean showlog=false;
@@ -25,8 +22,8 @@ public class ZxFrameConfig {
 	public static boolean showsql=false;
 	//是否使用数据库配置properties
 	public static boolean useDBProperties=false;
-	//传播试事务方法前缀
-	public static String txAdvice;
+	//是否使用自动扩容的zxdata
+	public static boolean useZXData=false;
 	//数据源公共配置
 	public static ConcurrentMap<String, String> common=new ConcurrentHashMap<String, String>();
 	//数据源具体配置
@@ -55,11 +52,11 @@ public class ZxFrameConfig {
             if(root.getElementsByTagName("showcache").getLength()>0) {
             	showcache=root.getElementsByTagName("showcache").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             }
-            if(root.getElementsByTagName("txAdvice").getLength()>0) {
-            	txAdvice=root.getElementsByTagName("txAdvice").item(0).getFirstChild().getNodeValue();
-            }
             if(root.getElementsByTagName("useDBProperties").getLength()>0) {
             	useDBProperties=root.getElementsByTagName("useDBProperties").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
+            }
+            if(root.getElementsByTagName("useZXData").getLength()>0) {
+            	useZXData=root.getElementsByTagName("useZXData").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             }
             if(root.getElementsByTagName("druid").getLength()>0) {
             	Element commonItem = (Element)root.getElementsByTagName("common").item(0);
@@ -114,8 +111,6 @@ public class ZxFrameConfig {
                 	}
                 }
             }
-            ServiceAspect.requiredTx=txAdvice.split(",");
-            ServiceAspect.rl=ServiceAspect.requiredTx.length;
         } catch (Exception e) {  
             e.printStackTrace();  
         }  

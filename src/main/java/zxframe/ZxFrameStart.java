@@ -5,8 +5,9 @@ import org.springframework.stereotype.Component;
 
 import zxframe.cache.redis.RedisCacheManager;
 import zxframe.config.ZxFrameConfig;
+import zxframe.jpa.datasource.DataManager;
 import zxframe.jpa.datasource.DataSourceManager;
-import zxframe.util.ScanningClass;
+import zxframe.task.TimerManager;
 
 @Component
 public class ZxFrameStart {
@@ -19,9 +20,9 @@ public class ZxFrameStart {
 		DataSourceManager.init();
 		//类扫描，加载需要的模型
 		ScanningClass.init();
-		//定期检测读库熔断
-		// TODO: 
-		//定期检测数据源配置，热更新
-		// TODO:
+		//数据库表加载
+		DataManager.init();
+		//timer加载
+		TimerManager.init();
 	}
 }

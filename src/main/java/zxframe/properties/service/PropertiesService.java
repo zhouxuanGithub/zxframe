@@ -30,4 +30,11 @@ public class PropertiesService{
 		baseDao.execute(PropertiesMapper.propertiesUpdateValue,value,key);
 		baseDao.execute(PropertiesMapper.propertiesVersionAdd);
 	}
+	public void initPropertiesTable() {
+		baseDao.execute(PropertiesMapper.initPropertiesTable);
+		try {
+			baseDao.execute(PropertiesMapper.initPropertiesTableInfo);
+		} catch (Exception e) {
+		}
+	}
 }

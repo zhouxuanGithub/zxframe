@@ -30,5 +30,4 @@ public class PropertiesTimer implements TaskRunnable{
 							delay, TimeUnit.SECONDS);
 		}
 	}
-
 }
