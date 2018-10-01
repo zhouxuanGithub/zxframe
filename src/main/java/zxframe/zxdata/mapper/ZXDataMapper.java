@@ -2,7 +2,6 @@ package zxframe.zxdata.mapper;
 
 import zxframe.jpa.annotation.DataModelScanning;
 import zxframe.jpa.model.DataModel;
-import zxframe.properties.model.Properties;
 import zxframe.zxdata.model.ZXData;
 
 @DataModelScanning
@@ -16,6 +15,9 @@ public class ZXDataMapper {
 	public static final String initZxdataInfo=ZXData.class.getName()+"-initZxdataInfo";
 	public static final String initZxdatax=ZXData.class.getName()+"-initZxdatax";
 	public static final String initZxdataxBak=ZXData.class.getName()+"-initZxdataxBak";
+	public static final String selectByG2T=ZXData.class.getName()+"-selectByG2T";
+	public static final String autuUpdateG2T=ZXData.class.getName()+"-autuUpdateG2T";
+	public static final String insertG2T=ZXData.class.getName()+"-insertG2T";
 	public DataModel initInsert() {
 		DataModel cm =new DataModel();
 		cm.setSql("insert into @table@ (id,group,value,createTime,eTime) values(?,?,?,?,?)");
@@ -61,7 +63,7 @@ public class ZXDataMapper {
 	}
 	public DataModel initZxdataInfo() {
 		DataModel cm =new DataModel();
-		cm.setSql("insert  into zxdatag2t(`key`,`value`) values (-2,0),(-1,0);");
+		cm.setSql("insert  into zxdatag2t(`key`,`value`) values (-1,0);");
 		cm.setGroup(initZxdataInfo);
 		return cm;
 	}
@@ -96,5 +98,25 @@ public class ZXDataMapper {
 		cm.setGroup(initZxdataxBak);
 		return cm;
 	}
+	public DataModel selectByG2T() {
+		DataModel cm =new DataModel();
+		cm.setSql("select * from zxdatag2t where key=?");
+		cm.setGroup(selectByG2T);
+		cm.setResultClass(Integer.class);
+		return cm;
+	}
+	public DataModel autuUpdateG2T() {
+		DataModel cm =new DataModel();
+		cm.setSql("update zxdatag2t set `value`=`value`+1 where `key`=-1");
+		cm.setGroup(autuUpdateG2T);
+		return cm;
+	}
+	public DataModel insertG2T() {
+		DataModel cm =new DataModel();
+		cm.setSql("insert  into zxdatag2t(`key`,`value`) values (?,?);");
+		cm.setGroup(insertG2T);
+		return cm;
+	}
+	
 }
 
