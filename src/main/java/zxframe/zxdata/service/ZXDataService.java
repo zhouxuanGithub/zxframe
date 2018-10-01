@@ -18,6 +18,9 @@ import zxframe.zxdata.model.ZXData;
 
 @Service
 public class ZXDataService {
+	//槽和表对应关系
+	private static Integer[] groove2table=new Integer[10750000];
+	
 	@Resource
 	private BaseDao baseDao;
 	public void insert(String id, String group, String value, int seconds) {
@@ -95,12 +98,22 @@ public class ZXDataService {
 		baseDao.execute(ZXDataMapper.initZxdata);
 		try {
 			baseDao.execute(ZXDataMapper.initZxdataInfo);
+			Map<String,String> map=new HashMap<String,String>();
+			map.put("code", "0");
+			baseDao.execute(ZXDataMapper.initZxdatax,map);
+			baseDao.execute(ZXDataMapper.initZxdataxBak,map);
+			map.put("code", "1");
+			baseDao.execute(ZXDataMapper.initZxdatax,map);
+			baseDao.execute(ZXDataMapper.initZxdataxBak,map);
 		} catch (Exception e) {
 		}
 	}
 	//获得表code，创建必要的表
 	private int getTableCode(String group) {
-		int hashCode = group.hashCode();
-		return hashCode;
+		int groove = Math.abs(group.hashCode())/200;
+		if(groove2table[groove]==null) {
+			groove2table[groove]=1;
+		}
+		return groove2table[groove];
 	}
 }

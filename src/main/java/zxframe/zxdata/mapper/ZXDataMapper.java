@@ -14,6 +14,8 @@ public class ZXDataMapper {
 	public static final String selectByGroup=ZXData.class.getName()+"-selectByGroup";
 	public static final String initZxdata=ZXData.class.getName()+"-initZxdata";
 	public static final String initZxdataInfo=ZXData.class.getName()+"-initZxdataInfo";
+	public static final String initZxdatax=ZXData.class.getName()+"-initZxdatax";
+	public static final String initZxdataxBak=ZXData.class.getName()+"-initZxdataxBak";
 	public DataModel initInsert() {
 		DataModel cm =new DataModel();
 		cm.setSql("insert into @table@ (id,group,value,createTime,eTime) values(?,?,?,?,?)");
@@ -62,6 +64,39 @@ public class ZXDataMapper {
 		DataModel cm =new DataModel();
 		cm.setSql("insert  into `zxdata`(`key`,`value`) values (-2,0),(-1,0);");
 		cm.setGroup(initZxdataInfo);
+		cm.setDsClass(Properties.class);
+		return cm;
+	}
+	public DataModel initZxdatax() {
+		DataModel cm =new DataModel();
+		cm.setSql("CREATE TABLE IF NOT EXISTS `zxdata@code@` (\r\n" + 
+				"  `id` char(36) NOT NULL,\r\n" + 
+				"  `group` varchar(255) NOT NULL,\r\n" + 
+				"  `value` text NOT NULL,\r\n" + 
+				"  `createTime` datetime NOT NULL,\r\n" + 
+				"  `eTime` datetime DEFAULT NULL,\r\n" + 
+				"  `varsion` int(11) NOT NULL DEFAULT '0',\r\n" + 
+				"  PRIMARY KEY (`id`),\r\n" + 
+				"  KEY `NewIndex1` (`group`),\r\n" + 
+				"  KEY `NewIndex2` (`eTime`)\r\n" + 
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+		cm.setGroup(initZxdatax);
+		cm.setDsClass(Properties.class);
+		return cm;
+	}
+	public DataModel initZxdataxBak() {
+		DataModel cm =new DataModel();
+		cm.setSql("CREATE TABLE IF NOT EXISTS `zxdatabak@code@` (\r\n" + 
+				"  `id` char(36) NOT NULL,\r\n" + 
+				"  `group` varchar(255) NOT NULL,\r\n" + 
+				"  `value` text NOT NULL,\r\n" + 
+				"  `createTime` datetime NOT NULL,\r\n" + 
+				"  `eTime` datetime DEFAULT NULL,\r\n" + 
+				"  `varsion` int(11) NOT NULL DEFAULT '0',\r\n" + 
+				"  KEY `NewIndex1` (`id`),\r\n" + 
+				"  KEY `NewIndex2` (`group`)\r\n" + 
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+		cm.setGroup(initZxdataxBak);
 		cm.setDsClass(Properties.class);
 		return cm;
 	}
