@@ -63,10 +63,10 @@ public class ZXDataService {
 	}
 	public void delete(ZXData o) {
 		Map<String,String> map=new HashMap<String,String>();
-		map.put("table", "ZXData"+getTableCode(o.getGroup(),true));
+		map.put("table", "ZXData"+getTableCode(o.getG(),true));
 		if(o!=null) {
 			baseDao.execute(ZXDataMapper.deleteById,map,o.getId());
-			insertBak(o.getId(), o.getGroup(), o.getValue(), o.getCreateTime(),o.geteTime());
+			insertBak(o.getId(), o.getG(), o.getV(), o.getCreateTime(),o.geteTime());
 		}
 	}
 	public void deleteById(String id, String group) {
@@ -75,7 +75,7 @@ public class ZXDataService {
 		ZXData o = selectById(id,group);
 		if(o!=null) {
 			baseDao.execute(ZXDataMapper.deleteById,map,id);
-			insertBak(id, group, o.getValue(), o.getCreateTime(),o.geteTime());
+			insertBak(id, group, o.getV(), o.getCreateTime(),o.geteTime());
 		}
 	}
 	public void deleteByGroup(String group) {
@@ -86,7 +86,7 @@ public class ZXDataService {
 			for (int i = 0; i < os.size(); i++) {
 				ZXData o = os.get(i);
 				baseDao.execute(ZXDataMapper.deleteById,map,o.getId());
-				insertBak(o.getId(), group, o.getValue(), o.getCreateTime(),o.geteTime());
+				insertBak(o.getId(), group, o.getV(), o.getCreateTime(),o.geteTime());
 			}
 		}
 	}
@@ -98,7 +98,11 @@ public class ZXDataService {
 			return null;
 		}
 		map.put("table", "ZXData"+tableCode);
-		return (ZXData) baseDao.getList(ZXDataMapper.selectById, map,id );
+		List list = baseDao.getList(ZXDataMapper.selectById, map,id );
+		if(list.size()>0) {
+			return (ZXData) list.get(0);
+		}
+		return null;
 	}
 
 	public List<ZXData> selectByGroup(String group) {
@@ -108,7 +112,7 @@ public class ZXDataService {
 			return null;
 		}
 		map.put("table", "ZXData"+tableCode);
-		return baseDao.getList(ZXDataMapper.selectByGroup, map,group );
+		return baseDao.getList(ZXDataMapper.selectByGroup, map,group);
 	}
 	@FnCache
 	public ZXData selectCacheById(String id, String group) {
@@ -134,7 +138,8 @@ public class ZXDataService {
 				if(newGroove) {
 					//新槽保存
 					baseDao.execute(ZXDataMapper.autuUpdateG2T);
-					t = ((Integer) baseDao.get(ZXDataMapper.selectByG2T,-1))/grooveCount;
+					t = (Integer)baseDao.get(ZXDataMapper.selectByG2T,-1);
+					t = t/grooveCount;
 					try {
 						baseDao.execute(ZXDataMapper.insertG2T, groove,t);
 					} catch (Exception e) {

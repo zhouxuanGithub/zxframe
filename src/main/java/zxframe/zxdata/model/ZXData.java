@@ -7,8 +7,8 @@ import zxframe.jpa.annotation.Model;
 @Model(dsname="")
 public class ZXData {
 	private String id;//长度36，可自动生成和指定值
-	private String group;//组
-	private String value;//值
+	private String g;//组
+	private String v;//值
 	private Date createTime;//创建时间
 	private Date eTime;//过期时间
 	private int version;//版本号
@@ -18,18 +18,6 @@ public class ZXData {
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getGroup() {
-		return group;
-	}
-	public void setGroup(String group) {
-		this.group = group;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
 	}
 	public Date getCreateTime() {
 		return createTime;
@@ -49,5 +37,16 @@ public class ZXData {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	
+	public String getG() {
+		return g;
+	}
+	public void setG(String g) {
+		this.g = g;
+	}
+	public String getV() {
+		return v;
+	}
+	public void setV(String v) {
+		this.v = v;
+	}
 }

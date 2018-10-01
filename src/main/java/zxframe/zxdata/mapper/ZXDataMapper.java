@@ -20,13 +20,13 @@ public class ZXDataMapper {
 	public static final String insertG2T=ZXData.class.getName()+"-insertG2T";
 	public DataModel initInsert() {
 		DataModel cm =new DataModel();
-		cm.setSql("insert into @table@ (id,group,value,createTime,eTime) values(?,?,?,?,?)");
+		cm.setSql("insert into @table@ (id,g,v,createTime,eTime) values(?,?,?,?,?)");
 		cm.setGroup(insert);
 		return cm;
 	}
 	public DataModel initUpdateById() {
 		DataModel cm =new DataModel();
-		cm.setSql("update @table@ set value=? where id=? and version=?");
+		cm.setSql("update @table@ set v=? where id=? and version=?");
 		cm.setGroup(updateById);
 		return cm;
 	}
@@ -38,14 +38,14 @@ public class ZXDataMapper {
 	}
 	public DataModel initSelectById() {
 		DataModel cm =new DataModel();
-		cm.setSql("select * from @table@ where id=? and etime > now()");
+		cm.setSql("select * from @table@ where id=? and (etime is null or etime > now())");
 		cm.setGroup(selectById);
 		cm.setResultClass(ZXData.class);
 		return cm;
 	}
 	public DataModel initSelectByGroup() {
 		DataModel cm =new DataModel();
-		cm.setSql("select * from @table@ where group=? and etime > now()");
+		cm.setSql("select * from @table@ where g=? and (etime is null or etime > now())");
 		cm.setGroup(selectByGroup);
 		cm.setResultClass(ZXData.class);
 		return cm;
@@ -54,16 +54,16 @@ public class ZXDataMapper {
 	public DataModel initZxdata() {
 		DataModel cm =new DataModel();
 		cm.setSql("CREATE TABLE IF NOT EXISTS zxdatag2t (" + 
-				"  `key` int(11) NOT NULL," + 
-				"  `value` int(11) DEFAULT NULL," + 
-				"  PRIMARY KEY (`key`)" + 
+				"  `k` int(11) NOT NULL," + 
+				"  `v` int(11) DEFAULT NULL," + 
+				"  PRIMARY KEY (`k`)" + 
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		cm.setGroup(initZxdata);
 		return cm;
 	}
 	public DataModel initZxdataInfo() {
 		DataModel cm =new DataModel();
-		cm.setSql("insert  into zxdatag2t(`key`,`value`) values (-1,0);");
+		cm.setSql("insert  into zxdatag2t(`k`,`v`) values (-1,0);");
 		cm.setGroup(initZxdataInfo);
 		return cm;
 	}
@@ -71,13 +71,13 @@ public class ZXDataMapper {
 		DataModel cm =new DataModel();
 		cm.setSql("CREATE TABLE IF NOT EXISTS zxdata@code@ (\r\n" + 
 				"  `id` char(36) NOT NULL,\r\n" + 
-				"  `group` varchar(255) NOT NULL,\r\n" + 
-				"  `value` text NOT NULL,\r\n" + 
+				"  `g` varchar(255) NOT NULL,\r\n" + 
+				"  `v` text NOT NULL,\r\n" + 
 				"  `createTime` datetime NOT NULL,\r\n" + 
 				"  `eTime` datetime DEFAULT NULL,\r\n" + 
-				"  `varsion` int(11) NOT NULL DEFAULT '0',\r\n" + 
+				"  `version` int(11) NOT NULL DEFAULT '0',\r\n" + 
 				"  PRIMARY KEY (`id`),\r\n" + 
-				"  KEY `NewIndex1` (`group`),\r\n" + 
+				"  KEY `NewIndex1` (`g`),\r\n" + 
 				"  KEY `NewIndex2` (`eTime`)\r\n" + 
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		cm.setGroup(initZxdatax);
@@ -87,33 +87,33 @@ public class ZXDataMapper {
 		DataModel cm =new DataModel();
 		cm.setSql("CREATE TABLE IF NOT EXISTS zxdatabak@code@ (\r\n" + 
 				"  `id` char(36) NOT NULL,\r\n" + 
-				"  `group` varchar(255) NOT NULL,\r\n" + 
-				"  `value` text NOT NULL,\r\n" + 
+				"  `g` varchar(255) NOT NULL,\r\n" + 
+				"  `v` text NOT NULL,\r\n" + 
 				"  `createTime` datetime NOT NULL,\r\n" + 
 				"  `eTime` datetime DEFAULT NULL,\r\n" + 
-				"  `varsion` int(11) NOT NULL DEFAULT '0',\r\n" + 
+				"  `version` int(11) NOT NULL DEFAULT '0',\r\n" + 
 				"  KEY `NewIndex1` (`id`),\r\n" + 
-				"  KEY `NewIndex2` (`group`)\r\n" + 
+				"  KEY `NewIndex2` (`g`)\r\n" + 
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		cm.setGroup(initZxdataxBak);
 		return cm;
 	}
 	public DataModel selectByG2T() {
 		DataModel cm =new DataModel();
-		cm.setSql("select * from zxdatag2t where key=?");
+		cm.setSql("select v from zxdatag2t where k=?");
 		cm.setGroup(selectByG2T);
 		cm.setResultClass(Integer.class);
 		return cm;
 	}
 	public DataModel autuUpdateG2T() {
 		DataModel cm =new DataModel();
-		cm.setSql("update zxdatag2t set `value`=`value`+1 where `key`=-1");
+		cm.setSql("update zxdatag2t set `v`=`v`+1 where `k`=-1");
 		cm.setGroup(autuUpdateG2T);
 		return cm;
 	}
 	public DataModel insertG2T() {
 		DataModel cm =new DataModel();
-		cm.setSql("insert  into zxdatag2t(`key`,`value`) values (?,?);");
+		cm.setSql("insert  into zxdatag2t(`k`,`v`) values (?,?)");
 		cm.setGroup(insertG2T);
 		return cm;
 	}
