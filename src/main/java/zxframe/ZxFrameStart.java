@@ -7,6 +7,7 @@ import zxframe.cache.redis.RedisCacheManager;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.datasource.DataManager;
 import zxframe.jpa.datasource.DataSourceManager;
+import zxframe.jpa.util.ScanningClass;
 import zxframe.task.TimerManager;
 
 @Component

@@ -1,4 +1,4 @@
-package zxframe;
+package zxframe.jpa.util;
 
 import java.util.Map;
 
