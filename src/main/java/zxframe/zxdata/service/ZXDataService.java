@@ -40,9 +40,9 @@ public class ZXDataService {
 		baseDao.execute(ZXDataMapper.insert,map,id,group,value,new Date(),seconds>0?DateUtil.addSecond(new Date(), seconds):null);
 	}
 	public int update(ZXData o) {
-		return updateById(o.getId(), o.getG(), o.getV(),o.getVersion()+"");
+		return updateById(o.getId(), o.getG(), o.getV(),o.getVersion());
 	}
-	public int updateById(String id, String group, String value,String version) {
+	public int updateById(String id, String group, String value,Integer version) {
 		int rcount= 0;
 		ZXData o = selectById(id,group);
 		if(o!=null) {
