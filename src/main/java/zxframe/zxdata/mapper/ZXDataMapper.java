@@ -64,7 +64,19 @@ public class ZXDataMapper {
 				"  `k` int(11) NOT NULL," + 
 				"  `v` int(11) DEFAULT NULL," + 
 				"  PRIMARY KEY (`k`)" + 
-				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8 \r\n" +
+				"  PARTITION BY RANGE(`k`) (\r\n" + 
+				"  PARTITION g2t1 VALUES LESS THAN (1000000),\r\n" + 
+				"  PARTITION g2t2 VALUES LESS THAN (2000000),\r\n" + 
+				"  PARTITION g2t3 VALUES LESS THAN (3000000),\r\n" + 
+				"  PARTITION g2t4 VALUES LESS THAN (4000000),\r\n" + 
+				"  PARTITION g2t5 VALUES LESS THAN (5000000),\r\n" + 
+				"  PARTITION g2t6 VALUES LESS THAN (6000000),\r\n" + 
+				"  PARTITION g2t7 VALUES LESS THAN (7000000),\r\n" + 
+				"  PARTITION g2t8 VALUES LESS THAN (8000000),\r\n" + 
+				"  PARTITION g2t9 VALUES LESS THAN (9000000),\r\n" + 
+				"  PARTITION g2tmax VALUES LESS THAN MAXVALUE\r\n" + 
+				"  );");
 		cm.setGroup(initZxdata);
 		return cm;
 	}
@@ -86,7 +98,9 @@ public class ZXDataMapper {
 				"  PRIMARY KEY (`id`),\r\n" + 
 				"  KEY `NewIndex1` (`g`),\r\n" + 
 				"  KEY `NewIndex2` (`eTime`)\r\n" + 
-				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8 \r\n"+ 
+				"partition by key(g)\r\n" + 
+				"partitions 10;");
 		cm.setGroup(initZxdatax);
 		return cm;
 	}
@@ -101,7 +115,9 @@ public class ZXDataMapper {
 				"  `version` int(11) NOT NULL DEFAULT '0',\r\n" + 
 				"  KEY `NewIndex1` (`id`),\r\n" + 
 				"  KEY `NewIndex2` (`g`)\r\n" + 
-				") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8 \r\n"+ 
+				"partition by key(g)\r\n" + 
+				"partitions 10;");
 		cm.setGroup(initZxdataxBak);
 		return cm;
 	}
