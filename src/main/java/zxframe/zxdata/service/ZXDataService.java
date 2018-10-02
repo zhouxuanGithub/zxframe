@@ -44,7 +44,7 @@ public class ZXDataService {
 			id=UUID.randomUUID().toString();
 		}
 		Map<String,String> map=new HashMap<String,String>();
-		map.put("table", "ZXDatabak"+getTableCode(group,true));
+		map.put("table", "ZXDatabak");
 		baseDao.execute(ZXDataMapper.insert,map,id,group,value,createTime,eTime);
 	}
 	public int updateById(String id, String group, String value,String version) {
@@ -128,6 +128,7 @@ public class ZXDataService {
 	}
 	public void initDB() {
 		baseDao.execute(ZXDataMapper.initZxdata);
+		baseDao.execute(ZXDataMapper.initZxdataxBak);
 		try {
 			baseDao.execute(ZXDataMapper.initZxdataInfo);
 		} catch (Exception e) {
@@ -159,7 +160,6 @@ public class ZXDataService {
 						Map<String,String> map=new HashMap<String,String>();
 						map.put("code", t.toString());
 						baseDao.execute(ZXDataMapper.initZxdatax,map);
-						baseDao.execute(ZXDataMapper.initZxdataxBak,map);
 					}
 				}else {
 					return -1;

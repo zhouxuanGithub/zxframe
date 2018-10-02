@@ -92,7 +92,7 @@ public class ZXDataMapper {
 	}
 	public DataModel initZxdataxBak() {
 		DataModel cm =new DataModel();
-		cm.setSql("CREATE TABLE IF NOT EXISTS zxdatabak@code@ (\r\n" + 
+		cm.setSql("CREATE TABLE IF NOT EXISTS zxdatabak (\r\n" + 
 				"  `id` char(36) NOT NULL,\r\n" + 
 				"  `g` varchar(255) NOT NULL,\r\n" + 
 				"  `v` text NOT NULL,\r\n" + 
