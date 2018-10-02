@@ -49,4 +49,9 @@ public class ZXData {
 	public void setV(String v) {
 		this.v = v;
 	}
+	@Override
+	public String toString() {
+		return "ZXData [id=" + id + ", g=" + g + ", v=" + v + ", createTime=" + createTime + ", eTime=" + eTime
+				+ ", version=" + version + "]";
+	}
 }

@@ -39,6 +39,9 @@ public class ZXDataService {
 		map.put("table", "ZXData"+getTableCode(group,true));
 		baseDao.execute(ZXDataMapper.insert,map,id,group,value,new Date(),seconds>0?DateUtil.addSecond(new Date(), seconds):null);
 	}
+	public int update(ZXData o) {
+		return updateById(o.getId(), o.getG(), o.getV(),o.getVersion()+"");
+	}
 	public int updateById(String id, String group, String value,String version) {
 		int rcount= 0;
 		ZXData o = selectById(id,group);
@@ -120,20 +123,32 @@ public class ZXDataService {
 		}
 		//插入数据
 //		for (int i = 0; i < 100; i++) {
-//			insert(UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), 60);
+//			insert(UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), 60*5);
 //		}
+		//查询数据
+//		ZXData z = selectById("094fc1e3-6b19-4c83-9b47-185a989f0f29", "c7414213-0aac-42e3-82b5-bddc3b7aadd5");
+//		System.out.println(z);
+//		//改数据
+//		z.setV("ok");
+//		updateById(z.getId(),z.getG(), z.getV(),null);
+//		//删除数据
+//		delete(z);
+	}
+	public Integer getMaxTableCode() {
+		Integer t = (Integer)baseDao.get(ZXDataMapper.selectByG2T,-1);
+		t = t/grooveCount;
+		return t;
 	}
 	//获得表code，创建必要的表
 	private int getTableCode(String group,boolean newGroove) {
 		int groove = Math.abs(group.hashCode())/grooveCNum;
 		if(groove2table[groove]==null) {
-			Integer t = (Integer) baseDao.get(ZXDataMapper.selectByG2T,groove);
+			Integer t = (Integer)baseDao.get(ZXDataMapper.selectByG2T,groove);
 			if(t==null) {
 				if(newGroove) {
 					//新槽保存
 					baseDao.execute(ZXDataMapper.autuUpdateG2T);
-					t = (Integer)baseDao.get(ZXDataMapper.selectByG2T,-1);
-					t = t/grooveCount;
+					t=getMaxTableCode();
 					try {
 						baseDao.execute(ZXDataMapper.insertG2T, groove,t);
 					} catch (Exception e) {
@@ -146,9 +161,13 @@ public class ZXDataService {
 					//表创建
 					if(tableHas[t]==null) {
 						tableHas[t]=1;
-						Map<String,String> map=new HashMap<String,String>();
-						map.put("code", t.toString());
-						baseDao.execute(ZXDataMapper.initZxdatax,map);
+						try {
+							Map<String,String> map=new HashMap<String,String>();
+							map.put("code", t.toString());
+							baseDao.execute(ZXDataMapper.initZxdatax,map);
+							baseDao.execute(ZXDataMapper.initZxdataxtru,map);
+						} catch (Exception e) {
+						}
 					}
 				}else {
 					return -1;
@@ -158,9 +177,9 @@ public class ZXDataService {
 		}
 		return groove2table[groove];
 	}
-	public List<ZXData> deleteByETime(String table) {
+	public void deleteByETime(String table) {
 		Map<String,String> map=new HashMap<String,String>();
 		map.put("table", table);
-		return baseDao.getList(ZXDataMapper.deleteByETime, map);
+		baseDao.execute(ZXDataMapper.deleteByETime, map);
 	}
 }

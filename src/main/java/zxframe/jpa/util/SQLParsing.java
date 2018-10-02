@@ -46,6 +46,8 @@ public class SQLParsing {
 				}
 			}else if(sql.startsWith("create table if not exists")){//表创建
 				modelName=sql.substring(26, sql.indexOf("("));
+			}else if(sql.startsWith("create trigger")){//触发器创建
+				modelName=sql.substring(sql.indexOf(" on ")+4, sql.indexOf(" for "));
 			}
 			if(modelName!=null) {
 				model = CacheModelManager.cacheModelJAnnotation.get(modelName.trim());

@@ -16,6 +16,7 @@ public class ZXDataMapper {
 	public static final String initZxdata=ZXData.class.getName()+"-initZxdata";
 	public static final String initZxdataInfo=ZXData.class.getName()+"-initZxdataInfo";
 	public static final String initZxdatax=ZXData.class.getName()+"-initZxdatax";
+	public static final String initZxdataxtru=ZXData.class.getName()+"-initZxdataxtru";
 	public static final String initZxdataxBak=ZXData.class.getName()+"-initZxdataxBak";
 	public static final String selectByG2T=ZXData.class.getName()+"-selectByG2T";
 	public static final String autuUpdateG2T=ZXData.class.getName()+"-autuUpdateG2T";
@@ -109,6 +110,21 @@ public class ZXDataMapper {
 				"partition by key(id)\r\n" + 
 				"partitions 10;");
 		cm.setGroup(initZxdatax);
+		return cm;
+	}
+	public DataModel initZxdataxtru() {
+		DataModel cm =new DataModel();
+		cm.setSql("CREATE TRIGGER tru_res_zxdata@code@ AFTER DELETE ON zxdata@code@ FOR EACH ROW\r\n" + 
+				"BEGIN\r\n" + 
+				"	INSERT INTO zxdatabak SET\r\n" + 
+				"		id = OLD.id,\r\n" + 
+				"		g = OLD.g,\r\n" + 
+				"		v = OLD.v,\r\n" + 
+				"		createTime = OLD.createTime,\r\n" + 
+				"		eTime = OLD.eTime,\r\n" + 
+				"		version = OLD.version;\r\n" + 
+				"END;");
+		cm.setGroup(initZxdataxtru);
 		return cm;
 	}
 	public DataModel initZxdataxBak() {
