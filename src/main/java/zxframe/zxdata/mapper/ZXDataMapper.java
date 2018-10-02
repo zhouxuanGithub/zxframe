@@ -12,6 +12,7 @@ public class ZXDataMapper {
 	public static final String deleteById=ZXData.class.getName()+"-deleteById";
 	public static final String selectById=ZXData.class.getName()+"-selectById";
 	public static final String selectByGroup=ZXData.class.getName()+"-selectByGroup";
+	public static final String deleteByETime=ZXData.class.getName()+"-deleteByETime";
 	public static final String initZxdata=ZXData.class.getName()+"-initZxdata";
 	public static final String initZxdataInfo=ZXData.class.getName()+"-initZxdataInfo";
 	public static final String initZxdatax=ZXData.class.getName()+"-initZxdatax";
@@ -57,7 +58,13 @@ public class ZXDataMapper {
 		cm.setResultClass(ZXData.class);
 		return cm;
 	}
-	
+	public DataModel deleteByETime() {
+		DataModel cm =new DataModel();
+		cm.setSql("delete from @table@ where etime < now()");
+		cm.setGroup(deleteByETime);
+		cm.setResultClass(ZXData.class);
+		return cm;
+	}
 	public DataModel initZxdata() {
 		DataModel cm =new DataModel();
 		cm.setSql("CREATE TABLE IF NOT EXISTS zxdatag2t (" + 
@@ -99,7 +106,7 @@ public class ZXDataMapper {
 				"  KEY `NewIndex1` (`g`),\r\n" + 
 				"  KEY `NewIndex2` (`eTime`)\r\n" + 
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8 \r\n"+ 
-				"partition by key(g)\r\n" + 
+				"partition by key(id)\r\n" + 
 				"partitions 10;");
 		cm.setGroup(initZxdatax);
 		return cm;
@@ -116,7 +123,7 @@ public class ZXDataMapper {
 				"  KEY `NewIndex1` (`id`),\r\n" + 
 				"  KEY `NewIndex2` (`g`)\r\n" + 
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8 \r\n"+ 
-				"partition by key(g)\r\n" + 
+				"partition by key(id)\r\n" + 
 				"partitions 10;");
 		cm.setGroup(initZxdataxBak);
 		return cm;

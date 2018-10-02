@@ -20,7 +20,7 @@ import zxframe.zxdata.model.ZXData;
 @Service
 public class ZXDataService {
 	//一个表内多少个槽
-	private static int grooveCount=50000;
+	public final static int grooveCount=50000;
 	//槽内数据数量
 	private static int grooveCNum=200;
 	//总槽数
@@ -38,14 +38,6 @@ public class ZXDataService {
 		Map<String,String> map=new HashMap<String,String>();
 		map.put("table", "ZXData"+getTableCode(group,true));
 		baseDao.execute(ZXDataMapper.insert,map,id,group,value,new Date(),seconds>0?DateUtil.addSecond(new Date(), seconds):null);
-	}
-	public void insertBak(String id, String group, String value,Date createTime, Date eTime) {
-		if(id==null||id.equals("")) {
-			id=UUID.randomUUID().toString();
-		}
-		Map<String,String> map=new HashMap<String,String>();
-		map.put("table", "ZXDatabak");
-		baseDao.execute(ZXDataMapper.insert,map,id,group,value,createTime,eTime);
 	}
 	public int updateById(String id, String group, String value,String version) {
 		int rcount= 0;
@@ -66,12 +58,7 @@ public class ZXDataService {
 		return rcount;
 	}
 	public void delete(ZXData o) {
-		Map<String,String> map=new HashMap<String,String>();
-		map.put("table", "ZXData"+getTableCode(o.getG(),true));
-		if(o!=null) {
-			baseDao.execute(ZXDataMapper.deleteById,map,o.getId());
-			insertBak(o.getId(), o.getG(), o.getV(), o.getCreateTime(),o.geteTime());
-		}
+		deleteById(o.getId(),o.getG());
 	}
 	public void deleteById(String id, String group) {
 		Map<String,String> map=new HashMap<String,String>();
@@ -79,7 +66,6 @@ public class ZXDataService {
 		ZXData o = selectById(id,group);
 		if(o!=null) {
 			baseDao.execute(ZXDataMapper.deleteById,map,id);
-			insertBak(id, group, o.getV(), o.getCreateTime(),o.geteTime());
 		}
 	}
 	public void deleteByGroup(String group) {
@@ -90,7 +76,6 @@ public class ZXDataService {
 			for (int i = 0; i < os.size(); i++) {
 				ZXData o = os.get(i);
 				baseDao.execute(ZXDataMapper.deleteById,map,o.getId());
-				insertBak(o.getId(), group, o.getV(), o.getCreateTime(),o.geteTime());
 			}
 		}
 	}
@@ -133,6 +118,10 @@ public class ZXDataService {
 			baseDao.execute(ZXDataMapper.initZxdataInfo);
 		} catch (Exception e) {
 		}
+		//插入数据
+//		for (int i = 0; i < 100; i++) {
+//			insert(UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), 60);
+//		}
 	}
 	//获得表code，创建必要的表
 	private int getTableCode(String group,boolean newGroove) {
@@ -168,5 +157,10 @@ public class ZXDataService {
 			groove2table[groove]=t;
 		}
 		return groove2table[groove];
+	}
+	public List<ZXData> deleteByETime(String table) {
+		Map<String,String> map=new HashMap<String,String>();
+		map.put("table", table);
+		return baseDao.getList(ZXDataMapper.deleteByETime, map);
 	}
 }
