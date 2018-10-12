@@ -153,7 +153,7 @@ public class ZXDataService {
 						baseDao.execute(ZXDataMapper.insertG2T, groove,t);
 					} catch (Exception e) {
 						try {
-							Thread.sleep(1000);
+							Thread.sleep(200);
 						} catch (InterruptedException e1) {
 						}
 						//主键重复报错，说明可以重新去获取
