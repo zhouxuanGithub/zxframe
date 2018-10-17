@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -18,6 +17,7 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.ex.JpaRuntimeException;
+import zxframe.util.MathUtil;
 
 public class DataSourceManager {
 	private static Logger logger = LoggerFactory.getLogger(DataSourceManager.class);
@@ -152,7 +152,7 @@ public class DataSourceManager {
 			if(list==null) {
 				throw new JpaRuntimeException(dsname+"读数据源为空，未配置");
 			}
-			return list.get(new Random().nextInt(list.size())).getConnection();
+			return list.get(MathUtil.nextInt(list.size())).getConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

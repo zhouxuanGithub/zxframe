@@ -1,7 +1,6 @@
 package zxframe.cache.redis;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
@@ -17,6 +16,7 @@ import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.model.DataModel;
 import zxframe.util.CServerUUID;
 import zxframe.util.JsonUtil;
+import zxframe.util.MathUtil;
 import zxframe.util.SerializeUtils;
 
 @Component
@@ -186,7 +186,7 @@ public class RedisCacheManager {
 	 * @return
 	 */
 	private String getNewGroupVersion() {
-		return new Random().nextInt(100000)+"_"+CServerUUID.getSequenceId();
+		return MathUtil.nextInt(100000)+"_"+CServerUUID.getSequenceId();
 	}
 	private String getGroupVsKey(DataModel cm) {
 		return ZxFrameConfig.rKeyPrefix+"_"+cm.getGroup()+"_vs";
