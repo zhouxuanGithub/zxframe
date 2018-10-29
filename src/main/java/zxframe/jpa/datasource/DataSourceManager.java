@@ -48,7 +48,7 @@ public class DataSourceManager {
 		        datasource.setMinIdle(Integer.parseInt(getDatasourceConfig(cmap, "minIdle", key)));    
 		        datasource.setMaxActive(Integer.parseInt(getDatasourceConfig(cmap, "maxActive", key)));
 		        //用来检测连接是否有效的sql，要求是一个查询语句，常用select 'x'。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用。
-		        datasource.setValidationQuery("select 1");
+		        datasource.setValidationQuery("select 'x'");
 		        //申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
 		        datasource.setTestOnBorrow(getDatasourceConfig(cmap, "testOnBorrow", key).equals("true")?true:false);
 		        //归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
