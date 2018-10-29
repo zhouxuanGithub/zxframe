@@ -46,10 +46,21 @@ public class DataSourceManager {
 		        //configuration    
 		        datasource.setInitialSize(Integer.parseInt(getDatasourceConfig(cmap, "initialSize", key)));    
 		        datasource.setMinIdle(Integer.parseInt(getDatasourceConfig(cmap, "minIdle", key)));    
-		        datasource.setMaxActive(Integer.parseInt(getDatasourceConfig(cmap, "maxActive", key)));    
-		        datasource.setTestOnBorrow(getDatasourceConfig(cmap, "testOnBorrow", key).equals("true")?true:false);    
-		        datasource.setTestOnReturn(getDatasourceConfig(cmap, "testOnReturn", key).equals("true")?true:false);    
-		        datasource.setTestWhileIdle(getDatasourceConfig(cmap, "testWhileIdle", key).equals("true")?true:false);    
+		        datasource.setMaxActive(Integer.parseInt(getDatasourceConfig(cmap, "maxActive", key)));
+		        //用来检测连接是否有效的sql，要求是一个查询语句，常用select 'x'。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用。
+		        datasource.setValidationQuery("select 1");
+		        //申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+		        datasource.setTestOnBorrow(getDatasourceConfig(cmap, "testOnBorrow", key).equals("true")?true:false);
+		        //归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+		        datasource.setTestOnReturn(getDatasourceConfig(cmap, "testOnReturn", key).equals("true")?true:false);
+		        //建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+		        datasource.setTestWhileIdle(getDatasourceConfig(cmap, "testWhileIdle", key).equals("true")?true:false);
+		        //有两个含义：
+		        //1) Destroy线程会检测连接的间隔时间，如果连接空闲时间大于等于minEvictableIdleTimeMillis则关闭物理连接。
+		        //2) testWhileIdle的判断依据，详细看testWhileIdle属性的说明
+		        datasource.setTimeBetweenEvictionRunsMillis(10000);
+		        //连接保持空闲而不被驱逐的最小时间
+		        datasource.setMinEvictableIdleTimeMillis(600000);
 		        try {    
 		            datasource.setFilters(getDatasourceConfig(cmap, "filters", key));    
 		        } catch (SQLException e) {    
