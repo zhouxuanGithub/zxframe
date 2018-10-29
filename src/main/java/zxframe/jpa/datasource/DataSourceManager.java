@@ -58,9 +58,9 @@ public class DataSourceManager {
 		        //有两个含义：
 		        //1) Destroy线程会检测连接的间隔时间，如果连接空闲时间大于等于minEvictableIdleTimeMillis则关闭物理连接。
 		        //2) testWhileIdle的判断依据，详细看testWhileIdle属性的说明
-		        datasource.setTimeBetweenEvictionRunsMillis(30000);
+		        datasource.setTimeBetweenEvictionRunsMillis(30*1000);
 		        //连接保持空闲而不被驱逐的最小时间
-		        datasource.setMinEvictableIdleTimeMillis(600000);
+		        datasource.setMinEvictableIdleTimeMillis(30*60*1000);
 		        try {    
 		            datasource.setFilters(getDatasourceConfig(cmap, "filters", key));    
 		        } catch (SQLException e) {    
