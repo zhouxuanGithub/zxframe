@@ -113,6 +113,7 @@ public class ZxFrameConfig {
             }
         } catch (Exception e) {  
             e.printStackTrace();  
+            System.err.println("zxframe.xml文件读取失败！");
         }  
 	}
 }
