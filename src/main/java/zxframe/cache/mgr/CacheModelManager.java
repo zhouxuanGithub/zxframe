@@ -153,7 +153,9 @@ public class CacheModelManager {
 					}
 				}
 			}
-			logger.info(sb.toString());
+			if(!cls.startsWith("zxframe")) {
+				logger.info(sb.toString());
+			}
 			return cm;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -180,7 +182,9 @@ public class CacheModelManager {
 			StringBuffer sb=new StringBuffer();
 			sb.append("load model >>>> ").append(cm.getGroup()).append(" ");
 			sb.append(cm.toString());
-			logger.info(sb.toString());
+			if(!cm.getGroup().startsWith("zxframe")) {
+				logger.info(sb.toString());
+			}
 			cacheModelMap.put(cm.getGroup(), cm);
 		}
 	}
