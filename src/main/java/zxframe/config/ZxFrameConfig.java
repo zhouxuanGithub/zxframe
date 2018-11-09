@@ -1,6 +1,5 @@
 package zxframe.config;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
