@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -43,7 +44,7 @@ public class ZxFrameConfig {
             //2.获取解析器  
             DocumentBuilder builder = factory.newDocumentBuilder();  
             //3.用解析器加载xml文档--->Document  
-            Document document = builder.parse(new File(ClassLoader.getSystemResource("zxframe.xml").getPath()));  
+            Document document = builder.parse(new ClassPathResource("zxframe.xml").getInputStream());  
             //4.获得zxframe
             Element root = document.getDocumentElement();
             if(root.getElementsByTagName("showsql").getLength()>0) {
