@@ -50,7 +50,7 @@ public class BaseDao {
 			//存值
 			ArrayList<Object> argsList=new ArrayList<Object>();
 			StringBuffer sql=new StringBuffer();
-			sql.append("insert into ").append(obj.getClass().getSimpleName()).append("(");
+			sql.append("insert into ").append(obj.getClass().getSimpleName().toLowerCase()).append("(");
 			Id ida = CacheModelManager.cacheIdAnnotation.get(group);
 			Field idField = CacheModelManager.cacheIdFieldMap.get(group);
 			Map<String, Field> fieldMap = CacheModelManager.cacheFieldsMap.get(group);
@@ -107,7 +107,7 @@ public class BaseDao {
 		}
 		if(obj==null) {
 			//尝试去数据库查
-			String sql="select * from "+clas.getSimpleName()+" where  "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ? ";
+			String sql="select * from "+clas.getSimpleName().toLowerCase()+" where  "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ? ";
 			obj=get(clas,sql,cm,id);
 			//缓存事务操作
 			if(cm!=null&&obj!=null) {
@@ -155,7 +155,7 @@ public class BaseDao {
 	public void delete(Class clas, Serializable id) {
 		String group=clas.getName();
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
-		String sql = "delete from "+clas.getSimpleName()+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
+		String sql = "delete from "+clas.getSimpleName().toLowerCase()+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
 		//执行删除
 		execute(SQLParsing.getDSName(clas, null ,null),sql,id);
 		if(cm!=null) {
@@ -199,7 +199,7 @@ public class BaseDao {
 			id = (Serializable) idField.get(obj);
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			StringBuffer sql=new StringBuffer();
-			sql.append("update ").append(obj.getClass().getSimpleName()).append(" set ");
+			sql.append("update ").append(obj.getClass().getSimpleName().toLowerCase()).append(" set ");
 			for (int i = 0; i < length; i++) {
 				String field = fields[i];
 				if((!field.equals(idField))&&(!field.equals(versionField))) {
