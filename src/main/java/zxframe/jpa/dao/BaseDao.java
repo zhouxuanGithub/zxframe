@@ -397,7 +397,7 @@ public class BaseDao {
 			// 1.打开连接
 			con = DataSourceManager.getCurrentWConnection(dsname);
 			if(con==null) {
-				throw new JpaRuntimeException("未开启事务，请使用service层操作数据，方法名前缀请使用配置值");
+				throw new JpaRuntimeException("不能成功获得数据库连接！");
 			}
 			// 2.获取语句对象
 			ps = con.prepareStatement(sql);
