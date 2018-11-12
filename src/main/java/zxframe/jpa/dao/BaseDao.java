@@ -293,7 +293,7 @@ public class BaseDao {
 		ResultSet rs=null;
 		try {
 			String cid = null;
-			ArrayList<T> list = new ArrayList<T>();
+			ArrayList<T> list = null;
 			String group=clas.getName();
 			if(cacheModel!=null&&cacheModel.isQueryCache()) {
 				//查询
