@@ -6,7 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -316,13 +318,13 @@ public class BaseDao {
 			while(rs.next()){
 				if(fieldMap==null) {
 					//系统对象装载 string intiger date ..等
-					list.add((T)rs.getObject(1));
+					list.add((T)getFValue(clas,rs,1,null));
 				}else {
 					T o = clas.newInstance();
 					iterator = fieldMap.keySet().iterator();
 					while(iterator.hasNext()) {
 						field = fieldMap.get(iterator.next());
-						field.set(o, rs.getObject(field.getName()));
+						field.set(o,getFValue(field.getType(),rs,-1,field.getName()));
 					}
 					list.add(o);
 				}
@@ -352,6 +354,59 @@ public class BaseDao {
 			throw new JpaRuntimeException(e);
 		}finally {
 			closeAll(con,null, rs);
+		}
+	}
+	private Object getFValue(Class<?> clas,ResultSet rs,int index,String fname) throws SQLException {
+		if(clas == int.class||clas == Integer.class) {
+			if(index>0) {
+				return rs.getInt(index);
+			}
+			return  rs.getInt(fname);
+		}else if(clas == float.class||clas == Float.class) {
+			if(index>0) {
+				return rs.getFloat(index);
+			}
+			return rs.getFloat(fname);
+		}else if(clas == double.class||clas == Double.class) {
+			if(index>0) {
+				return rs.getDouble(index);
+			}
+			return rs.getDouble(fname);
+		}else if(clas == long.class||clas == Long.class) {
+			if(index>0) {
+				return rs.getLong(index);
+			}
+			return rs.getLong(fname);
+		}else if(clas == boolean.class||clas == Boolean.class) {
+			if(index>0) {
+				return rs.getBoolean(index);
+			}
+			return rs.getBoolean(fname);
+		}else if(clas == byte.class || clas == Byte.class) {
+			if(index>0) {
+				return rs.getByte(index);
+			}
+			return rs.getByte(fname);
+		}else if(clas == String.class) {
+			if(index>0) {
+				return rs.getString(index);
+			}
+			return rs.getString(fname);
+		}else if(clas == Date.class) {
+			if(index>0) {
+				return rs.getDate(index);
+			}
+			return rs.getDate(fname);
+		}else if(clas == Time.class) {
+			if(index>0) {
+				return rs.getTime(index);
+			}
+			return rs.getTime(fname);
+		}else{
+			if(index>0) {
+				return rs.getObject(index);
+			}
+			return rs.getObject(fname);
 		}
 	}
 	/**
