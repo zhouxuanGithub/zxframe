@@ -23,7 +23,7 @@ public class JsonpResultUtil {
 			 r=JsonUtil.obj2Json(obj);
 		 }
 		 if(ZxFrameConfig.showlog) {
-			 logger.info("response print : "+r);
+			 logger.info("JsonpResult print : "+r);
 		 }
 		 writer.print(r);
 		 writer.flush();
