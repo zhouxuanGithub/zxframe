@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import zxframe.cache.transaction.CacheTransaction;
-import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.transaction.DataTransaction;
 import zxframe.util.CServerUUID;
 
@@ -43,9 +42,9 @@ public class ServiceAspect {
 		if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
 			String transactionId= ServiceAspect.getJoinPointUUID(joinPoint)+"_"+CServerUUID.getSequenceId();
 			Thread.currentThread().setName(transactionId);
-			if(ZxFrameConfig.showlog) {
-				logger.info("service aspect start:"+transactionId);
-			}
+//			if(ZxFrameConfig.showlog) {
+//				logger.info("service aspect start:"+transactionId);
+//			}
 			ct.begin();
 			if(transactionAopTread(joinPoint)) {
 				dt.begin(joinPoint);
@@ -59,9 +58,9 @@ public class ServiceAspect {
                     , returning = "result")  
     public void afterRunningMethod(JoinPoint joinPoint , Object result){ 
     	if(currentAopTreadName(joinPoint)) {
-    		if(ZxFrameConfig.showlog) {
-    			logger.info("service aspect commit:"+Thread.currentThread().getName());
-    		}
+//    		if(ZxFrameConfig.showlog) {
+//    			logger.info("service aspect commit:"+Thread.currentThread().getName());
+//    		}
     		if(transactionAopTread(joinPoint)) {
     			dt.commit(joinPoint);
     		}
@@ -78,9 +77,9 @@ public class ServiceAspect {
                       , throwing="ex")  
     public void afterThrowingMethod(JoinPoint joinPoint,Throwable ex){
     	if(currentAopTreadName(joinPoint)) {
-			if(ZxFrameConfig.showlog) {
-				logger.info("service aspect rollback:"+Thread.currentThread().getName());
-			}
+//			if(ZxFrameConfig.showlog) {
+//				logger.info("service aspect rollback:"+Thread.currentThread().getName());
+//			}
 			if(transactionAopTread(joinPoint)) {
 				dt.rollback(joinPoint);
 			}
@@ -89,9 +88,9 @@ public class ServiceAspect {
     	}
     } 
     private void clear(JoinPoint joinPoint) {
-  		if(ZxFrameConfig.showlog) {
-  			logger.info("service aspect clear:"+Thread.currentThread().getName());
-  		}
+//  		if(ZxFrameConfig.showlog) {
+//  			logger.info("service aspect clear:"+Thread.currentThread().getName());
+//  		}
   		//清理无用数据
   		if(transactionAopTread(joinPoint)) {
   			dt.clear();

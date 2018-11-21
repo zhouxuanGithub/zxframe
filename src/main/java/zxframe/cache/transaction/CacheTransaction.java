@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import zxframe.aop.ServiceAspect;
 import zxframe.cache.mgr.CacheManager;
 import zxframe.cache.mgr.CacheModelManager;
-import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.model.DataModel;
 
 /**
@@ -148,9 +147,9 @@ public class CacheTransaction {
 		try {
 			String transactionId = Thread.currentThread().getName();
 			transactionMap.remove(transactionId);
-			if(ZxFrameConfig.showlog) {
-				logger.info("cache transaction clear:"+transactionId+" cacheTransactionSize:"+transactionMap.size());
-			}
+//			if(ZxFrameConfig.showlog) {
+//				logger.info("cache transaction clear:"+transactionId+" cacheTransactionSize:"+transactionMap.size());
+//			}
 			cmm.close();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -46,6 +46,9 @@ public class ZxFrameConfig {
             Document document = builder.parse(new ClassPathResource("zxframe.xml").getInputStream());  
             //4.获得zxframe
             Element root = document.getDocumentElement();
+            if(root.getElementsByTagName("showlog").getLength()>0) {
+            	showlog=root.getElementsByTagName("showlog").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
+            }
             if(root.getElementsByTagName("showsql").getLength()>0) {
             	showsql=root.getElementsByTagName("showsql").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             }

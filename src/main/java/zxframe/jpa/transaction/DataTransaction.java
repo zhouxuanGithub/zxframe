@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.datasource.DataSourceManager;
 
 @Component
@@ -21,10 +20,10 @@ public class DataTransaction {
 	 * @param joinPoint 
 	 */
 	public void begin(JoinPoint joinPoint) {
-		if(ZxFrameConfig.showlog) {
-			String transactionId = Thread.currentThread().getName();
-			logger.info("db transaction start:"+transactionId);
-		}
+//		if(ZxFrameConfig.showlog) {
+//			String transactionId = Thread.currentThread().getName();
+//			logger.info("db transaction start:"+transactionId);
+//		}
 	}
 	/**
 	 * 提交事务
@@ -41,9 +40,9 @@ public class DataTransaction {
 					Connection connection = cmap.get(dsname);
 					if(connection!=null) {
 						connection.commit();//提交JDBC事务   
-						if(ZxFrameConfig.showlog) {
-							logger.info("db transaction commit:"+transactionId+" dsname:"+dsname+" dataTransactionSize:"+DataSourceManager.uwwcMap.size());
-						}
+//						if(ZxFrameConfig.showlog) {
+//							logger.info("db transaction commit:"+transactionId+" dsname:"+dsname+" dataTransactionSize:"+DataSourceManager.uwwcMap.size());
+//						}
 					}
 				} catch (SQLException e) {
 					//提交失败，记录日志？
@@ -67,9 +66,9 @@ public class DataTransaction {
 				if(connection!=null) {
 					try {
 						connection.rollback();
-						if(ZxFrameConfig.showlog) {
-							logger.info("db transaction rollback:"+transactionId+" dsname:"+dsname+" dataTransactionSize:"+DataSourceManager.uwwcMap.size());
-						}
+//						if(ZxFrameConfig.showlog) {
+//							logger.info("db transaction rollback:"+transactionId+" dsname:"+dsname+" dataTransactionSize:"+DataSourceManager.uwwcMap.size());
+//						}
 					} catch (Exception e) {
 						//回滚失败，记录日志？
 						logger.error("事务回滚失败",e);
@@ -94,9 +93,9 @@ public class DataTransaction {
 				if(connection!=null) {
 					try {
 						connection.close();
-						if(ZxFrameConfig.showlog) {
-							logger.info("db transaction close:"+transactionId+" dsname:"+dsname);
-						}
+//						if(ZxFrameConfig.showlog) {
+//							logger.info("db transaction close:"+transactionId+" dsname:"+dsname);
+//						}
 					} catch (SQLException e) {
 						//close失败，记录日志？
 						logger.error("事务close失败",e);
@@ -105,8 +104,8 @@ public class DataTransaction {
 			}
 			DataSourceManager.uwwcMap.remove(transactionId);
 		}
-		if(ZxFrameConfig.showlog) {
-			logger.info("db transaction clear:"+transactionId+" dataTransactionSize:"+DataSourceManager.uwwcMap.size());
-		}
+//		if(ZxFrameConfig.showlog) {
+//			logger.info("db transaction clear:"+transactionId+" dataTransactionSize:"+DataSourceManager.uwwcMap.size());
+//		}
 	}
 }

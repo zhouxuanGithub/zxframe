@@ -125,9 +125,9 @@ public class DataSourceManager {
 	 * @return
 	 */
 	public static Connection getCurrentWConnection(String dsname) {
-		if(ZxFrameConfig.showlog) {
-			logger.info("use write dsname:"+dsname);
-		}
+//		if(ZxFrameConfig.showlog) {
+//			logger.info("use write dsname:"+dsname);
+//		}
 		try {
 			String transactionId = Thread.currentThread().getName();
 			ConcurrentMap<String,Connection> map = DataSourceManager.uwwcMap.get(transactionId);
@@ -155,9 +155,9 @@ public class DataSourceManager {
 	 * @return
 	 */
 	public static Connection getRConnection(String dsname) {
-		if(ZxFrameConfig.showlog) {
-			logger.info("use read dsname:"+dsname);
-		}
+//		if(ZxFrameConfig.showlog) {
+//			logger.info("use read dsname:"+dsname);
+//		}
 		try {
 			ArrayList<DataSource> list = rDataSource.get(dsname);
 			if(list==null) {
