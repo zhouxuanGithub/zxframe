@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;  
  
 public class ZxFrameConfig {
-	//是否输出系统日志
+	//是否输出普通日志
 	public static boolean showlog=false;
 	//控制台输出缓存信息
 	public static boolean showcache=false;
