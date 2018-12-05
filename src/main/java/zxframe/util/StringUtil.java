@@ -671,9 +671,9 @@ public final class StringUtil {
 			+ "                                                  " + "                 sypszsjczc     cqytsjljjt   ";
 
 	public static String getGBKpy(String hzString) throws UnsupportedEncodingException {
-		if (hzString.equals("不详")) {
-			return "";
-		}
+//		if (hzString.equals("不详")) {
+//			return "";
+//		}
 		/*
 		 * 效率:处理大字符串(字符串有132055个byte,即70577个char)1000次，消耗时间44.474S.
 		 */
