@@ -2,9 +2,10 @@ package zxframe.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * 文件处理类
@@ -67,6 +68,9 @@ public final class FileUtil {
 	 * @param append 是否追加到文件末尾
 	 */
 	public static void inContext(String path, String split, String content,boolean append) {
+		inContext(path,split,content,append,"UTF-8");
+	}
+	public static void inContext(String path, String split, String content,boolean append,String charsetName) {
 		synchronized (LockStringUtil.getLock(path)) {
 			//目录创建
             File dc=new File(path.substring(0, path.lastIndexOf(File.separator)));
@@ -78,8 +82,8 @@ public final class FileUtil {
 			try {
 				File f = new File(path);
 				fos = new FileOutputStream(f,append);
-				fos.write(content.getBytes("UTF-8"));
-				fos.write(split.getBytes("UTF-8"));
+				fos.write(content.getBytes(charsetName));
+				fos.write(split.getBytes(charsetName));
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
@@ -104,10 +108,14 @@ public final class FileUtil {
 	 * @return
 	 */
 	public static String readFile(String path, String split) {
+		return readFile(path,split,"UTF-8");
+	}
+	public static String readFile(String path, String split,String charsetName) {
 		StringBuffer sb = new StringBuffer();
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader(path));
+			InputStreamReader isr = new InputStreamReader(new FileInputStream(path), charsetName);
+			reader = new BufferedReader(isr);
 			String line;
 			while ((line = reader.readLine()) != null) {
 				sb.append(line + split);
