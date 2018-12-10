@@ -735,7 +735,7 @@ public final class StringUtil {
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		String readFile = FileUtil.readFile("d:\\series.txt", "@@@@@","GBK");
+		String readFile = FileUtil.readFile("d:\\single.txt", "@@@@@","GBK");
 		String[] split = readFile.split("@@@@@");
 		for (int i = 0; i < split.length; i++) {
 			String v = split[i];
@@ -744,10 +744,13 @@ public final class StringUtil {
 			if(actorNames.indexOf("|")>-1) {
 				actorNames=actorNames.substring(0,actorNames.indexOf("|"));
 			}
-			actorNames=getGBKpy(actorNames);
-			String actorSearchNames = getGBKpy(vs[5]).replaceAll("\\|", ",");
-			String r=vs[0]+"	"+vs[1]+"	"+vs[2]+"	"+vs[3]+"	"+actorNames+"	"+vs[5]+"	"+actorSearchNames;
-			FileUtil.inContext("d:\\series2.txt","\n",r,true,"UTF-8");
+			String actorNamesPY=getGBKpy(actorNames);
+			String actorSearchNamesPY = getGBKpy(vs[5]).replaceAll("\\|", ",");
+			if(actorSearchNamesPY.length()>0) {
+				actorSearchNamesPY=","+actorSearchNamesPY+",";
+			}
+			String r=vs[0]+"	"+vs[1]+"	"+vs[2]+"	"+actorNames+"	"+actorNamesPY+"	"+vs[5]+"	"+actorSearchNamesPY;
+			FileUtil.inContext("d:\\single-n2.txt","\n",r,true,"UTF-8");
 		}
 		
 	}
