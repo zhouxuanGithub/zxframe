@@ -2,10 +2,14 @@ package zxframe.task;
 
 import java.util.Map;
 
+import zxframe.config.ZxFrameConfig;
 import zxframe.util.ServiceLocator;
 
 public class TimerManager {
 	public static void init() {
+		if(ZxFrameConfig.useZXTask==false) {
+			return;
+		}
 		Map<String, Object> beansWithAnnotationMap = ServiceLocator.getApplicationContext().getBeansWithAnnotation(org.springframework.context.annotation.Primary.class);  
 		Class<? extends Object> clazz = null;
 		for(Map.Entry<String, Object> entry : beansWithAnnotationMap.entrySet()){  
