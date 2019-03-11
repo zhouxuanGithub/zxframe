@@ -6,6 +6,8 @@
 	<showcache>false</showcache>
 	<!-- 使用DB配置properties，支持全服务热更新；SpringcloudConfigServer高可用成本较高，本功能只为降低成本，可选用 -->
 	<useDBProperties>false</useDBProperties>
+	<!-- 使用ZXtask -->
+	<useZXTask>false</useZXTask>
 	<!-- 使用自动扩容的zxdata -->
 	<useZXData>false</useZXData>
 	<!-- druid数据源配置 -->
