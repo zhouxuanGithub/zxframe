@@ -110,7 +110,7 @@ public class BaseDao {
 		if(obj==null) {
 			//尝试去数据库查
 			String sql="select * from "+clas.getSimpleName().toLowerCase()+" where  "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ? ";
-			obj=get(clas,sql,cm,id);
+			obj=get(clas,sql,cm,id);//单模型不能支持查询缓存，内部getList不会缓存结果
 			//缓存事务操作
 			if(cm!=null&&obj!=null) {
 				ct.put(cm, id.toString(), obj);

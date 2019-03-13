@@ -24,6 +24,7 @@ public class DataModel implements Serializable{
 	private boolean rcCache=false;
 	/**
 	 * group 缓存组，用于主动删除缓存使用
+	 * 单模型的group值为clazz.getName()
 	 */
 	private String group="default";
 	/**
