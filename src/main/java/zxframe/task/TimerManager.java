@@ -8,11 +8,11 @@ import zxframe.util.ServiceLocator;
 /**
  * 定时器管理
  * //每间隔1分钟执行一次RankingTimer
- * SystemResource.getTaskPool().scheduleWithFixedDelay(this,60*60,60*60,TimeUnit.SECONDS);
+ * ThreadResource.getTaskPool().scheduleWithFixedDelay(this,60*60,60*60,TimeUnit.SECONDS);
  * //每天定点执行某个任务(每晚23点59分59秒执行RankingTimer)
- * SystemResource.getTaskPool().scheduleWithFixedDelay(this,DateUtil.getDiffOfSecond(23,59,59),60*60*24,TimeUnit.SECONDS);
+ * ThreadResource.getTaskPool().scheduleWithFixedDelay(this,DateUtil.getDiffOfSecond(23,59,59),60*60*24,TimeUnit.SECONDS);
  * //每周某星期定点执行某个任务(每星期天晚23点59分59秒执行RankingTimer)
- * SystemResource.getTaskPool().scheduleWithFixedDelay(this,DateUtil.getDiffOfSecond(7,23,59,59),60*60*24*7,TimeUnit.SECONDS);
+ * ThreadResource.getTaskPool().scheduleWithFixedDelay(this,DateUtil.getDiffOfSecond(7,23,59,59),60*60*24*7,TimeUnit.SECONDS);
  * @author yp
  *
  */
