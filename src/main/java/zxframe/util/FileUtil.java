@@ -83,6 +83,9 @@ public final class FileUtil {
 				File f = new File(path);
 				fos = new FileOutputStream(f,append);
 				fos.write(content.getBytes(charsetName));
+				if(split==null) {
+					split=System.getProperty("line.separator");
+				}
 				fos.write(split.getBytes(charsetName));
 			} catch (Exception e) {
 				e.printStackTrace();
