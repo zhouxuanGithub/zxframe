@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import zxframe.config.ZxFrameConfig;
-import zxframe.jpa.dao.BaseDao;
 import zxframe.task.TaskRunnable;
 import zxframe.task.ThreadResource;
 import zxframe.task.Timer;
@@ -19,8 +18,6 @@ public class ZXDataTimer implements TaskRunnable{
 	private Logger logger = LoggerFactory.getLogger(ZXDataTimer.class);  
 	@Resource
 	private ZXDataService sZXDataService;
-	@Resource
-	private BaseDao baseDao;
 	public void run() {
 		try {
 			Integer t = sZXDataService.getMaxTableCode();

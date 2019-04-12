@@ -33,8 +33,8 @@ import zxframe.util.JsonUtil;
 
 
 @Repository
-public class BaseDao {
-	private Logger logger = LoggerFactory.getLogger(BaseDao.class);  
+public class MysqlTemplate {
+	private Logger logger = LoggerFactory.getLogger(MysqlTemplate.class);  
 	@Resource
 	private CacheTransaction ct;
 	@Resource

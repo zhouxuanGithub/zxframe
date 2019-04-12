@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import zxframe.cache.annotation.FnCache;
-import zxframe.jpa.dao.BaseDao;
+import zxframe.jpa.dao.MysqlTemplate;
 import zxframe.jpa.ex.DataExpiredException;
 import zxframe.util.DateUtil;
 import zxframe.zxdata.mapper.ZXDataMapper;
@@ -30,7 +30,7 @@ public class ZXDataService {
 	//表创建记录
 	private static Integer[] tableHas=new Integer[215];
 	@Resource
-	private BaseDao baseDao;
+	private MysqlTemplate baseDao;
 	public void insert(String id, String group, String value, int seconds) {
 		if(id==null||id.equals("")) {
 			id=UUID.randomUUID().toString();
