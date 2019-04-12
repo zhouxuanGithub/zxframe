@@ -65,7 +65,7 @@ public class SQLParsing {
 			Iterator<String> iterator = map.keySet().iterator();
 			while(iterator.hasNext()) {
 				String key = iterator.next();
-				sql=sql.replaceAll("@"+key+"@",String.valueOf(map.get(key)));
+				sql=sql.replaceAll("$"+key+"$",String.valueOf(map.get(key)));
 			}
 		}
 		return sql;
