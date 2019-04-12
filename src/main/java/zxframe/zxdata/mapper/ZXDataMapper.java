@@ -23,45 +23,45 @@ public class ZXDataMapper {
 	public static final String insertG2T=ZXData.class.getName()+"-insertG2T";
 	public DataModel initInsert() {
 		DataModel cm =new DataModel();
-		cm.setSql("insert into @table@ (id,g,v,createTime,eTime) values(?,?,?,?,?)");
+		cm.setSql("insert into $table$ (id,g,v,createTime,eTime) values(?,?,?,?,?)");
 		cm.setGroup(insert);
 		return cm;
 	}
 	public DataModel initUpdateById() {
 		DataModel cm =new DataModel();
-		cm.setSql("update @table@ set v=? , `version`=`version`+1 where id=? and version=?");
+		cm.setSql("update $table$ set v=? , `version`=`version`+1 where id=? and version=?");
 		cm.setGroup(updateById);
 		return cm;
 	}
 	public DataModel updateByIdNoLock() {
 		DataModel cm =new DataModel();
-		cm.setSql("update @table@ set v=? where id=?");
+		cm.setSql("update $table$ set v=? where id=?");
 		cm.setGroup(updateByIdNoLock);
 		return cm;
 	}
 	public DataModel initDeleteById() {
 		DataModel cm =new DataModel();
-		cm.setSql("delete from @table@ where id=?");
+		cm.setSql("delete from $table$ where id=?");
 		cm.setGroup(deleteById);
 		return cm;
 	}
 	public DataModel initSelectById() {
 		DataModel cm =new DataModel();
-		cm.setSql("select * from @table@ where id=? and (etime is null or etime > now())");
+		cm.setSql("select * from $table$ where id=? and (etime is null or etime > now())");
 		cm.setGroup(selectById);
 		cm.setResultClass(ZXData.class);
 		return cm;
 	}
 	public DataModel initSelectByGroup() {
 		DataModel cm =new DataModel();
-		cm.setSql("select * from @table@ where g=? and (etime is null or etime > now())");
+		cm.setSql("select * from $table$ where g=? and (etime is null or etime > now())");
 		cm.setGroup(selectByGroup);
 		cm.setResultClass(ZXData.class);
 		return cm;
 	}
 	public DataModel deleteByETime() {
 		DataModel cm =new DataModel();
-		cm.setSql("delete from @table@ where etime < now()");
+		cm.setSql("delete from $table$ where etime < now()");
 		cm.setGroup(deleteByETime);
 		cm.setResultClass(ZXData.class);
 		return cm;
