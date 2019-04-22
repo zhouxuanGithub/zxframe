@@ -22,8 +22,6 @@ public class ZxFrameConfig {
 	public static boolean showsql=false;
 	//是否使用数据库配置properties
 	public static boolean useDBProperties=false;
-	//是否使用自动扩容的zxdata
-	public static boolean useZXData=false;
 	//是否使用zxTask
 	public static boolean useZXTask=false;
 	//数据源公共配置
@@ -59,9 +57,6 @@ public class ZxFrameConfig {
             }
             if(root.getElementsByTagName("useDBProperties").getLength()>0) {
             	useDBProperties=root.getElementsByTagName("useDBProperties").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
-            }
-            if(root.getElementsByTagName("useZXData").getLength()>0) {
-            	useZXData=root.getElementsByTagName("useZXData").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             }
             if(root.getElementsByTagName("useZXTask").getLength()>0) {
             	useZXTask=root.getElementsByTagName("useZXTask").item(0).getFirstChild().getNodeValue().equals("true")?true:false;

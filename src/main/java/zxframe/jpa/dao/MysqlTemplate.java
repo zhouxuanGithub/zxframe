@@ -329,7 +329,11 @@ public class MysqlTemplate {
 					iterator = fieldMap.keySet().iterator();
 					while(iterator.hasNext()) {
 						field = fieldMap.get(iterator.next());
-						field.set(o,getFValue(field.getType(),rs,-1,field.getName()));
+						try {
+							field.set(o,getFValue(field.getType(),rs,-1,field.getName()));
+						} catch (Exception e) {
+							//不存在的就不进行放置
+						}
 					}
 					list.add(o);
 				}
