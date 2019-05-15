@@ -28,6 +28,7 @@ import zxframe.jpa.datasource.DataSourceManager;
 import zxframe.jpa.ex.DataExpiredException;
 import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.model.DataModel;
+import zxframe.jpa.model.NullObject;
 import zxframe.jpa.util.SQLParsing;
 import zxframe.util.JsonUtil;
 
@@ -105,20 +106,25 @@ public class MysqlTemplate {
 		//去事务或者缓存中去查
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm!=null) {
-			obj =(T) ct.get(group, id.toString());
+			Object o = ct.get(group, id.toString());
+			if(o!=null) {
+				if(o instanceof NullObject) {
+					return null;
+				}
+				obj =(T) o;
+			}
 		}
 		if(obj==null) {
 			//尝试去数据库查
 			String sql="select * from "+clas.getSimpleName().toLowerCase()+" where  "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ? ";
 			obj=get(clas,sql,cm,id);//单模型不能支持查询缓存，内部getList不会缓存结果
 			
-			// TODO: 缓存穿透处理
-//			if(obj==null) {
-//				obj=;
-//			}
 			//缓存事务操作
-			if(cm!=null&&obj!=null) {
+			if(obj!=null) {
 				ct.put(cm, id.toString(), obj);
+			}else {
+				//防缓存穿透处理
+				ct.put(cm, id.toString(), new NullObject());
 			}
 		}
 		return obj;
@@ -338,7 +344,7 @@ public class MysqlTemplate {
 					list.add(o);
 				}
 			}
-			//存放查询结果
+			//存放查询结果；list始终不为空，入缓存，防缓存穿透处理
 			if(list!=null&&cacheModel!=null&&cacheModel.isQueryCache()) {
 				ct.put(cacheModel, cid, list);
 			}
