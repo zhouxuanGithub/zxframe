@@ -1,0 +1,24 @@
+##应用名
+spring:
+  application:
+    name: unifiedauth
+    
+##服务配置
+server:
+  port: 8000
+  tomcat:
+    min-spare-threads: 100
+    accept-count: 1000
+    max-threads: 1000
+    max-connections: 5000
+    connection-timeout: 20000
+    uri-encoding: UTF-8
+    basedir: /opt/webapps/epg_forbid_delete/${spring.application.name}/${server.port}/logs/
+    
+##日志配置
+logging:
+  path: ${server.tomcat.basedir}
+  config: classpath:logging.xml
+  level:
+    root: ERROR #TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+    

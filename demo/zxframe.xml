@@ -8,8 +8,6 @@
 	<useDBProperties>false</useDBProperties>
 	<!-- 使用ZXtask -->
 	<useZXTask>false</useZXTask>
-	<!-- 使用自动扩容的zxdata -->
-	<useZXData>false</useZXData>
 	<!-- druid数据源配置 -->
 	<druid>
 		<!-- 公共数据源配置 -->
