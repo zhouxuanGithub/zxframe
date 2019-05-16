@@ -364,6 +364,9 @@ public class MysqlTemplate {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			if(ZxFrameConfig.showsql) {
+				logger.info("result :"+JsonUtil.obj2Json(list));
+			}
 			return list;
 		} catch (Exception e) {
 			throw new JpaRuntimeException(e);
