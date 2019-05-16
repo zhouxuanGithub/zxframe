@@ -61,7 +61,7 @@ public class DataModel implements Serializable{
 	/**
 	 * 本地缓存里的数据每次都是克隆取出，一份新的数据
 	 */
-	private boolean lcCacheDataClone=true;
+	private boolean lcCacheDataClone=false;
 	
 	public boolean isLcCache() {
 		return lcCache;
