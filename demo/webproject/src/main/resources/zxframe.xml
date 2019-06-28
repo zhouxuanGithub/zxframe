@@ -7,20 +7,22 @@
 	<!-- 使用DB配置properties，支持全服务热更新；SpringcloudConfigServer高可用成本较高，本功能只为降低成本，可选用 -->
 	<useDBProperties>false</useDBProperties>
 	<!-- 使用ZXtask -->
-	<useZXTask>false</useZXTask>
+	<useZXTask>true</useZXTask>
+	<!-- 使用自动扩容的zxdata -->
+	<useZXData>false</useZXData>
 	<!-- druid数据源配置 -->
 	<druid>
 		<!-- 公共数据源配置 -->
 		<common>
 			<username>root</username>
-			<password>password</password>
+			<password>mysql*()</password>
 			<pattern>rw</pattern><!-- rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源 -->
 			<driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
 			<type>com.alibaba.druid.pool.DruidDataSource</type>
 			<filters>stat</filters>
-			<initialSize>1</initialSize>
-			<minIdle>1</minIdle>
-			<maxActive>50</maxActive>
+			<initialSize>10</initialSize>
+			<minIdle>10</minIdle>
+			<maxActive>200</maxActive>
 			<testOnBorrow>false</testOnBorrow>
 			<testOnReturn>false</testOnReturn>
 			<testWhileIdle>true</testWhileIdle>
@@ -29,17 +31,11 @@
 		<datasources>
 			<datasource>
 				<dsname>default</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/gd10_wdkp?characterEncoding=UTF-8&useSSL=false]]></url>
+				<url><![CDATA[jdbc:mysql://117.139.143.16:3307?characterEncoding=UTF-8&useSSL=false]]></url>
 			</datasource>
 		</datasources>
 	</druid>
-	<!-- 缓存配置 -->
-	<cache>
-		<redis>
-			<open>false</open><!-- 是否开启远程缓存 -->
-			<keyPrefix>wdkp</keyPrefix><!-- 所有的key前缀 -->
-			<clusters>127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005,127.0.0.1:7006</clusters>
-			<password>myredispassword</password>
-		</redis>
-	</cache>
 </zxframe>
+<!-- 
+	框架介绍：https://github.com/zhouxuanGithub
+ -->

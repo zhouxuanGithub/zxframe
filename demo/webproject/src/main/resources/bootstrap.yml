@@ -1,0 +1,28 @@
+#eureka:
+#  instance:
+#    hostname: 127.0.0.1 #调用端访问host
+#    instance-id: ${eureka.instance.hostname}:${server.port} #eureka注册显示id
+#  client:
+#    healthcheck:
+#      enabled: true
+#    serviceUrl:
+#      defaultZone: http://root:root1000@119.27.166.219:1000/eureka
+
+#feign: 
+#  hystrix:
+#    enabled: true ##默认没打开，需要打开
+    
+#hystrix:  
+#  command:  
+#      default:  
+#        execution:  
+#          isolation:  
+#            thread:  
+#              timeoutInMilliseconds: 15000 ##断路时间
+
+#ribbon:
+#  OkToRetryOnAllOperations: false ##是否所有操作都重试
+#  ReadTimeout: 5000
+#  ConnectTimeout: 2000
+#  MaxAutoRetriesNextServer: 2 #切换实例的重试次数 
+#  MaxAutoRetries: 1 #对当前实例的重试次数

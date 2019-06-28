@@ -1,11 +1,11 @@
 ##应用名
 spring:
   application:
-    name: unifiedauth
+    name: webproject
     
 ##服务配置
 server:
-  port: 8000
+  port: 8080
   tomcat:
     min-spare-threads: 100
     accept-count: 1000
