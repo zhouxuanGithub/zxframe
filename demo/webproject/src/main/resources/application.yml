@@ -5,7 +5,7 @@ spring:
     
 ##服务配置
 server:
-  port: 8080
+  port: 8888
   tomcat:
     min-spare-threads: 100
     accept-count: 1000
@@ -20,5 +20,5 @@ logging:
   path: ${server.tomcat.basedir}
   config: classpath:logging.xml
   level:
-    root: ERROR #TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+    root: INFO #TRACE < DEBUG < INFO < WARN < ERROR < FATAL
     
