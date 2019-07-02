@@ -56,7 +56,7 @@ public class DataModel implements Serializable{
 	private Class resultClass;
 	/**
 	 * 使用的数据源class
-	 * 使用数据源的优先顺序1.dsClass 2.resultClass 3.解析SQL 4.默认数据源
+	 * 使用数据源的优先顺序1.dsClass 2.resultClass 3.默认数据源
 	 */
 	private Class dsClass;
 	/**
