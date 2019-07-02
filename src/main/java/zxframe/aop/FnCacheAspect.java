@@ -1,11 +1,14 @@
 package zxframe.aop;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -36,8 +39,8 @@ public class FnCacheAspect {
 	public Object aroundMethod(ProceedingJoinPoint pjd) throws Throwable{
 		Object result = null;
 		FnCache sfc = getServiceFnCache(pjd);
-		String group=((FnCache)sfc).group();
-		String key=getCacheKey(pjd);
+		String group=sfc.group();
+		String key=getCacheKey(pjd,sfc);
 		try {
 			result=lcm.get(group,key);
 			if(result==null) {
@@ -65,12 +68,17 @@ public class FnCacheAspect {
 		return result;
 	}
 	//获得缓存key
-	private String getCacheKey(ProceedingJoinPoint pjd) {
+	private String getCacheKey(ProceedingJoinPoint pjd,FnCache sfc) {
+		Signature signature = pjd.getSignature();
+		MethodSignature methodSignature = (MethodSignature) signature;
+		String[] ps = methodSignature.getParameterNames();
+		Object[] args = pjd.getArgs();
 		String startKey = ServiceAspect.getJoinPointUUID(pjd);
 		StringBuffer keySbs=new StringBuffer();
 		keySbs.append(startKey);
-		Object[] args = pjd.getArgs();
+		List<String> asList = Arrays.asList(sfc.key());
 		for (int i = 0; i < args.length; i++) {
+			if(sfc.key().length==0 || asList.contains(ps[i]))
 			keySbs.append("-");
 			keySbs.append(JsonUtil.obj2Json(pjd.getArgs()[i]));
 		}
