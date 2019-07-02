@@ -1,5 +1,8 @@
 package zxframe.config;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -10,8 +13,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;  
+import org.w3c.dom.NodeList;
+
+import zxframe.cache.mgr.CacheModelManager;
+import zxframe.jpa.model.DataModel;  
  
 public class ZxFrameConfig {
 	//是否输出普通日志
@@ -43,7 +50,7 @@ public class ZxFrameConfig {
             //2.获取解析器  
             DocumentBuilder builder = factory.newDocumentBuilder();  
             //3.用解析器加载xml文档--->Document  
-            Document document = builder.parse(new ClassPathResource("zxframe.xml").getInputStream());  
+            Document document = builder.parse(new ClassPathResource("zxframe.xml").getInputStream());
             //4.获得zxframe
             Element root = document.getDocumentElement();
             if(root.getElementsByTagName("showlog").getLength()>0) {
@@ -118,5 +125,60 @@ public class ZxFrameConfig {
             e.printStackTrace();  
             System.err.println("zxframe.xml文件读取失败！");
         }  
+	}
+	public static void loadZxMapperConfig() {
+		try {
+			ClassPathResource classPathResource = new ClassPathResource("mapper");
+			if(!classPathResource.exists()) {
+				return;
+			}
+			File files [] = classPathResource.getFile().listFiles(new FilenameFilter() {
+			    @Override
+			    public boolean accept(File dir, String name) {
+			        return name.endsWith(".xml");
+			    }
+			});;
+			if(files!=null && files.length>0) {
+				for(int i = 0;i<files.length;i++){
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		            DocumentBuilder builder = factory.newDocumentBuilder();  
+					Document document = builder.parse(files[i]);
+					Element root = document.getDocumentElement();
+					NodeList datasourceNodeList = root.getElementsByTagName("sql");
+	                for(int j=0;j<datasourceNodeList.getLength();j++ ) {
+	                	if(datasourceNodeList.item(j).getNodeType() != Node.ELEMENT_NODE){
+	                		continue;
+	                	}
+	                	Element item = (Element)datasourceNodeList.item(j);
+	                	NamedNodeMap attributes = item.getAttributes();
+	                	DataModel dm=new DataModel();
+	                	dm.setGroup(attributes.getNamedItem("group").getNodeValue());
+	                	dm.setLcCache(attributes.getNamedItem("lcCache")==null?false:attributes.getNamedItem("lcCache").getNodeValue().equals("true"));
+	                	dm.setRcCache(attributes.getNamedItem("rcCache")==null?false:attributes.getNamedItem("rcCache").getNodeValue().equals("true"));
+	                	dm.setStrictRW(attributes.getNamedItem("strictRW")==null?false:attributes.getNamedItem("strictRW").getNodeValue().equals("true"));
+	                	dm.setLcCacheDataClone(attributes.getNamedItem("lcCacheDataClone")==null?false:attributes.getNamedItem("lcCacheDataClone").getNodeValue().equals("true"));
+	                	if(attributes.getNamedItem("rcETime")!=null) {
+	                		dm.setRcETime(Integer.parseInt(attributes.getNamedItem("rcETime").getNodeValue()));
+	                	}
+	                	if(attributes.getNamedItem("resultClass")!=null) {
+	                		dm.setResultClass(Class.forName(attributes.getNamedItem("resultClass").getNodeValue()));
+	                	}
+	                	if(attributes.getNamedItem("dsClass")!=null) {
+	                		dm.setResultClass(Class.forName(attributes.getNamedItem("dsClass").getNodeValue()));
+	                	}
+	                	if(attributes.getNamedItem("flushOnExecute")!=null) {
+	                		String nodeValue = attributes.getNamedItem("flushOnExecute").getNodeValue();
+	                		String[] split = nodeValue.split(",");
+	                		for (int k = 0; k < split.length; k++) {
+	                			dm.addFlushOnExecute(split[k]);
+							}
+	                	}
+	                	CacheModelManager.addQueryDataModel(dm);
+	                }
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

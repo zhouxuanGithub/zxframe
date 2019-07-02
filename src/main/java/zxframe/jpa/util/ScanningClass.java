@@ -36,5 +36,7 @@ public class ScanningClass extends ClassLoader {
 				e.printStackTrace();
 			}
 		}
+		//读取mapper文件
+		
 	}
 }
