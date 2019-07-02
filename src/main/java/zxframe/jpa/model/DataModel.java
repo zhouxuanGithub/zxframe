@@ -28,9 +28,9 @@ public class DataModel implements Serializable{
 	 */
 	private String group="default";
 	/**
-	 * 远程缓存缓存时长，单位秒，默认2小时
+	 * 远程缓存缓存时长，单位秒
 	 */
-	private int rcETime=7200;
+	private int rcETime=1200;
 	/**
 	 * 是否严格读写
 	 * 严格读写，存在缓存组删除就得开启
