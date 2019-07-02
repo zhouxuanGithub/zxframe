@@ -47,6 +47,7 @@ public class DataModel implements Serializable{
 	private String sql;
 	/**
 	 * 执行此数据模型，则删除对应的组
+	 * 可传Class对象，具体组String
 	 */
 	private List<Object> flushOnExecute;
 	/**
@@ -55,7 +56,7 @@ public class DataModel implements Serializable{
 	private Class resultClass;
 	/**
 	 * 使用的数据源class
-	 * 使用数据源的优先顺序1.dsClass 2.resultClass 3.解析SQL
+	 * 使用数据源的优先顺序1.dsClass 2.resultClass 3.解析SQL 4.默认数据源
 	 */
 	private Class dsClass;
 	/**
