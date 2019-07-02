@@ -9,7 +9,7 @@ public class FnCacheDataModel {
 	public DataModel initZxframeFdcacheDefault() {
 		DataModel cm =new DataModel();
 		cm.setGroup(zxframeFncacheDefault);
-		cm.setLcCache(true);
+		cm.setLcCache(false);
 		cm.setRcCache(true);
 		return cm;
 	}
