@@ -4,12 +4,11 @@
 	<showsql>false</showsql>
 	<!-- 控制台输出缓存日志 -->
 	<showcache>false</showcache>
-	<!-- 使用DB配置properties，支持全服务热更新；SpringcloudConfigServer高可用成本较高，本功能只为降低成本，可选用 -->
+	<!-- 使用DB配置properties，支持全服务热更新，需开启useZXTask -->
+	<!-- SpringcloudConfigServer高可用成本较高，本功能只为降低成本，可选用 -->
 	<useDBProperties>false</useDBProperties>
-	<!-- 使用ZXtask -->
+	<!-- 使用ZXtask定时器 -->
 	<useZXTask>true</useZXTask>
-	<!-- 使用自动扩容的zxdata -->
-	<useZXData>false</useZXData>
 	<!-- druid数据源配置 -->
 	<druid>
 		<!-- 公共数据源配置 -->
@@ -19,7 +18,7 @@
 			<pattern>rw</pattern><!-- rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源 -->
 			<driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
 			<type>com.alibaba.druid.pool.DruidDataSource</type>
-			<filters>stat</filters>
+			<filters>stat</filters><!-- 监控统计:stat, 防御sql注入:wall  -->
 			<initialSize>10</initialSize>
 			<minIdle>10</minIdle>
 			<maxActive>200</maxActive>
@@ -35,6 +34,17 @@
 			</datasource>
 		</datasources>
 	</druid>
+	<!-- 缓存配置 -->
+	<!-- 
+	<cache>
+		<redis>
+			<open>false</open>
+			<keyPrefix>wdkp</keyPrefix>
+			<clusters>119.27.166.219:7001,119.27.166.219:7002,119.27.166.219:7003,119.27.166.219:7004,119.27.166.219:7005,119.27.166.219:7006</clusters>
+			<password>myredispassword</password>
+		</redis>
+	</cache>
+	 -->
 </zxframe>
 <!-- 
 	框架介绍：https://github.com/zhouxuanGithub

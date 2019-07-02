@@ -8,6 +8,13 @@
 	<defaultCache 
 		maxElementsInMemory="5000" memoryStoreEvictionPolicy="LRU" 
 		maxElementsOnDisk="50000" overflowToDisk="true" diskSpoolBufferSizeMB="300"
-		eternal="false" timeToIdleSeconds="18000" timeToLiveSeconds="72000"
+		eternal="false" timeToIdleSeconds="600" timeToLiveSeconds="1200"
 		diskPersistent="false" diskExpiryThreadIntervalSeconds="300"/>
-</ehcache>  
+	<!-- 
+	<cache name="group" 
+		maxElementsInMemory="5000" memoryStoreEvictionPolicy="LRU" 
+		maxElementsOnDisk="50000" overflowToDisk="true" diskSpoolBufferSizeMB="300"
+		eternal="false" timeToIdleSeconds="600" timeToLiveSeconds="1200"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="300" />
+	 -->
+</ehcache> 
