@@ -172,6 +172,7 @@ public class ZxFrameConfig {
 	                			dm.addFlushOnExecute(split[k]);
 							}
 	                	}
+	                	dm.setSql(item.getTextContent());
 	                	CacheModelManager.addQueryDataModel(dm);
 	                }
 				}
