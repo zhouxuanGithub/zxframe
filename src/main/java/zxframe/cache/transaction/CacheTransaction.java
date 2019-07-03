@@ -125,7 +125,7 @@ public class CacheTransaction {
 					while(keys.hasMoreElements()) {
 						String id = keys.nextElement();
 						Object value = kvMap.get(id);
-						cmm.put(CacheModelManager.getDataModelByGroup(group), id, value);
+						cmm.put(group, id, value);
 					}
 				}
 			}else {

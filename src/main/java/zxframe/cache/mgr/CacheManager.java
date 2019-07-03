@@ -27,7 +27,8 @@ public class CacheManager {
 	RedisCacheManager rcm;
 	@Resource
 	LocalCacheManager lcm;
-	public void put(DataModel cm,String id,Object value) {
+	public void put(String group,String key,Object value) {
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			logger.error("CacheManager.put失败,DataModel不能为空");
 			return;
@@ -37,27 +38,27 @@ public class CacheManager {
 			return;
 		}
 		if(cm.isLcCache()) {
-			lcm.put(cm.getGroup(), id, value);
+			lcm.put(cm.getGroup(), key, value);
 		}
 		if(cm.isRcCache()) {
-			rcm.put(cm.getGroup(), id, value);
+			rcm.put(cm.getGroup(), key, value);
 		}
 	}
 
-	public Object get(String group,String id) {
+	public Object get(String group,String key) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm.isLcCache()&&cm.isRcCache()) {
-			Object o = lcm.get(group, id);
+			Object o = lcm.get(group, key);
 			if(o==null) {
-				o=rcm.get(group, id);
+				o=rcm.get(group, key);
 				//填补本地缓存
-				lcm.put(group, id, o);
+				lcm.put(group, key, o);
 			}
 			return o;
 		}else if(cm.isLcCache()) {
-			return lcm.get(group, id);
+			return lcm.get(group, key);
 		}else if(cm.isRcCache()) {
-			return rcm.get(group, id);
+			return rcm.get(group, key);
 		}
 		return null;
 	}
