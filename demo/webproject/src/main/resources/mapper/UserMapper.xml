@@ -12,7 +12,10 @@
 	strictRW：存在缓存组删除就得开启；不存在缓存组删除就可以关闭，提升效率；默认值：false
  -->
 <mapper>
-	<sql group="" >
-		
+	<sql group="test" >
+		select 
+			*
+		sql
+			wehr
 	</sql>
 </mapper>

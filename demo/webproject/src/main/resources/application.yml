@@ -1,17 +1,17 @@
 ##应用名
-spring:
+spring: 
   application:
     name: webproject
     
 ##服务配置
-server:
+server: 
   port: 8888
   tomcat:
     min-spare-threads: 100
     accept-count: 1000
     max-threads: 1000
     max-connections: 5000
-    connection-timeout: 20000
+    connection-timeout: 10000
     uri-encoding: UTF-8
     basedir: /opt/webapps/epg_forbid_delete/${spring.application.name}/${server.port}/logs/
     
