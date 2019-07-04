@@ -39,9 +39,9 @@
 	<cache>
 		<redis>
 			<open>false</open>
-			<keyPrefix>wdkp</keyPrefix>
-			<clusters>119.27.166.219:7001,119.27.166.219:7002,119.27.166.219:7003,119.27.166.219:7004,119.27.166.219:7005,119.27.166.219:7006</clusters>
-			<password>myredispassword</password>
+			<keyPrefix>20190704</keyPrefix>
+			<clusters>ip:port,ip:port,ip:port,ip:port,ip:port,ip:port</clusters>
+			<password></password>
 		</redis>
 	</cache>
 	 -->
