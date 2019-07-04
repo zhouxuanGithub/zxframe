@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zxframe>
 	<!-- 控制台输出sql -->
-	<showsql>false</showsql>
+	<showsql>true</showsql>
 	<!-- 控制台输出缓存日志 -->
-	<showcache>false</showcache>
+	<showcache>true</showcache>
 	<!-- 使用DB配置properties，支持全服务热更新，需开启useZXTask -->
 	<!-- SpringcloudConfigServer高可用成本较高，本功能只为降低成本，可选用 -->
 	<useDBProperties>true</useDBProperties>
@@ -30,7 +30,7 @@
 		<datasources>
 			<datasource>
 				<dsname>default</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300?characterEncoding=UTF-8&useSSL=false]]></url>
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false]]></url>
 			</datasource>
 		</datasources>
 	</druid>
