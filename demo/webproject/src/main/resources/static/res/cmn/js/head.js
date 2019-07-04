@@ -6,7 +6,7 @@ document.write('<meta name="renderer" content="webkit|ie-comp|ie-stand"/>');
 document.write('<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>');
 document.write('<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />');
 document.write('<meta http-equiv="Cache-Control" content="no-siteapp" />');
-document.write('<title>数据分析平台</title>');
+document.write('<title>zxframe demo</title>');
 document.write('<link rel="stylesheet" type="text/css" href="/res/h-ui/static/h-ui/css/H-ui.min.css" />');
 document.write('<link rel="stylesheet" type="text/css" href="/res/h-ui/static/h-ui.admin/css/H-ui.admin.css" />');
 document.write('<link rel="stylesheet" type="text/css" href="/res/h-ui/lib/Hui-iconfont/1.0.8/iconfont.css" />');
