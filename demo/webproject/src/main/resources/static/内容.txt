@@ -1,0 +1,18 @@
+springboot
+	为什么选择springboot
+	创建，启动，打包，运行
+	普通的请求和响应
+	内置tomcat优化
+	yml配置文件
+zxframe
+	支持读写分离，分库分表，数据源熔断
+	普通的增删改查，hibernate的便捷，又有mybatis的风格
+	缓存：DB层三级缓存，方法级别缓存
+		缓存穿透，缓存击穿，缓存雪崩讲解
+		布隆算法，分布式锁
+	乐观锁版本控制：异常后DB和缓存不提交
+	全服务配置热更新
+	通用缓存接口，方便使用
+		zxframe.cache.mgr.CacheManager
+druid
+	数据源监控
