@@ -81,7 +81,7 @@ public class RedisCacheManager {
 		if(cm.isRcCache()) {
 			try {
 				key = getNewKey(cm,key);
-				cluster.setex(key.getBytes(),cm.getRcETime(),SerializeUtils.serialize(value));
+				cluster.setex(key.getBytes(),cm.getRcETime()+MathUtil.nextInt(60),SerializeUtils.serialize(value));//60秒随机间隔，防止缓存雪崩
 				if(ZxFrameConfig.showcache) {
 					logger.info("redis put group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value));
 				}
