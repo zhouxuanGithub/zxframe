@@ -19,7 +19,7 @@
 			<driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
 			<type>com.alibaba.druid.pool.DruidDataSource</type>
 			<filters>stat</filters><!-- 监控统计:stat, 防御sql注入:wall  -->
-			<initialSize>10</initialSize>
+			<initialSize>1</initialSize>
 			<minIdle>10</minIdle>
 			<maxActive>200</maxActive>
 			<testOnBorrow>false</testOnBorrow>
