@@ -19,14 +19,14 @@ public class PropertiesMapper {
 	public static final String initPropertiesTableInfo=Properties.class.getName()+"-initPropertiesTableInfo";
 	public DataModel initPropertiesAll() {
 		DataModel cm =new DataModel();
-		cm.setSql("select * from Properties");
+		cm.setSql("select * from properties");
 		cm.setGroup(propertiesAll);
 		cm.setResultClass(Properties.class);
 		return cm;
 	}
 	public DataModel initPropertiesByKey() {
 		DataModel cm =new DataModel();
-		cm.setSql("select value from Properties where `key`= ?");
+		cm.setSql("select value from properties where `key`= ?");
 		cm.setGroup(propertiesByKey);
 		cm.setDsClass(Properties.class);
 		cm.setResultClass(String.class);
@@ -35,14 +35,14 @@ public class PropertiesMapper {
 	public DataModel initPropertiesUpdateValue() {
 		DataModel cm =new DataModel();
 		cm.setGroup(propertiesUpdateValue);
-		cm.setSql("update Properties set `value`=? where `key`=?");
+		cm.setSql("update properties set `value`=? where `key`=?");
 		cm.setDsClass(Properties.class);
 		return cm;
 	}
 	public DataModel initpropertiesVersionAdd() {
 		DataModel cm =new DataModel();
 		cm.setGroup(propertiesVersionAdd);
-		cm.setSql("update Properties set `value`=`value`+1 where `key`='system-version'");
+		cm.setSql("update properties set `value`=`value`+1 where `key`='system-version'");
 		cm.setDsClass(Properties.class);
 		return cm;
 	}
