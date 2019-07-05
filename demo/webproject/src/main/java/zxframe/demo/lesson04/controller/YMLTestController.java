@@ -10,6 +10,7 @@ import zxframe.demo.lesson04.model.ConfigDemo;
 
 @RestController
 @RequestMapping("lesson04")
+//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用
 public class YMLTestController {
 	@Value("${ymltest}")
 	private String ymltest;
