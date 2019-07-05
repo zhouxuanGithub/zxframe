@@ -1,0 +1,11 @@
+<h3>tomcat优化：我们最好能默认较优的配置，防止运维遗漏配置项</h3>
+<h3>acceptCount，maxConnections，maxThreads，minSpareThreads</h3>
+<ul>
+<li>我们可以把tomcat比做一个电影院，流程是取号、买票、观影，acceptCount比作前厅(容纳取到号的人)、maxConnections比作大厅（容纳买到票的人）、maxThreads比作影厅（可以理解一个影厅只容纳一个人，因为一个线程同时只处理一个请求），以下场景是针对已达到maxConnections最大值来讨论的</li>
+<li>取号：如果前厅人数已达到acceptCount，则拿号失败，会得到Connection refused connect的回复信息。反之则会进入前厅，等待买票。</li>
+<li>买票：当大厅人数小于maxConnections时，前厅的人就可以进入大厅</li>
+<li>观影：当影厅的人离开时，大厅的部分人能进入影厅，一般来讲大厅的容量要远大于影厅的数量</li>
+<li>minSpareThreads:表示即使没有人使用(观影)也开这么多空线程等待，默认值为10</li>
+<li>建议值见：application.yml</li>
+</ul>
+
