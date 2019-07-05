@@ -148,7 +148,7 @@ public class MysqlTemplate {
 	public Object get(String group,Map<String,String> map,Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
-			throw new JpaRuntimeException("请配置数据模型，可能你忘了加@DataMapper注解，group:"+group);
+			throw new JpaRuntimeException("请配置数据模型，空group:"+group);
 		}
 		return get(cm.getResultClass(),SQLParsing.replaceSQL(cm.getSql(),map),cm,args);
 	}
@@ -170,7 +170,7 @@ public class MysqlTemplate {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		String sql = "delete from "+clas.getSimpleName().toLowerCase()+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
 		//执行删除
-		execute(SQLParsing.getDSName(clas, null ,null),sql,id);
+		execute(SQLParsing.getDSName(clas, null ,null),sql,cm,id);
 		if(cm!=null) {
 			ct.remove(group, id.toString());
 		}
