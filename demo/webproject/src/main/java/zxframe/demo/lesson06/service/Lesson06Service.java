@@ -33,7 +33,7 @@ public class Lesson06Service {
 //			//对象更新
 //			mysqlTemplate.update(u2);
 //			//删除
-//			//mysqlTemplate.delete(User.class, id);
+//			mysqlTemplate.delete(User.class, "68237481-3c0d-461a-bc19-e59f694ba76a");
 //		}
 		//更新，不传参
 //		mysqlTemplate.execute("lesson06MapperUpdate");
