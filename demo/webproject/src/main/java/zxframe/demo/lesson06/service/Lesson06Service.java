@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import zxframe.demo.lesson06.model.User;
 import zxframe.jpa.dao.MysqlTemplate;
+import zxframe.util.JsonUtil;
 import zxframe.util.MathUtil;
 
 @Service
@@ -42,6 +43,10 @@ public class Lesson06Service {
 //		Map map =new HashMap<>();
 //		map.put("age",19);
 //		mysqlTemplate.execute("lesson06MapperUpdateV3",map);
+		//更新，对象转Map传参
+//		User u3 =new User();
+//		u3.setAge(100);
+//		mysqlTemplate.execute("lesson06MapperUpdateV3",JsonUtil.obj2Map(u3));
 		return mysqlTemplate.getList("lesson06MapperSelect");
 	}
 }
