@@ -15,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 
+import zxframe.aop.ServiceAspect;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.ex.JpaRuntimeException;
+import zxframe.util.JsonUtil;
 import zxframe.util.MathUtil;
 
 public class DataSourceManager {
@@ -132,8 +134,9 @@ public class DataSourceManager {
 			String transactionId = Thread.currentThread().getName();
 			ConcurrentMap<String,Connection> map = DataSourceManager.uwwcMap.get(transactionId);
 			if(map==null) {
-				map=new ConcurrentHashMap<String,Connection>();
-				DataSourceManager.uwwcMap.put(transactionId, map);
+				throw new JpaRuntimeException("请将对数据库的增删改操作放在Service层的指定方法名前缀中【"+JsonUtil.obj2Json(ServiceAspect.requiredTx)+"】");
+//				map=new ConcurrentHashMap<String,Connection>();
+//				DataSourceManager.uwwcMap.put(transactionId, map);
 			}
 			Connection connection = map.get(dsname);
 			if(connection==null) {

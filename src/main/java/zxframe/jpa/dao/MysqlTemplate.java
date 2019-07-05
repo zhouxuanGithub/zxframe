@@ -192,21 +192,21 @@ public class MysqlTemplate {
 			int length=fields.length;
 			Map<String, Field> fieldMap = CacheModelManager.cacheFieldsMap.get(group);
 			if(length<=0) {
-				throw new JpaRuntimeException("更新提示：请填写更新字段，指定想更新的字段！列如：update(user,\"name\",\"age\");");
+//				throw new JpaRuntimeException("更新提示：请填写更新字段，指定想更新的字段！列如：update(user,\"name\",\"age\");");
 				//没传参就进行全部更新
-//				length=fieldMap.size();
-//				fields=new String[length];
-//				Iterator<String> iterator = fieldMap.keySet().iterator();
-//				int i=0;
-//				while(iterator.hasNext()) {
-//					fields[i++]=iterator.next();
-//				}
+				length=fieldMap.size();
+				fields=new String[length];
+				Iterator<String> iterator = fieldMap.keySet().iterator();
+				int i=0;
+				while(iterator.hasNext()) {
+					fields[i++]=iterator.next();
+				}
 			}
 			//执行更新
 			ArrayList<Object> argsList=new ArrayList<Object>();
 			Field idField = CacheModelManager.cacheIdFieldMap.get(group);
 			if(idField==null) {
-				throw new JpaRuntimeException("请给对象添加主键直接后可执行更新："+group);
+				throw new JpaRuntimeException("请给对象添加主键@Id直接后再执行更新："+group);
 			}
 			Field versionField=CacheModelManager.cacheIdVersionMap.get(group);
 			id = (Serializable) idField.get(obj);
@@ -259,7 +259,9 @@ public class MysqlTemplate {
 				ct.put(cm, id.toString(), obj);
 			}
 		} catch (Exception e) {
-			ct.remove(group, id.toString());
+			if(id!=null) {
+				ct.remove(group, id.toString());
+			}
 			throw new JpaRuntimeException(e);
 		}
 	}

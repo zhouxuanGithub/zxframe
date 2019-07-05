@@ -3,6 +3,7 @@ package zxframe.jpa.transaction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.aspectj.lang.JoinPoint;
@@ -20,8 +21,11 @@ public class DataTransaction {
 	 * @param joinPoint 
 	 */
 	public void begin(JoinPoint joinPoint) {
+		String transactionId = Thread.currentThread().getName();
+		//有事务开启来设置map
+		ConcurrentMap<String,Connection> map=new ConcurrentHashMap<String,Connection>();
+		DataSourceManager.uwwcMap.put(transactionId, map);
 //		if(ZxFrameConfig.showlog) {
-//			String transactionId = Thread.currentThread().getName();
 //			logger.info("db transaction start:"+transactionId);
 //		}
 	}
