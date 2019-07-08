@@ -25,7 +25,7 @@ public class Lesson09Service {
 		user.setName("09隔壁"+MathUtil.nextInt(1000)+"哥");
 		user.setAge(MathUtil.nextInt(100));
 		cacheManager.put("lesson09Mapper", "lesson09Cache", user);
-		cacheManager.remove("lesson09Mapper","lesson09Cache");
+//		cacheManager.remove("lesson09Mapper","lesson09Cache");
 		return user;
 	}
 }
