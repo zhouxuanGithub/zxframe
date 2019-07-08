@@ -1,0 +1,8 @@
+<h3>分库分表：</h3>
+<ul>
+<li>分库：可把表放至任意库中，然后在zxframe.xml配置具体数据源，然后在模型类上加@Model(dsname="数据源名称")</li>
+<li>分表：可自己定义规则，如按日期进行存放，然后在sql拼写时加上表后缀，如：select * from log$time$ where ...</li>
+<li>分库分表同样可以应用读写分离，极大的分散数据库压力，只需要配置正确zxframe.xml里数据源的pattern</li>
+<li>单表数据巨大的情况建议使用MongoDB存放，设计表时避免单表数据过大。</li>
+</ul>
+
