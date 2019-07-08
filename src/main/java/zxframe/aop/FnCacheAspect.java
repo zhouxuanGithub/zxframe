@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import zxframe.cache.annotation.FnCache;
 import zxframe.cache.local.LocalCacheManager;
 import zxframe.cache.redis.RedisCacheManager;
+import zxframe.jpa.model.NullObject;
 import zxframe.util.JsonUtil;
 
 /**
@@ -53,17 +54,23 @@ public class FnCacheAspect {
 		try {
 			if(result==null) {
 				result = pjd.proceed();//执行
-				if(result!=null) {
-					try {
-						lcm.put(group, key, result);
-						rcm.put(group, key, result);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				if(result==null) {
+					//防缓存穿透处理
+					result=new NullObject();
+				}
+				try {
+					lcm.put(group, key, result);
+					rcm.put(group, key, result);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		} catch (Throwable e) {
 			throw e;
+		}
+		//防缓存穿透处理
+		if(result instanceof NullObject) {
+			return null;
 		}
 		return result;
 	}
