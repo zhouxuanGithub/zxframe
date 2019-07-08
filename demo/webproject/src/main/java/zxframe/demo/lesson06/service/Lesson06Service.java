@@ -21,8 +21,8 @@ public class Lesson06Service {
 	public Object doTest() {
 		//对象添加
 //		User u =new User();
-//		u.setId("UUID.randomUUID().toString()");
-//		u.setName("隔壁"+MathUtil.nextInt(1000)+"哥");
+//		u.setId(UUID.randomUUID().toString());
+//		u.setName("06隔壁"+MathUtil.nextInt(1000)+"哥");
 //		u.setAge(MathUtil.nextInt(100));
 //		mysqlTemplate.save(u);
 		//根据id查询
