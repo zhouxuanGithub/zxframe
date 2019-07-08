@@ -126,6 +126,7 @@ public class ZxFrameConfig {
         }  
 	}
 	public static void loadZxMapperConfig() {
+		String filePath="";
 		try {
 			ClassPathResource classPathResource = new ClassPathResource("mapper");
 			if(!classPathResource.exists()) {
@@ -136,12 +137,13 @@ public class ZxFrameConfig {
 			    public boolean accept(File dir, String name) {
 			        return name.endsWith(".xml");
 			    }
-			});;
+			});
 			if(files!=null && files.length>0) {
 				for(int i = 0;i<files.length;i++){
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		            DocumentBuilder builder = factory.newDocumentBuilder();  
 					Document document = builder.parse(files[i]);
+					filePath=document.getDocumentURI();
 					Element root = document.getDocumentElement();
 					NodeList datasourceNodeList = root.getElementsByTagName("sql");
 	                for(int j=0;j<datasourceNodeList.getLength();j++ ) {
@@ -178,6 +180,7 @@ public class ZxFrameConfig {
 				}
 			}
 		} catch (Exception e) {
+			System.err.println(filePath+"配置存在错误，请检查");
 			e.printStackTrace();
 		}
 	}
