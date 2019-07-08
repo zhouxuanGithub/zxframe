@@ -45,16 +45,14 @@
 		</datasources>
 	</druid>
 	<!-- 缓存配置 -->
-	<!-- 
 	<cache>
 		<redis>
-			<open>false</open>
+			<open>true</open>
 			<keyPrefix>20190704</keyPrefix>
-			<clusters>ip:port,ip:port,ip:port,ip:port,ip:port,ip:port</clusters>
-			<password></password>
+			<clusters>127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005</clusters>
+			<password>vooleredis</password>
 		</redis>
 	</cache>
-	 -->
 </zxframe>
 <!-- 
 	框架介绍：https://github.com/zhouxuanGithub
