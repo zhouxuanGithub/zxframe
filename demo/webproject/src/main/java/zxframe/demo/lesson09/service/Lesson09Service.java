@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import zxframe.cache.mgr.CacheManager;
-import zxframe.demo.lesson06.model.User;
 import zxframe.demo.lesson09.model.User09;
 import zxframe.util.MathUtil;
 
