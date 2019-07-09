@@ -309,6 +309,7 @@ public class MysqlTemplate {
 	private <T> List<T> getList(Class<T> clas,String sql,DataModel cacheModel, Object... args) {
 		Connection con =null;
 		ResultSet rs=null;
+		String distributedLockKey=null;//分布式锁key
 		try {
 			String cid = null;
 			ArrayList<T> list = null;
@@ -324,7 +325,8 @@ public class MysqlTemplate {
 					//防止缓存击穿
 					if(ZxFrameConfig.ropen) {//开启了远程远程
 						//分布式锁
-						distributedLocks.mustGetLock(cacheModel.getGroup()+cid, 100);
+						distributedLockKey=cacheModel.getGroup()+cid;
+						distributedLocks.mustGetLock(distributedLockKey, 100);
 					}
 				}
 			}
@@ -386,6 +388,9 @@ public class MysqlTemplate {
 			throw new JpaRuntimeException(e);
 		}finally {
 			closeAll(con,null, rs);
+			if(distributedLockKey!=null) {
+				distributedLocks.unLock(distributedLockKey);
+			}
 		}
 	}
 	private Object getFValue(Class<?> clas,ResultSet rs,int index,String fname) throws SQLException {

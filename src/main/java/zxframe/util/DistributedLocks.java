@@ -35,7 +35,7 @@ public class DistributedLocks {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw e;
 		}
 		return success;
 	}
