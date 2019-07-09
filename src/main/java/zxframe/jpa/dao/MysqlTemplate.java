@@ -30,6 +30,7 @@ import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.model.DataModel;
 import zxframe.jpa.model.NullObject;
 import zxframe.jpa.util.SQLParsing;
+import zxframe.util.DistributedLocks;
 import zxframe.util.JsonUtil;
 
 
@@ -40,6 +41,8 @@ public class MysqlTemplate {
 	private CacheTransaction ct;
 	@Resource
 	private CacheManager cacheManager;
+	@Resource
+	private DistributedLocks distributedLocks;
 	/**
 	 * 增：保存对象
 	 * @param obj 需要保存的对象
@@ -311,11 +314,18 @@ public class MysqlTemplate {
 			ArrayList<T> list = null;
 			String group=clas.getName();
 			if(cacheModel!=null&&cacheModel.isQueryCache()) {
-				//查询
-				cid = CacheManager.getQueryKey(sql, args);
-				list=(ArrayList<T>) ct.get(cacheModel.getGroup(), cid);
-				if(list!=null) {
-					return list;
+				if(cacheModel.isLcCache() || cacheModel.isRcCache()) {
+					//查询
+					cid = CacheManager.getQueryKey(sql, args);
+					list=(ArrayList<T>) ct.get(cacheModel.getGroup(), cid);
+					if(list!=null) {
+						return list;
+					}
+					//防止缓存击穿
+					if(ZxFrameConfig.ropen) {//开启了远程远程
+						//分布式锁
+						distributedLocks.mustGetLock(cacheModel.getGroup()+cid, 100);
+					}
 				}
 			}
 			//计算数据源
@@ -348,7 +358,9 @@ public class MysqlTemplate {
 			}
 			//存放查询结果；list始终不为空，入缓存，防缓存穿透处理
 			if(list!=null&&cacheModel!=null&&cacheModel.isQueryCache()) {
-				ct.put(cacheModel, cid, list);
+				if(cacheModel.isLcCache() || cacheModel.isRcCache()) {
+					ct.put(cacheModel, cid, list);
+				}
 			}
 			//执行后清理指定组缓存
 			try {
