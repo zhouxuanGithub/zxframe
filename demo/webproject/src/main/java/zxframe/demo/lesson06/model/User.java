@@ -1,10 +1,12 @@
 package zxframe.demo.lesson06.model;
 
+import java.io.Serializable;
+
 import zxframe.jpa.annotation.Id;
 import zxframe.jpa.annotation.Model;
 
 @Model
-public class User {
+public class User implements Serializable{
 	@Id
 	private String id;
 	private String name;
