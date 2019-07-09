@@ -327,6 +327,11 @@ public class MysqlTemplate {
 						//分布式锁
 						distributedLockKey=cacheModel.getGroup()+cid;
 						distributedLocks.mustGetLock(distributedLockKey, 100);
+						//再从缓存里拿一次
+						list=(ArrayList<T>) ct.get(cacheModel.getGroup(), cid);
+						if(list!=null) {
+							return list;
+						}
 					}
 				}
 			}

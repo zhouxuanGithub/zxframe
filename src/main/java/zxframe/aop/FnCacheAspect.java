@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 import zxframe.cache.annotation.FnCache;
 import zxframe.cache.local.LocalCacheManager;
 import zxframe.cache.redis.RedisCacheManager;
+import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.model.NullObject;
+import zxframe.util.DistributedLocks;
 import zxframe.util.JsonUtil;
 
 /**
@@ -32,6 +34,8 @@ public class FnCacheAspect {
 	private LocalCacheManager lcm;
 	@Resource
 	private RedisCacheManager rcm;
+	@Resource
+	private DistributedLocks distributedLocks;
 	private static ConcurrentHashMap<String,ConcurrentHashMap<String,FnCache>> serviceFnMap=new ConcurrentHashMap<>();
 	@Pointcut("@annotation(zxframe.cache.annotation.FnCache)")
 	public void getAopPointcut() {
@@ -42,17 +46,32 @@ public class FnCacheAspect {
 		FnCache sfc = getServiceFnCache(pjd);
 		String group=sfc.group();
 		String key=getCacheKey(pjd,sfc);
+		boolean useDistributedLock=false;
 		try {
 			result=lcm.get(group,key);
 			if(result==null) {
 				result=rcm.get(group, key);
 				lcm.put(group, key, result);
 			}
+			if(result==null) {
+				//防止缓存击穿
+				if(ZxFrameConfig.ropen) {//开启了远程远程
+					//分布式锁
+					useDistributedLock=true;
+					distributedLocks.mustGetLock(key, 100);
+					//再从缓存里拿一次
+					result=lcm.get(group,key);
+					if(result==null) {
+						result=rcm.get(group, key);
+						lcm.put(group, key, result);
+					}
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		try {
-			if(result==null) {
+		if(result==null) {
+			try {
 				result = pjd.proceed();//执行
 				if(result==null) {
 					//防缓存穿透处理
@@ -64,9 +83,12 @@ public class FnCacheAspect {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			} catch (Throwable e) {
+				throw e;
 			}
-		} catch (Throwable e) {
-			throw e;
+		}
+		if(useDistributedLock) {
+			distributedLocks.unLock(key);
 		}
 		//防缓存穿透处理
 		if(result instanceof NullObject) {
