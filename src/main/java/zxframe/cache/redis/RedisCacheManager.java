@@ -1,6 +1,7 @@
 package zxframe.cache.redis;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
@@ -14,6 +15,7 @@ import zxframe.cache.mgr.CacheModelManager;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.model.DataModel;
+import zxframe.jpa.model.NullObject;
 import zxframe.util.CServerUUID;
 import zxframe.util.JsonUtil;
 import zxframe.util.MathUtil;
@@ -81,9 +83,18 @@ public class RedisCacheManager {
 		if(cm.isRcCache()) {
 			try {
 				key = getNewKey(cm,key);
-				cluster.setex(key.getBytes(),cm.getRcETime()+MathUtil.nextInt(300),SerializeUtils.serialize(value));//*秒随机间隔，防止缓存雪崩
+				int seconds= cm.getRcETime()+MathUtil.nextInt(300);//防止缓存雪崩，*秒随机间隔
+				if(value instanceof NullObject) {
+					seconds=30;//防止缓存穿透
+				}
+				if(value instanceof List) {
+					if(((List)value).size()==0) {
+						seconds=30;//防止缓存穿透
+					}
+				}
+				cluster.setex(key.getBytes(),seconds,SerializeUtils.serialize(value));
 				if(ZxFrameConfig.showcache) {
-					logger.info("redis put group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value));
+					logger.info("redis put group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value)+" etime:"+seconds);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

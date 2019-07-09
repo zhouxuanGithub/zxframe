@@ -9,4 +9,11 @@ import java.io.Serializable;
  */
 public class NullObject implements Serializable{
 	private static final long serialVersionUID = 1L;
+	private String zxframe="nullObject";
+	public String getZxframe() {
+		return zxframe;
+	}
+	public void setZxframe(String zxframe) {
+		this.zxframe = zxframe;
+	}
 }
