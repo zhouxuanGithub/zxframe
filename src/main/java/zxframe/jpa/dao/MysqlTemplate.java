@@ -32,6 +32,7 @@ import zxframe.jpa.model.NullObject;
 import zxframe.jpa.util.SQLParsing;
 import zxframe.util.DistributedLocks;
 import zxframe.util.JsonUtil;
+import zxframe.util.LockStringUtil;
 
 
 @Repository
@@ -41,8 +42,6 @@ public class MysqlTemplate {
 	private CacheTransaction ct;
 	@Resource
 	private CacheManager cacheManager;
-	@Resource
-	private DistributedLocks distributedLocks;
 	/**
 	 * 增：保存对象
 	 * @param obj 需要保存的对象
@@ -305,36 +304,57 @@ public class MysqlTemplate {
 		}
 		return getList(cm.getResultClass(),SQLParsing.replaceSQL(cm.getSql(),map), cm ,args);
 	}
-	
 	private <T> List<T> getList(Class<T> clas,String sql,DataModel cacheModel, Object... args) {
-		Connection con =null;
-		ResultSet rs=null;
-		String distributedLockKey=null;//分布式锁key
-		try {
-			String cid = null;
-			ArrayList<T> list = null;
-			String group=clas.getName();
-			if(cacheModel!=null&&cacheModel.isQueryCache()) {
-				if(cacheModel.isLcCache() || cacheModel.isRcCache()) {
-					//查询
-					cid = CacheManager.getQueryKey(sql, args);
-					list=(ArrayList<T>) ct.get(cacheModel.getGroup(), cid);
-					if(list!=null) {
-						return list;
-					}
-					//防止缓存击穿
-					if(ZxFrameConfig.ropen) {//开启了远程远程
-						//分布式锁
-						distributedLockKey=cacheModel.getGroup()+cid;
-						distributedLocks.mustGetLock(distributedLockKey, 100);
-						//再从缓存里拿一次
-						list=(ArrayList<T>) ct.get(cacheModel.getGroup(), cid);
-						if(list!=null) {
-							return list;
+		String cid = null;
+		List<T> list = null;
+		if(cacheModel!=null&&cacheModel.isQueryCache()&&(cacheModel.isLcCache() || cacheModel.isRcCache())) {
+			cid = CacheManager.getQueryKey(sql, args);
+			list=(List<T>) ct.get(cacheModel.getGroup(), cid);
+		}
+		if(list==null) {
+			if(cid==null) {//没有缓存，直接查
+				list= getListRun(clas,sql,cacheModel,args);
+			}else {
+				//防止缓存击穿
+				synchronized (LockStringUtil.getLock(cacheModel.getGroup()+cid)) {
+					list=(List<T>) ct.get(cacheModel.getGroup(), cid);
+					if(list==null) {
+						list = getListRun(clas,sql,cacheModel,args);//list不会为空，防止缓存穿透
+						try {
+							//放置缓存
+							if(DataSourceManager.uwwcMap.containsKey(Thread.currentThread().getName())) {
+								//线程有事务则随事务一起提交
+								ct.put(cacheModel, cid, list);
+							}else {
+								//线程无事务则直接放远程缓存
+								cacheManager.put(cacheModel.getGroup(), cid, list);
+							}
+							//执行后清理指定组缓存
+							if(cacheModel!=null&&cacheModel.getFlushOnExecute()!=null) {
+								List l = cacheModel.getFlushOnExecute();
+								for (int i = 0; i < l.size(); i++) {
+									Object o = l.get(i);
+									if(o instanceof Class) {
+										cacheManager.remove(((Class) o).getName());
+									}else {
+										cacheManager.remove(o.toString());
+									}
+								}
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
 				}
 			}
+		}
+		return list;
+	}
+	private <T> List<T> getListRun(Class<T> clas,String sql,DataModel cacheModel, Object... args) {
+		Connection con =null;
+		ResultSet rs=null;
+		try {
+			String group=clas.getName();
 			//计算数据源
 			String dsname=SQLParsing.getDSName(cacheModel!=null?cacheModel.getDsClass():null,clas,sql);
 			//打开连接
@@ -344,7 +364,7 @@ public class MysqlTemplate {
 			Map<String, Field> fieldMap =CacheModelManager.cacheFieldsMap.get(group);
 			Iterator<String> iterator=null;
 			Field field=null;
-			list = new ArrayList<T>();//此处创建对象是为了能让本地和远程缓存存空集合
+			ArrayList<T> list = new ArrayList<T>();//此处创建对象是为了能让本地和远程缓存存空集合
 			while(rs.next()){
 				if(fieldMap==null) {
 					//系统对象装载 string intiger date ..等
@@ -363,28 +383,6 @@ public class MysqlTemplate {
 					list.add(o);
 				}
 			}
-			//存放查询结果；list始终不为空，入缓存，防缓存穿透处理
-			if(list!=null&&cacheModel!=null&&cacheModel.isQueryCache()) {
-				if(cacheModel.isLcCache() || cacheModel.isRcCache()) {
-					ct.put(cacheModel, cid, list);
-				}
-			}
-			//执行后清理指定组缓存
-			try {
-				if(cacheModel!=null&&cacheModel.getFlushOnExecute()!=null) {
-					List l = cacheModel.getFlushOnExecute();
-					for (int i = 0; i < l.size(); i++) {
-						Object o = l.get(i);
-						if(o instanceof Class) {
-							cacheManager.remove(((Class) o).getName());
-						}else {
-							cacheManager.remove(o.toString());
-						}
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			if(ZxFrameConfig.showsql) {
 				logger.info("result :"+JsonUtil.obj2Json(list));
 			}
@@ -393,9 +391,6 @@ public class MysqlTemplate {
 			throw new JpaRuntimeException(e);
 		}finally {
 			closeAll(con,null, rs);
-			if(distributedLockKey!=null) {
-				distributedLocks.unLock(distributedLockKey);
-			}
 		}
 	}
 	private Object getFValue(Class<?> clas,ResultSet rs,int index,String fname) throws SQLException {

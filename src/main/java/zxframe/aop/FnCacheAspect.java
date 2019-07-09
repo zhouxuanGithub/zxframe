@@ -58,7 +58,7 @@ public class FnCacheAspect {
 				if(ZxFrameConfig.ropen) {//开启了远程远程
 					//分布式锁
 					useDistributedLock=true;
-					distributedLocks.mustGetLock(key, 100);
+					distributedLocks.mustGetLock(key, 1000);
 					//再从缓存里拿一次
 					result=lcm.get(group,key);
 					if(result==null) {
