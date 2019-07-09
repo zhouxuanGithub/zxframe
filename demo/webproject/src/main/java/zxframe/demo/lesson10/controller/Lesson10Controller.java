@@ -20,4 +20,12 @@ public class Lesson10Controller {
 	public Object test2(String name,String time) {
 		return lesson10Service.test2(name,time);
 	}
+	@RequestMapping("test3")
+	public Object test3() {
+		return lesson10Service.test3();
+	}
+	@RequestMapping("test4")
+	public Object test4() {
+		return lesson10Service.test4();
+	}
 }
