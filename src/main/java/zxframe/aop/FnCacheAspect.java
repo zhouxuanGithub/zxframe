@@ -85,9 +85,10 @@ public class FnCacheAspect {
 		keySbs.append(startKey);
 		List<String> asList = Arrays.asList(sfc.key());
 		for (int i = 0; i < args.length; i++) {
-			if(sfc.key().length==0 || asList.contains(ps[i]))
-			keySbs.append("-");
-			keySbs.append(JsonUtil.obj2Json(pjd.getArgs()[i]));
+			if(sfc.key().length==0 || asList.contains(ps[i])) {
+				keySbs.append("-");
+				keySbs.append(JsonUtil.obj2Json(pjd.getArgs()[i]));
+			}
 		}
 		return keySbs.toString();
 	}
