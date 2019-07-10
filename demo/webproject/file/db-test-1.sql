@@ -29,7 +29,7 @@ CREATE TABLE `properties` (
 
 /*Data for the table `properties` */
 
-insert  into `properties`(`key`,`value`,`description`) values ('system-isTest','false','系统是否是测试模式'),('system-version','0','系统版本号，更改后1分钟内所有服务器使用最新properties配置');
+insert  into `properties`(`key`,`value`,`description`) values ('system-isTest','false','系统是否是测试模式'),('system-version','2','系统版本号，更改后1分钟内所有服务器使用最新properties配置'),('zxframe-test-pps','ok','测试lesson12');
 
 /*Table structure for table `user` */
 
@@ -44,7 +44,7 @@ CREATE TABLE `user` (
 
 /*Data for the table `user` */
 
-insert  into `user`(`id`,`name`,`age`) values ('6f8ca665-72e4-4834-a2bf-89f963994412','06隔壁238哥',7),('79cbc702-9092-4042-b790-5e9523661b8c','隔壁433哥',100),('b81c571b-8dd2-479d-9bfc-b8da9d205b28','隔壁477哥',100),('e272cf49-e42d-4500-b916-2220a597b047','06隔壁770哥',46),('ff397b90-95ab-4c01-b638-8134e19368ee','隔壁932哥',100),('UUID.randomUUID().toString()','06隔壁582哥',49);
+insert  into `user`(`id`,`name`,`age`) values ('019bc085-e0db-4ad8-8154-f2f232980e99','06隔壁236哥',18),('5d485bfb-0da4-4947-a557-3a58e6ecb711','06隔壁194哥',18),('6f8ca665-72e4-4834-a2bf-89f963994412','06隔壁238哥',18),('79cbc702-9092-4042-b790-5e9523661b8c','隔壁433哥',18),('e272cf49-e42d-4500-b916-2220a597b047','06隔壁770哥',18),('ff397b90-95ab-4c01-b638-8134e19368ee','隔壁932哥',18);
 
 /*Table structure for table `user07` */
 
@@ -59,7 +59,22 @@ CREATE TABLE `user07` (
 
 /*Data for the table `user07` */
 
-insert  into `user07`(`id`,`name`,`age`) values ('0f678026-524e-436e-a948-1e4dc9b7a80a','07隔壁743哥',69);
+insert  into `user07`(`id`,`name`,`age`) values ('0f678026-524e-436e-a948-1e4dc9b7a80a','07隔壁743哥',69),('501a089d-7246-4aa9-81e1-f68b4818ac5b','07隔壁931哥',13);
+
+/*Table structure for table `user11` */
+
+DROP TABLE IF EXISTS `user11`;
+
+CREATE TABLE `user11` (
+  `id` varchar(50) NOT NULL,
+  `name` varchar(50) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `user11` */
+
+insert  into `user11`(`id`,`name`,`age`) values ('29cbc702-9092-4042-b790-5e9523661b8c','user11-2',100),('79cbc702-9092-4042-b790-5e9523661b8c','user11',100);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
