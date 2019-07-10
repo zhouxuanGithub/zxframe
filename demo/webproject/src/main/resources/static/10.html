@@ -1,7 +1,7 @@
 <h3>方法级别缓存：</h3>
 <ul>
 <li>缓存方法返回的数据，减少数据库访问量，增加响应速度。</li>
-<li>在@Service层中的方法上加上@FnCache即可，如果需要自定义某参数为Key，可参照这样配置@FnCache(key={"name","其他参数"})</li>
+<li>在需要缓存结果的方法上加上@FnCache即可，如果需要自定义某参数为Key，可参照这样配置@FnCache(key={"name","其他参数"})</li>
 <li>支持防缓存穿透，防缓存击穿，防缓存雪崩，详细介绍见/file/缓存穿透、缓存击穿、缓存雪崩区别和解决方案.docx</li>
 <li>全参为KEY的DEMO地址：http://127.0.0.1:8888/lesson10/test1?name=wang&time=20190707</li>
 <li>自定义参为KEY的DEMO地址：http://127.0.0.1:8888/lesson10/test2?name=wang2&time=201907072</li>
