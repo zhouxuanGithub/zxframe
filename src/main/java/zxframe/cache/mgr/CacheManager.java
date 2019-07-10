@@ -1,5 +1,7 @@
 package zxframe.cache.mgr;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import zxframe.cache.redis.RedisCacheManager;
 import zxframe.cache.transaction.CacheTransaction;
 import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.model.DataModel;
+import zxframe.jpa.util.SQLParsing;
 import zxframe.util.JsonUtil;
 
 /**
@@ -108,10 +111,13 @@ public class CacheManager {
 	 * @param args sql参数
 	 */
 	public void removeQueryCache(String group,Object... args) {
+		removeQueryCache(group,null,args);
+	}
+	public void removeQueryCache(String group,Map map,Object... args) {
 		try {
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			if(cm.isQueryCache()) {
-				remove(cm.getGroup(),getQueryKey(cm.getSql(), args));
+				remove(cm.getGroup(),getQueryKey(SQLParsing.replaceSQL(cm.getSql(),map), args));
 			}else {
 				throw new JpaRuntimeException("查询缓存清理失败，未开启查询缓存【group:"+group+"】");
 			}
@@ -119,7 +125,6 @@ public class CacheManager {
 			e.printStackTrace();
 		}
 	}
-	
 	/**
 	 * 获得查询key
 	 * @param sql
