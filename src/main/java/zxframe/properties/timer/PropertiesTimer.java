@@ -24,9 +24,8 @@ public class PropertiesTimer implements TaskRunnable{
 	}
 	public void init() {
 		if(ZxFrameConfig.useDBProperties) {
-			long initialDelay = 60*5;// 第一次延迟多少秒开始执行
 			long delay = 60;// 间隔多少秒执行一次
-			ThreadResource.getTaskPool().scheduleWithFixedDelay(this, initialDelay,
+			ThreadResource.getTaskPool().scheduleWithFixedDelay(this, delay,
 							delay, TimeUnit.SECONDS);
 		}
 	}
