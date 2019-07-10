@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 
 import zxframe.cache.annotation.FnCache;
 import zxframe.cache.local.LocalCacheManager;
+import zxframe.cache.mgr.CacheManager;
 import zxframe.cache.redis.RedisCacheManager;
-import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.model.NullObject;
-import zxframe.util.DistributedLocks;
 import zxframe.util.JsonUtil;
+import zxframe.util.LockStringUtil;
 
 /**
  * @author zx
@@ -35,7 +35,7 @@ public class FnCacheAspect {
 	@Resource
 	private RedisCacheManager rcm;
 	@Resource
-	private DistributedLocks distributedLocks;
+	private CacheManager cacheManager;
 	private static ConcurrentHashMap<String,ConcurrentHashMap<String,FnCache>> serviceFnMap=new ConcurrentHashMap<>();
 	@Pointcut("@annotation(zxframe.cache.annotation.FnCache)")
 	public void getAopPointcut() {
@@ -46,49 +46,24 @@ public class FnCacheAspect {
 		FnCache sfc = getServiceFnCache(pjd);
 		String group=sfc.group();
 		String key=getCacheKey(pjd,sfc);
-		boolean useDistributedLock=false;
-		try {
-			result=lcm.get(group,key);
-			if(result==null) {
-				result=rcm.get(group, key);
-				lcm.put(group, key, result);
-			}
-			if(result==null) {
-				//防止缓存击穿
-				if(ZxFrameConfig.ropen) {//开启了远程远程
-					//分布式锁
-					useDistributedLock=true;
-					distributedLocks.mustGetLock(key, 1000);
-					//再从缓存里拿一次
-					result=lcm.get(group,key);
-					if(result==null) {
-						result=rcm.get(group, key);
-						lcm.put(group, key, result);
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		//尝试去缓存获取
+		result=cacheManager.get(group, key);
 		if(result==null) {
-			try {
-				result = pjd.proceed();//执行
+			synchronized (LockStringUtil.getLock(key)) {//防止缓存击穿
+				result=cacheManager.get(group, key);
 				if(result==null) {
-					//防缓存穿透处理
-					result=new NullObject();
+					try {
+						result = pjd.proceed();//执行
+					} catch (Throwable e) {
+						throw e;
+					}
+					if(result==null) {
+						//防缓存穿透处理
+						result=new NullObject();
+					}
+					cacheManager.put(group, key, result);
 				}
-				try {
-					lcm.put(group, key, result);
-					rcm.put(group, key, result);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} catch (Throwable e) {
-				throw e;
 			}
-		}
-		if(useDistributedLock) {
-			distributedLocks.unLock(key);
 		}
 		//防缓存穿透处理
 		if(result instanceof NullObject) {

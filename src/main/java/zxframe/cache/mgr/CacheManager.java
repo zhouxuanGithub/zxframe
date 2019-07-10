@@ -28,62 +28,78 @@ public class CacheManager {
 	@Resource
 	LocalCacheManager lcm;
 	public void put(String group,String key,Object value) {
-		DataModel cm = CacheModelManager.getDataModelByGroup(group);
-		if(cm==null) {
-			logger.error("CacheManager.put失败,DataModel不能为空");
-			return;
-		}
-		if(!CacheModelManager.checkDataModel(cm)) {
-			logger.error("CacheManager.put失败,无效的Group,请给["+cm.getGroup()+"]该对象添加Cache注解。");
-			return;
-		}
-		if(cm.isLcCache()) {
-			lcm.put(cm.getGroup(), key, value);
-		}
-		if(cm.isRcCache()) {
-			rcm.put(cm.getGroup(), key, value);
+		try {
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm==null) {
+				logger.error("CacheManager.put失败,DataModel不能为空");
+				return;
+			}
+			if(!CacheModelManager.checkDataModel(cm)) {
+				logger.error("CacheManager.put失败,无效的Group,请给["+cm.getGroup()+"]该对象添加Cache注解。");
+				return;
+			}
+			if(cm.isLcCache()) {
+				lcm.put(cm.getGroup(), key, value);
+			}
+			if(cm.isRcCache()) {
+				rcm.put(cm.getGroup(), key, value);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	public Object get(String group,String key) {
-		DataModel cm = CacheModelManager.getDataModelByGroup(group);
-		if(cm.isLcCache()&&cm.isRcCache()) {
-			Object o = lcm.get(group, key);
-			if(o==null) {
-				o=rcm.get(group, key);
-				//填补本地缓存
-				lcm.put(group, key, o);
+		try {
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm.isLcCache()&&cm.isRcCache()) {
+				Object o = lcm.get(group, key);
+				if(o==null) {
+					o=rcm.get(group, key);
+					//填补本地缓存
+					lcm.put(group, key, o);
+				}
+				return o;
+			}else if(cm.isLcCache()) {
+				return lcm.get(group, key);
+			}else if(cm.isRcCache()) {
+				return rcm.get(group, key);
 			}
-			return o;
-		}else if(cm.isLcCache()) {
-			return lcm.get(group, key);
-		}else if(cm.isRcCache()) {
-			return rcm.get(group, key);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 	public void remove(String group) {
-		//清理事务中的数据
-		ct.removePSData(group, null);
-		//删除缓存中的数据
-		DataModel cm = CacheModelManager.getDataModelByGroup(group);
-		if(cm.isLcCache()) {
-			lcm.remove(group);
-		}
-		if(cm.isRcCache()) {
-			rcm.remove(group);
+		try {
+			//清理事务中的数据
+			ct.removePSData(group, null);
+			//删除缓存中的数据
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm.isLcCache()) {
+				lcm.remove(group);
+			}
+			if(cm.isRcCache()) {
+				rcm.remove(group);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	public void remove(String group,String key) {
-		//清理事务中的数据
-		ct.removePSData(group, key);
-		//删除缓存中的数据
-		DataModel cm = CacheModelManager.getDataModelByGroup(group);
-		if(cm.isLcCache()) {
-			lcm.remove(group,key);
-		}
-		if(cm.isRcCache()) {
-			rcm.remove(group,key);
+		try {
+			//清理事务中的数据
+			ct.removePSData(group, key);
+			//删除缓存中的数据
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm.isLcCache()) {
+				lcm.remove(group,key);
+			}
+			if(cm.isRcCache()) {
+				rcm.remove(group,key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	/**
@@ -92,11 +108,15 @@ public class CacheManager {
 	 * @param args sql参数
 	 */
 	public void removeQueryCache(String group,Object... args) {
-		DataModel cm = CacheModelManager.getDataModelByGroup(group);
-		if(cm.isQueryCache()) {
-			remove(cm.getGroup(),getQueryKey(cm.getSql(), args));
-		}else {
-			throw new JpaRuntimeException("查询缓存清理失败，未开启查询缓存【group:"+group+"】");
+		try {
+			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm.isQueryCache()) {
+				remove(cm.getGroup(),getQueryKey(cm.getSql(), args));
+			}else {
+				throw new JpaRuntimeException("查询缓存清理失败，未开启查询缓存【group:"+group+"】");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
