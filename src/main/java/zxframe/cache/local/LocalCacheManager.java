@@ -26,23 +26,22 @@ public class LocalCacheManager {
 	}
 	public Object get(String group,String key) {
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
+		Object value = null;
 		if(dm.isLcCache()) {
 			Cache cache = getCache(group);
 			Element element = cache.get(key);
 			if(element!=null) {
-				Object value = null;
 				if(dm.isLcCacheDataClone()) {
 					value =SerializeUtils.deSerialize((byte[]) element.getObjectValue());
 				}else {
 					value=element.getObjectValue();
 				}
-				if(ZxFrameConfig.showcache) {
-					logger.info("ehcache get group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
-				}
-				return value;
+			}
+			if(ZxFrameConfig.showcache) {
+				logger.info("ehcache get group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
 			}
 		}
-		return null;
+		return value;
 	}
 	public void put(String group,String key,Object value) {
 		if(value==null) {
