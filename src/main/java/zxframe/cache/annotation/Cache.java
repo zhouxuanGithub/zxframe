@@ -17,9 +17,9 @@ public @interface Cache {
 	 */
 	boolean rcCache() default false;
 	/**
-	 * 远程缓存缓存时长，单位秒，默认2小时，-1为永久
+	 * 远程缓存缓存时长，单位秒，默认*小时，-1为永久
 	 */
-	int rcETime() default 7200;
+	int rcETime() default 1200;
 	/**
 	 * 是否严格读写
 	 * 严格读写，存在缓存组删除就得开启
