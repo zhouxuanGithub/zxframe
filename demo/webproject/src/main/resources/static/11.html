@@ -1,0 +1,8 @@
+<h3>数据级别缓存：</h3>
+<ul>
+<li>在数据模型上加@Cache注解，参数：rcCache[默认fasle]，lcCache[默认false]，rcETime[默认1200秒]，则MysqlTemplate的save，update，delete，get方法会进行缓存操作</li>
+<li>数据模型DEMO地址：http://127.0.0.1:8888/lesson11/test</li>
+<li>在mapper xml 配置里加上对应缓存参数,如rcCache=true，则MysqlTemplated的getList，execute方法会进行缓存操作</li>
+<li>mapper配置的DEMO地址：http://127.0.0.1:8888/lesson11/test2</li>
+</ul>
+
