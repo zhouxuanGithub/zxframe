@@ -6,9 +6,9 @@
 	<showcache>true</showcache>
 	<!-- 使用DB配置properties，支持全服务热更新，需开启useZXTask -->
 	<!-- SpringcloudConfigServer高可用成本较高，本功能只为降低成本，可选用 -->
-	<useDBProperties>true</useDBProperties>
+	<useDBProperties>false</useDBProperties>
 	<!-- 使用ZXtask定时器 -->
-	<useZXTask>true</useZXTask>
+	<useZXTask>false</useZXTask>
 	<!-- druid数据源配置 -->
 	<druid>
 		<!-- 公共数据源配置 -->

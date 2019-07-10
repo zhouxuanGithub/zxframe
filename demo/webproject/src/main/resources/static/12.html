@@ -1,7 +1,7 @@
 <h3>配置热更新：</h3>
 <ul>
 <li>SpringcloudConfigServer高可用成本较高(zk，kafka高可用，Eurake高可用)，本功能只为降低成本，达到热更新配置，可选用</li>
-<li>zxframe配置开启：useDBProperties和useZXTask</li>
+<li>zxframe.xml配置开启：useDBProperties和useZXTask</li>
 <li>配置内容放置到默认数据源的properties表中，更改version值，各服务进行轮询检查，发现值版本改变则进行重新读取配置</li>
 <li>DEMO地址：http://127.0.0.1:8888/lesson12/test</li>
 </ul>
