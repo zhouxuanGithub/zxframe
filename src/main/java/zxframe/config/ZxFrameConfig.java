@@ -1,7 +1,5 @@
 package zxframe.config;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -10,6 +8,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -118,21 +119,13 @@ public class ZxFrameConfig {
 	public static void loadZxMapperConfig() {
 		String filePath="";
 		try {
-			ClassPathResource classPathResource = new ClassPathResource("mapper");
-			if(!classPathResource.exists()) {
-				return;
-			}
-			File files [] = classPathResource.getFile().listFiles(new FilenameFilter() {
-			    @Override
-			    public boolean accept(File dir, String name) {
-			        return name.endsWith(".xml");
-			    }
-			});
+			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            Resource[] files = resolver.getResources("classpath*:mapper/*.xml");
 			if(files!=null && files.length>0) {
 				for(int i = 0;i<files.length;i++){
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		            DocumentBuilder builder = factory.newDocumentBuilder();  
-					Document document = builder.parse(files[i]);
+					Document document = builder.parse(files[i].getInputStream());
 					filePath=document.getDocumentURI();
 					Element root = document.getDocumentElement();
 					NodeList datasourceNodeList = root.getElementsByTagName("sql");
