@@ -17,11 +17,11 @@ public final class SystemUtil {
 	 * 
 	 * @param cmd
 	 */
-	public final static void exec(String cmd) {
+	public final static String exec(String cmd) {
 		Process process;
 		// String cmd = "ifconfig";//ok
 		// String cmd = "sar -u 1 1| awk 'NR==4 {print $8}'";//空白。管道不支持
-
+		StringBuffer sb=new StringBuffer();
 		try {
 			// 使用Runtime来执行command，生成Process对象
 			Runtime runtime = Runtime.getRuntime();
@@ -33,8 +33,10 @@ public final class SystemUtil {
 			// 用缓冲器读行
 			BufferedReader br = new BufferedReader(isr);
 			String line = null;
+			String separator =System.getProperty("line.separator");
 			while ((line = br.readLine()) != null) {
-				System.out.println(line);
+				sb.append(line);
+				sb.append(separator);
 			}
 			is.close();
 			isr.close();
@@ -44,7 +46,6 @@ public final class SystemUtil {
 		} catch (Error e) {
 			e.printStackTrace();
 		}
+		return sb.toString();
 	}
-
-	
 }

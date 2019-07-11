@@ -29,7 +29,9 @@ public class WebResultUtil {
 			 r=request.getParameter("callback")+"("+r+");";
 		 }
 		 if(ZxFrameConfig.showlog) {
-			 logger.info("web result : "+r);
+			 if(request.getRequestURI().indexOf("/zxframe/")==-1) {
+				 logger.info("web result : "+r);
+			 }
 		 }
 		 writer.print(r);
 		 writer.flush();
