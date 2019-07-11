@@ -383,8 +383,8 @@ public class MysqlTemplate {
 					list.add(o);
 				}
 			}
-			if(ZxFrameConfig.showsql) {
-				logger.info("result :"+JsonUtil.obj2Json(list));
+			if(ZxFrameConfig.showlog) {
+				logger.info("db result :"+JsonUtil.obj2Json(list));
 			}
 			return list;
 		} catch (Exception e) {
@@ -479,7 +479,7 @@ public class MysqlTemplate {
 	 * @return 执行状态
 	 */
 	private Object execute(String dsname,String sql,DataModel cm, Object... args) {
-		if(ZxFrameConfig.showsql) {
+		if(ZxFrameConfig.showlog) {
 			logger.info(sql+" args "+JsonUtil.obj2Json(args));
 		}
 		Connection con = null;
@@ -533,7 +533,7 @@ public class MysqlTemplate {
 	 * @throws Exception
 	 */
 	private ResultSet getResult(Connection con,String sql, Object... args) {
-		if(ZxFrameConfig.showsql) {
+		if(ZxFrameConfig.showlog) {
 			logger.info("query:"+sql.toString()+" args "+JsonUtil.obj2Json(args));
 		}
 		PreparedStatement ps = null;

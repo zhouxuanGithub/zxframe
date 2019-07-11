@@ -37,7 +37,7 @@ public class LocalCacheManager {
 					value=element.getObjectValue();
 				}
 			}
-			if(ZxFrameConfig.showcache) {
+			if(ZxFrameConfig.showlog) {
 				logger.info("ehcache get group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
 			}
 		}
@@ -57,7 +57,7 @@ public class LocalCacheManager {
 				element = new Element(key,value);
 			}
 			cache.put(element);
-			if(ZxFrameConfig.showcache) {
+			if(ZxFrameConfig.showlog) {
 				logger.info("ehcache put group:"+group+" key:"+key+" , value:"+JsonUtil.obj2Json(value)+" lcacheSize:"+cache.getSize());
 			}
 		}
@@ -68,7 +68,7 @@ public class LocalCacheManager {
 		if(dm.isLcCache()) {
 			Cache cache = getCache(group);
 			cache.remove(key);
-			if(ZxFrameConfig.showcache) {
+			if(ZxFrameConfig.showlog) {
 				logger.info("ehcache remove group:"+group+" key:"+key+" lcacheSize:"+cache.getSize());
 			}
 		}
@@ -78,7 +78,7 @@ public class LocalCacheManager {
 		if(dm.isLcCache()) {
 			Cache cache = getCache(group);
 			cache.removeAll();
-			if(ZxFrameConfig.showcache) {
+			if(ZxFrameConfig.showlog) {
 				logger.info("ehcache remove group:"+group+" lcacheSize:"+cache.getSize());
 			}
 		}

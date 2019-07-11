@@ -22,10 +22,6 @@ import zxframe.jpa.model.DataModel;
 public class ZxFrameConfig {
 	//是否输出普通日志
 	public static boolean showlog=false;
-	//控制台输出缓存信息
-	public static boolean showcache=false;
-	//控制台输出sql
-	public static boolean showsql=false;
 	//是否使用数据库配置properties
 	public static boolean useDBProperties=false;
 	//是否使用zxTask
@@ -54,12 +50,6 @@ public class ZxFrameConfig {
             Element root = document.getDocumentElement();
             if(root.getElementsByTagName("showlog").getLength()>0) {
             	showlog=root.getElementsByTagName("showlog").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
-            }
-            if(root.getElementsByTagName("showsql").getLength()>0) {
-            	showsql=root.getElementsByTagName("showsql").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
-            }
-            if(root.getElementsByTagName("showcache").getLength()>0) {
-            	showcache=root.getElementsByTagName("showcache").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             }
             if(root.getElementsByTagName("useDBProperties").getLength()>0) {
             	useDBProperties=root.getElementsByTagName("useDBProperties").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
