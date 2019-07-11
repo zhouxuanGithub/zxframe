@@ -18,6 +18,9 @@ public class YMLTestController {
 	private ConfigDemo cd;
 	@RequestMapping("test")
 	public String test() {
+		//错误日志记录测试
+//		int b = 100/0;
+//		System.out.println(b);
 		return ymltest+" "+cd.toString();
 	}
 	
