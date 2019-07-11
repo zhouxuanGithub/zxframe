@@ -11,19 +11,25 @@ import org.slf4j.LoggerFactory;
 
 import zxframe.config.ZxFrameConfig;
 
-public class JsonpResultUtil {
-	private static Logger logger = LoggerFactory.getLogger(JsonpResultUtil.class);
+public class WebResultUtil {
+	private static Logger logger = LoggerFactory.getLogger(WebResultUtil.class);
+	public static ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<HttpServletRequest>();
+	public static ThreadLocal<HttpServletResponse> currentResponse = new ThreadLocal<HttpServletResponse>();
 	public static void print(HttpServletRequest request,HttpServletResponse response, Object obj) throws IOException {
+		 if(request==null) {
+		 	request= currentRequest.get();
+		 }
+		 if(response==null) {
+			response=currentResponse.get();
+		 }
 		 response.setContentType("text/html; charset=utf-8");
 		 PrintWriter writer = response.getWriter();
-		 String r=null;
+		 String r=JsonUtil.obj2Json(obj);
 		 if(request.getParameter("callback")!=null){
-			 r=request.getParameter("callback")+"("+JsonUtil.obj2Json(obj)+");";
-		 }else {
-			 r=JsonUtil.obj2Json(obj);
+			 r=request.getParameter("callback")+"("+r+");";
 		 }
 		 if(ZxFrameConfig.showlog) {
-			 logger.info("JsonpResult : "+r);
+			 logger.info("Web Result : "+r);
 		 }
 		 writer.print(r);
 		 writer.flush();
