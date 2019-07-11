@@ -1,4 +1,4 @@
-package zxframe.demo.config;
+package zxframe.sys.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

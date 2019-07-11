@@ -1,4 +1,4 @@
-package zxframe.demo.config;
+package zxframe.sys.config;
 
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
