@@ -14,9 +14,13 @@ import zxframe.util.SystemUtil;
 public class ZxframeController {
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
+	private static long ctime=0;
 	//查看错误日志
 	@RequestMapping("error")
 	public synchronized String error(String size) {
+		if(!checkRunTime()) {
+			return "访问频率太快，请稍等一下！";
+		}
 		if(size==null) {
 			size="500";
 		}
@@ -25,6 +29,9 @@ public class ZxframeController {
 	//查看运行状态
 	@RequestMapping("status")
 	public synchronized String status() {
+		if(!checkRunTime()) {
+			return "访问频率太快，请稍等一下！";
+		}
 		StringBuffer sb=new StringBuffer();
 	    sb.append("<br><br>");  
 	    long maxMemory = Runtime.getRuntime().maxMemory() / 1024 / 1024; //java虚拟机能取得的最大内存  
@@ -47,5 +54,13 @@ public class ZxframeController {
 	    sb.append("<br>");  
 	    sb.append(TimeZone.getDefault().getDisplayName());  
 		return sb.toString();
+	}
+	private boolean checkRunTime() {
+		boolean r=false;
+		if(ctime+1000<System.currentTimeMillis()) {
+			ctime=System.currentTimeMillis();
+			r=true;
+		}
+		return r;
 	}
 }
