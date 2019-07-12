@@ -13,7 +13,7 @@
 		<common>
 			<username>root</username>
 			<password>mysql*()</password>
-			<pattern>rw</pattern><!-- rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源 -->
+			<pattern>rw</pattern><!-- 主要用于读写分离和分库分表 rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源 -->
 			<driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
 			<type>com.alibaba.druid.pool.DruidDataSource</type>
 			<filters>stat</filters><!-- 监控统计:stat, 防御sql注入:wall  -->
