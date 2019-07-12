@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>zhouxuan</groupId>
+  <groupId>com.github.zhouxuanGithub</groupId>
   <artifactId>zxframe</artifactId>
   <version>1.3</version>
   <packaging>jar</packaging>
@@ -77,4 +77,23 @@
 	    <version>9.0.13</version>
 	</dependency>
    </dependencies>
+	<!--提交maven中央库-->
+	<licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+	<scm>              
+		<url>https://github.com/zhouxuanGithub/zxframe</url>
+		<connection>https://github.com/zhouxuanGithub/zxframe.git</connection>
+		<developerConnection>https://github.com/zhouxuanGithub/zxframe</developerConnection>
+	</scm>
+	<developers> 
+		<developer>
+			<name>zhouxuan</name>
+			<email>1164429680@qq.com</email>
+			<url>https://github.com/zhouxuanGithub/zxframe</url>
+		</developer>
+	</developers>
 </project>
