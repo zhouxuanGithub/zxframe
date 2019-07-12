@@ -17,14 +17,11 @@ public class ZxframeController {
 	private static long ctime=0;
 	//查看错误日志
 	@RequestMapping("error")
-	public synchronized String error(String size) {
+	public synchronized String error() {
 		if(!checkRunTime()) {
 			return "访问频率太快，请稍等一下！";
 		}
-		if(size==null) {
-			size="500";
-		}
-		return "<pre>"+SystemUtil.exec("tail -n "+size+" "+basedir+"log/error."+new DateUtil("yyyy-MM-dd").getDate()+".log")+"</pre>";
+		return "<pre>"+SystemUtil.exec("tail -n 500 "+basedir+"log/error."+new DateUtil("yyyy-MM-dd").getDate()+".log")+"</pre>";
 	}
 	//查看运行状态
 	@RequestMapping("status")
@@ -57,7 +54,7 @@ public class ZxframeController {
 	}
 	private boolean checkRunTime() {
 		boolean r=false;
-		if(ctime+1000<System.currentTimeMillis()) {
+		if(ctime+2500<System.currentTimeMillis()) {
 			ctime=System.currentTimeMillis();
 			r=true;
 		}
