@@ -1,10 +1,10 @@
-<h3>�ֲ�ʽ����</h3>
+<h3>分布式锁：</h3>
 <ul>
-<li>�ֲ�ʽ��Ⱥϵͳ�У���ʱ��Ҫ�����������ֻ��Ҫһ̨����������һ���߳�ִ��ĳ������</li>
-<li>����redis��ȺЭ��ʵ�֣���Ҫ��zxframe�п���redis����</li>
-<li>ʵ���ࣺzxframe.util.DistributedLocks</li>
-<li>������getLock(String key,int ms) ���Ի��������ȡ�ɹ���ʧ�ܶ��᷵�أ�������</li>
-<li>������mustGetLock(String key,int ms) ǿ�ƻ������ֱ����ȡ����Ϊֹ������</li>
-<li>������unLock(String key) �ͷ���</li>
+<li>分布式集群系统中，有时需要获得锁，比如只想要一台服务器或者一个线程执行某个任务。</li>
+<li>采用redis集群协助实现，需要在zxframe中开启redis配置</li>
+<li>实现类：zxframe.util.DistributedLocks</li>
+<li>方法：getLock(String key,int ms) 尝试获得锁，获取成功或失败都会返回，不阻塞</li>
+<li>方法：mustGetLock(String key,int ms) 强制获得锁，直到获取到锁为止，阻塞</li>
+<li>方法：unLock(String key) 释放锁</li>
 </ul>
 

@@ -1,11 +1,11 @@
-<h3>��д���룺</h3>
+<h3>读写分离：</h3>
 <ul>
-<li>zxframe.xml����������Դ��lesson07ds����pattern���ö�д����</li>
-<li>pattern��rw:��д��ʹ���������Դ  w:дʹ���������Դ r:��ʹ���������Դ</li>
-<li>lesson07ds���õ�д�⣺zxframe_test_01</li>
-<li>lesson07ds���õĶ��⣺zxframe_test_02</li>
-<li>���⣺�������ö��</li>
-<li>������ж��Ƕ�����д������Ȼ��ȡ��Ӧ������Դ���в���</li>
-<li>DEMO��ַ��http://127.0.0.1:8888/lesson07/test</li>
+<li>zxframe.xml里配置数据源（lesson07ds），pattern配置读写参数</li>
+<li>pattern：rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源</li>
+<li>lesson07ds配置的写库：zxframe_test_01</li>
+<li>lesson07ds配置的读库：zxframe_test_02</li>
+<li>读库：可以配置多个</li>
+<li>程序会判断是读还是写操作，然后取对应的数据源进行操作</li>
+<li>DEMO地址：http://127.0.0.1:8888/lesson07/test</li>
 </ul>
 
