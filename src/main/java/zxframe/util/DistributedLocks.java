@@ -28,8 +28,9 @@ public class DistributedLocks {
 				success=true;
 			}else {
 				String oldExpireTime=RedisCacheManager.cluster.get(key);
-				if(Long.valueOf(oldExpireTime)<System.currentTimeMillis()) {
-					if(RedisCacheManager.cluster.getSet(key,String.valueOf(System.currentTimeMillis()+ms)).equals(oldExpireTime)) {
+				if(oldExpireTime!=null&&Long.valueOf(oldExpireTime)<System.currentTimeMillis()) {
+					String oldExpireTimeTemp = RedisCacheManager.cluster.getSet(key,String.valueOf(System.currentTimeMillis()+ms));
+					if(oldExpireTimeTemp!=null && (oldExpireTimeTemp).equals(oldExpireTime)) {
 						success=true;
 					}
 				}
