@@ -65,11 +65,9 @@
 	    <version>2.10.4</version>
 	</dependency>
     <dependency>
-         <groupId>zhouxuan</groupId>
+         <groupId>com.github.zhouxuanGithub</groupId>
          <artifactId>zxframe</artifactId>
          <version>1.3</version>
-         <scope>system</scope>
-         <systemPath>${basedir}/lib/zxframe-1.3.jar</systemPath>
     </dependency>
    </dependencies>
 	<repositories>
