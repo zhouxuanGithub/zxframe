@@ -11,7 +11,7 @@
 -->本功能只为降低成本，可选用<br/>
 *.封装本地和远程任意缓存存储,使用极其简单,支持对缓存组删除<br/>
 -->zxframe.cache.mgr.CacheManager<br/>
-*.建议代理层使用nginx+keepalived，或其他类似功能代理。反向代理，动静分离，请求结果缓存，静的资源也可以放CDN<br/>
+*.建议代理层使用nginx+keepalived，或其他类似的代替。反向代理，动静分离，请求结果缓存，静的资源也可以放CDN<br/>
 *.建议使用SpringBoot构建，也可使用SpringMVC构建<br/>
 -->SpringBoot：启动类加上注解即可，@ZxFrameComponentScan<br/>
 -->SpringMVC：加上包扫描即可，<context:component-scan base-package="zxframe"/> <br/>
@@ -22,7 +22,7 @@
 *.修改zxframe.xml里的数据源配置，如password，和数据库地址[127.0.0.1:3300]<br/>
 *.如需要测试远程缓存则可在zxframe.xml里配置redis集群地址，如不需要则可直接删除<br/>
 *.执行zxframe.demo.Application类，启动服务即可<br/>
-*.浏览器访问：http://ip:8888<br/>
+*.浏览器访问：127.0.0.1:8888<br/>
 
 # Demo内容
 *.springboot介绍，yml的使用，tomcat配置优化<br/>
