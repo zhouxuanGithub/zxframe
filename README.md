@@ -18,7 +18,7 @@
 
 # Demo运行步骤
 *.导入项目，Maven构建，源码相对路径：/demo/webproject<br/>
-*.file目录下的两个SQL脚本执行，创建必要的测试库<br/>
+*.执行file目录下的两个Mysql的sql脚本，创建必要的测试库<br/>
 *.修改zxframe.xml里的数据源配置，如password，和数据库地址[127.0.0.1:3300]<br/>
 *.如需要测试远程缓存则可在zxframe.xml里配置redis集群地址，如不需要则可直接删除<br/>
 *.执行zxframe.demo.Application类，启动服务即可<br/>
