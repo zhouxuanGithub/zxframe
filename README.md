@@ -19,7 +19,7 @@
 # 贡献者
 nero520，https://github.com/nero520/<br/>
 
-# Demo运行步骤
+# demo运行步骤
 *.导入项目，Maven构建，源码相对路径：/demo/webproject<br/>
 *.执行file目录下的两个Mysql的sql脚本，创建必要的测试库<br/>
 *.修改zxframe.xml里的数据源配置，如password，和数据库地址[127.0.0.1:3300]<br/>
@@ -27,7 +27,7 @@ nero520，https://github.com/nero520/<br/>
 *.执行zxframe.demo.Application类，启动服务即可<br/>
 *.浏览器访问：127.0.0.1:8888<br/>
 
-# Demo内容
+# demo内容
 *.springboot介绍，yml的使用，tomcat配置优化<br/>
 *.增删改查，读写分离，分库分表<br/>
 *.通用缓存，方法级别缓存，数据级缓存（内部自动解决缓存穿透，击穿，雪崩问题）<br/>
