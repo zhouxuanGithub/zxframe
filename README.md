@@ -16,9 +16,6 @@
 -->SpringBoot：启动类加上注解即可，@ZxFrameComponentScan<br/>
 -->SpringMVC：加上包扫描即可，<context:component-scan base-package="zxframe"/> <br/>
 
-# 贡献者
-nero520，https://github.com/nero520/<br/>
-
 # demo运行步骤
 *.导入项目，Maven构建，源码相对路径：/demo/webproject<br/>
 *.执行file目录下的两个Mysql的sql脚本，创建必要的测试库<br/>
@@ -34,3 +31,6 @@ nero520，https://github.com/nero520/<br/>
 *.配置热更新<br/>
 *.分布式锁，乐观锁<br/>
 *.数据源监控，运行状态查询，错误日志查询<br/>
+
+# 贡献者
+nero520，https://github.com/nero520/<br/>
