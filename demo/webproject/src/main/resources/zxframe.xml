@@ -43,6 +43,7 @@
 		</datasources>
 	</druid>
 	<!-- 缓存配置 -->
+	<!-- 
 	<cache>
 		<redis>
 			<open>true</open>
@@ -51,4 +52,5 @@
 			<password>vooleredis</password>
 		</redis>
 	</cache>
+	 -->
 </zxframe>

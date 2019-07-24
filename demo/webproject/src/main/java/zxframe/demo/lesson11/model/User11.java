@@ -6,7 +6,7 @@ import zxframe.cache.annotation.Cache;
 import zxframe.jpa.annotation.Id;
 import zxframe.jpa.annotation.Model;
 
-@Cache(rcCache=true,lcCache=false)
+@Cache(rcCache=false,lcCache=true)
 @Model
 public class User11 implements Serializable{
 	@Id

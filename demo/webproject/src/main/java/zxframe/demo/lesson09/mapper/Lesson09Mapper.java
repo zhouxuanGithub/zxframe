@@ -10,7 +10,7 @@ public class Lesson09Mapper {
 		cm.setGroup("lesson09Mapper");
 		cm.setRcCache(true);//是否使用远程缓存
 		cm.setRcETime(1200);//远程缓存时长 秒
-		cm.setLcCache(false);//是否使用本地缓存
+		cm.setLcCache(true);//是否使用本地缓存
 		return cm;
 	}
 }
