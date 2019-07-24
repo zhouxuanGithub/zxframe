@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v12.09 (64 bit)
-MySQL - 5.7.21-20-log : Database - zxframe_test_01
+MySQL - 5.7.26-29-log : Database - zxframe_test_01
 *********************************************************************
 */
 
@@ -39,12 +39,15 @@ CREATE TABLE `user` (
   `id` varchar(50) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `age` int(11) DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `updatetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `user` */
 
-insert  into `user`(`id`,`name`,`age`) values ('019bc085-e0db-4ad8-8154-f2f232980e99','06隔壁236哥',18),('5d485bfb-0da4-4947-a557-3a58e6ecb711','06隔壁194哥',18),('6f8ca665-72e4-4834-a2bf-89f963994412','06隔壁238哥',18),('79cbc702-9092-4042-b790-5e9523661b8c','隔壁433哥',18),('e272cf49-e42d-4500-b916-2220a597b047','06隔壁770哥',18),('ff397b90-95ab-4c01-b638-8134e19368ee','隔壁932哥',18);
+insert  into `user`(`id`,`name`,`age`,`version`,`birthday`,`updatetime`) values ('019bc085-e0db-4ad8-8154-f2f232980e99','06隔壁236哥',18,1,NULL,NULL),('4522c4f7-1a67-4183-a5ab-8dbc774b8dc1','06隔壁245哥',36,0,'2019-07-24','2019-07-24 05:38:50'),('5d485bfb-0da4-4947-a557-3a58e6ecb711','06隔壁194哥',18,1,NULL,NULL),('6f8ca665-72e4-4834-a2bf-89f963994412','06隔壁238哥',18,1,NULL,NULL),('79cbc702-9092-4042-b790-5e9523661b8c','隔壁433哥',39,8,'2019-07-24','2019-07-24 05:38:52'),('7fee5297-a85f-407a-9d91-921185a95d85','06隔壁248哥',22,0,'2019-07-24',NULL),('995d53ad-7388-4e39-ad8a-8feab829cd17','06隔壁309哥',82,0,'2019-07-24','2019-07-24 05:33:00'),('ae3b79f4-a113-4ba3-972e-e7a7229e19a7','06隔壁411哥',57,0,'2019-07-24',NULL),('b1017955-8e4a-4895-87d6-561153a6fc1a','06隔壁896哥',96,0,'2019-07-24',NULL),('e272cf49-e42d-4500-b916-2220a597b047','06隔壁770哥',18,1,NULL,NULL),('ff397b90-95ab-4c01-b638-8134e19368ee','隔壁932哥',18,1,NULL,NULL);
 
 /*Table structure for table `user07` */
 
