@@ -49,8 +49,9 @@ public class DataSourceManager {
 		        datasource.setInitialSize(Integer.parseInt(getDatasourceConfig(cmap, "initialSize", key)));    
 		        datasource.setMinIdle(Integer.parseInt(getDatasourceConfig(cmap, "minIdle", key)));    
 		        datasource.setMaxActive(Integer.parseInt(getDatasourceConfig(cmap, "maxActive", key)));
+		        datasource.setMaxWait(Integer.parseInt(getDatasourceConfig(cmap, "maxWait", key)));//获取连接时最大等待时间，单位毫秒
 		        //用来检测连接是否有效的sql，要求是一个查询语句，常用select 'x'。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用。
-		        datasource.setValidationQuery("select 'x'");
+		        datasource.setValidationQuery(getDatasourceConfig(cmap, "validationQuery", key));
 		        //申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
 		        datasource.setTestOnBorrow(getDatasourceConfig(cmap, "testOnBorrow", key).equals("true")?true:false);
 		        //归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
@@ -60,9 +61,9 @@ public class DataSourceManager {
 		        //有两个含义：
 		        //1) Destroy线程会检测连接的间隔时间，如果连接空闲时间大于等于minEvictableIdleTimeMillis则关闭物理连接。
 		        //2) testWhileIdle的判断依据，详细看testWhileIdle属性的说明
-		        datasource.setTimeBetweenEvictionRunsMillis(30*1000);
+		        datasource.setTimeBetweenEvictionRunsMillis(Integer.parseInt(getDatasourceConfig(cmap, "timeBetweenEvictionRunsMillis", key)));
 		        //连接保持空闲而不被驱逐的最小时间
-		        datasource.setMinEvictableIdleTimeMillis(30*60*1000);
+		        datasource.setMinEvictableIdleTimeMillis(Integer.parseInt(getDatasourceConfig(cmap, "minEvictableIdleTimeMillis", key)));
 		        try {    
 		            datasource.setFilters(getDatasourceConfig(cmap, "filters", key));    
 		        } catch (SQLException e) {    
@@ -118,7 +119,32 @@ public class DataSourceManager {
 			value=ZxFrameConfig.common.get(key);
 		}
 		if(value==null) {
-			throw new RuntimeException("数据源"+dsname+"配置错误，缺少："+key);
+			//给默认值
+			if(key.equals("initialSize")) {
+				return "1";
+			}else if(key.equals("minIdle")){
+				return "10";
+			}else if(key.equals("maxActive")){
+				return "200";
+			}else if(key.equals("maxWait")){
+				return "2000";
+			}else if(key.equals("testOnBorrow")){
+				return "false";
+			}else if(key.equals("testOnReturn")){
+				return "false";
+			}else if(key.equals("testWhileIdle")){
+				return "true";
+			}else if(key.equals("validationQuery")){
+				return "select 'x'";
+			}else if(key.equals("timeBetweenEvictionRunsMillis")){
+				return String.valueOf(30*1000);
+			}else if(key.equals("minEvictableIdleTimeMillis")){
+				return String.valueOf(30*60*1000);
+			}else if(key.equals("filters")){
+				return "stat";
+			}else {
+				throw new RuntimeException("数据源"+dsname+"配置错误，缺少："+key);
+			}
 		}
 		return value;
 	}
@@ -156,8 +182,9 @@ public class DataSourceManager {
 	/**
 	 * 获得的读数据源
 	 * @return
+	 * @throws SQLException 
 	 */
-	public static Connection getRConnection(String dsname) {
+	public static Connection getRConnection(String dsname) throws SQLException {
 //		if(ZxFrameConfig.showlog) {
 //			logger.info("use read dsname:"+dsname);
 //		}
@@ -168,8 +195,7 @@ public class DataSourceManager {
 			}
 			return list.get(MathUtil.nextInt(list.size())).getConnection();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
-		return null;
 	}
 }

@@ -28,17 +28,17 @@
 		<datasources>
 			<datasource>
 				<dsname>default</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false]]></url>
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
 			</datasource>
 			<datasource>
 				<dsname>lesson07ds</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
 				<pattern>w</pattern><!-- rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false]]></url>
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
 			</datasource>
 			<datasource>
 				<dsname>lesson07ds</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
 				<pattern>r</pattern><!-- rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false]]></url>
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
 			</datasource>
 		</datasources>
 	</druid>
