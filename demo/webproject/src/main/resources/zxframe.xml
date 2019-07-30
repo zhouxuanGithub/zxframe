@@ -30,14 +30,19 @@
 				<dsname>default</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
 				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
 			</datasource>
-			<datasource>
-				<dsname>lesson07ds</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
-				<pattern>w</pattern><!-- rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源 -->
+			<datasource><!-- 读写分离的dsname配置相同，写数据源 -->
+				<dsname>lesson07ds</dsname>
+				<pattern>w</pattern><!-- w:写使用这个数据源 -->
 				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
 			</datasource>
-			<datasource>
-				<dsname>lesson07ds</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
-				<pattern>r</pattern><!-- rw:读写都使用这个数据源  w:写使用这个数据源 r:读使用这个数据源 -->
+			<datasource><!-- 读写分离，读数据源 -->
+				<dsname>lesson07ds</dsname>
+				<pattern>r</pattern><!-- r:读使用这个数据源 -->
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
+			</datasource>
+			<datasource><!-- 读写分离，读数据源 ，可配置多个-->
+				<dsname>lesson07ds</dsname>
+				<pattern>r</pattern><!-- r:读使用这个数据源 -->
 				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
 			</datasource>
 		</datasources>
