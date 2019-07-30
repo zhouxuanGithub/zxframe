@@ -18,7 +18,10 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import zxframe.aop.ServiceAspect;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.ex.JpaRuntimeException;
+import zxframe.jpa.model.RDataSourceModel;
+import zxframe.util.CServerUUID;
 import zxframe.util.JsonUtil;
+import zxframe.util.LockStringUtil;
 import zxframe.util.MathUtil;
 
 public class DataSourceManager {
@@ -26,11 +29,10 @@ public class DataSourceManager {
 	//写数据源
 	public static ConcurrentMap<String, DataSource> wDataSource=new ConcurrentHashMap<String, DataSource>();
 	//读数据源
-	public static ConcurrentMap<String, ArrayList<DataSource>> rDataSource=new ConcurrentHashMap<String, ArrayList<DataSource>>();
-	//被熔断的读数据源
-	public static ConcurrentMap<String, ArrayList<DataSource>> errRDataSource=new ConcurrentHashMap<String, ArrayList<DataSource>>();
+	public static ConcurrentMap<String, ArrayList<RDataSourceModel>> rDataSource=new ConcurrentHashMap<String, ArrayList<RDataSourceModel>>();
 	//当前使用中的写数据源
 	public static ConcurrentMap<String, ConcurrentMap<String,Connection>> uwwcMap=new ConcurrentHashMap<String, ConcurrentMap<String,Connection>>();
+	private static int dtime=1*60*1000;
 	//初始化数据源
 	public static void init() {
 		Iterator<String> iterator = ZxFrameConfig.datasources.keySet().iterator();
@@ -90,12 +92,15 @@ public class DataSourceManager {
 		        	String[] keysplit = key.split(",");
 		        	for (int j = 0; j < keysplit.length; j++) {
 		        		String keysplitValue = keysplit[j];//数据源支持逗号分割
-		        		ArrayList<DataSource> arrayList = rDataSource.get(keysplitValue);
+		        		ArrayList<RDataSourceModel> arrayList = rDataSource.get(keysplitValue);
 			        	if(arrayList==null) {
-			        		arrayList=new ArrayList<DataSource>();
+			        		arrayList=new ArrayList<RDataSourceModel>();
 			        		rDataSource.put(keysplitValue, arrayList);
 			        	}
-			        	arrayList.add(datasource);
+			        	RDataSourceModel rdsm=new RDataSourceModel();
+			        	rdsm.setId(CServerUUID.getSequenceId());
+			        	rdsm.setDataSource(datasource);
+			        	arrayList.add(rdsm);
 					}
 		        }
 		        if(pattern.indexOf("w")!=-1) {
@@ -184,17 +189,65 @@ public class DataSourceManager {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static Connection getRConnection(String dsname) throws SQLException {
+	public static Connection getRConnection(String dsname) throws Exception {
 //		if(ZxFrameConfig.showlog) {
 //			logger.info("use read dsname:"+dsname);
 //		}
+		ArrayList<RDataSourceModel> list = rDataSource.get(dsname);
+		if(list==null) {
+			throw new JpaRuntimeException(dsname+"读数据源为空，未配置");
+		}
+		RDataSourceModel rdsm=null;
 		try {
-			ArrayList<DataSource> list = rDataSource.get(dsname);
-			if(list==null) {
-				throw new JpaRuntimeException(dsname+"读数据源为空，未配置");
+			rdsm=list.get(MathUtil.nextInt(list.size()));
+			if(rdsm.getStatus()==2) {
+				if((rdsm.getDtime()+dtime)<System.currentTimeMillis()) {
+					//熔断了*分钟后，尝试重连
+					synchronized (LockStringUtil.getLock(dsname + rdsm.getId())) {
+						if(rdsm.getStatus()==2 && (rdsm.getDtime()+dtime)<System.currentTimeMillis()) {
+							rdsm.setStatus(1);
+							try {
+								Connection connection = rdsm.getDataSource().getConnection();
+								rdsm.setStatus(0);
+								return connection;
+							} catch (Exception e) {
+								rdsm.setStatus(2);
+								rdsm.setDtime(System.currentTimeMillis());
+							}
+						}
+					}
+				}
 			}
-			return list.get(MathUtil.nextInt(list.size())).getConnection();
+			if(rdsm.getStatus()!=0) {
+				RDataSourceModel r=null;
+				long mindtime=0;
+				ArrayList<RDataSourceModel> tlist=new ArrayList<>();
+				//取状态正常的使用
+				for (int i = 0; i < list.size(); i++) {
+					RDataSourceModel tr = list.get(i);
+					if(tr.getStatus()==0) {
+						tlist.add(tr);
+					}
+					if(mindtime==0||tr.getDtime()<mindtime) {
+						mindtime=tr.getDtime();
+						r=tr;
+					}
+				}
+				if(tlist.size()==0) {
+					//没有状态可用的，取熔断时间较长的进行尝试
+					rdsm=r;
+				}else {
+					//在可用里面随机取
+					rdsm=tlist.get(MathUtil.nextInt(tlist.size()));
+				}
+			}
+			return rdsm.getDataSource().getConnection();
 		} catch (SQLException e) {
+			if(rdsm!=null && list.size()>1) {
+				//读数据源熔断
+				rdsm.setStatus(2);
+				rdsm.setDtime(System.currentTimeMillis());
+			}
 			throw e;
 		}
 	}
