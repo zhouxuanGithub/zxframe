@@ -1,4 +1,4 @@
-package zxframe.demo;
+package zxframe;
 
 
 import org.springframework.boot.SpringApplication;
