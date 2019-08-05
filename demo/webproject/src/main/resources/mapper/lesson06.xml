@@ -18,9 +18,11 @@
 	<sql group="lesson06MapperUpdateV2" >
 		update user set age=? where age=?
 	</sql>
+	<!-- $...$符号占位，纯粹的字符串替换 -->
 	<sql group="lesson06MapperUpdateV3" >
 		update user set age=$age$
 	</sql>
+	<!-- #...#符号占位，参数替换，可防SQL注入 -->
 	<sql group="lesson06MapperUpdateV4" >
 		update user set age=#age#
 	</sql>
