@@ -15,4 +15,9 @@ public @interface Model {
 	 * 使用的数据源
 	 */
 	String dsname() default "default";
+	/**
+	 * 映射的表名，不配置则为类名，并且全小写
+	 * @return
+	 */
+	String tbname() default "";
 }

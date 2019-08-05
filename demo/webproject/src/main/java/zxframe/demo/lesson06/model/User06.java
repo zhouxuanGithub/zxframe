@@ -9,8 +9,8 @@ import zxframe.jpa.annotation.Model;
 import zxframe.jpa.annotation.Transient;
 import zxframe.jpa.annotation.Version;
 
-@Model
-public class User implements Serializable{
+@Model(tbname="user")//映射的表名，不配置tbname则为类名，并且全小写
+public class User06 implements Serializable{
 	@Id
 	private String id;
 	private String name;

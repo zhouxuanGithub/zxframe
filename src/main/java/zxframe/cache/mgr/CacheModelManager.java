@@ -11,13 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import zxframe.cache.annotation.Cache;
-import zxframe.jpa.model.DataModel;
 import zxframe.jpa.annotation.DataModelScanning;
 import zxframe.jpa.annotation.Id;
 import zxframe.jpa.annotation.Model;
 import zxframe.jpa.annotation.Transient;
 import zxframe.jpa.annotation.Version;
-import zxframe.jpa.ex.JpaRuntimeException;
+import zxframe.jpa.model.DataModel;
 
 /**
  * 缓存模型管理
@@ -26,6 +25,7 @@ import zxframe.jpa.ex.JpaRuntimeException;
  */
 @Component
 public class CacheModelManager {
+	private static final Annotation Model = null;
 	private static Logger logger = LoggerFactory.getLogger(CacheModelManager.class);  
 	//缓存模型
 	private static ConcurrentMap<String, DataModel> cacheModelMap=new ConcurrentHashMap<String, DataModel>();
@@ -39,10 +39,10 @@ public class CacheModelManager {
 	public static ConcurrentMap<String, ConcurrentHashMap<String,Field>> cacheFieldsMap=new ConcurrentHashMap<String, ConcurrentHashMap<String,Field>>();
 	//模型版本字段
 	public static ConcurrentMap<String, Field> cacheIdVersionMap=new ConcurrentHashMap<String, Field>();
-	//模型注解保存
+	//模型注解保存-key为类全名 
 	public static ConcurrentMap<String, Model> cacheModelAnnotation=new ConcurrentHashMap<String, Model>();
 	//模型注解保存-key为简单名称
-	public static ConcurrentMap<String, Model> cacheModelJAnnotation=new ConcurrentHashMap<String, Model>();
+//	public static ConcurrentMap<String, Model> cacheModelJAnnotation=new ConcurrentHashMap<String, Model>();
 	/**
 	 * 根据Group获取缓存模型获取
 	 * @param group
@@ -128,11 +128,11 @@ public class CacheModelManager {
 				}
 				if(anno.annotationType().equals(Model.class)){
 					cacheModelAnnotation.put(cls,(Model)anno);
-					if(cacheModelJAnnotation.get(clazz.getSimpleName().toLowerCase())==null) {
-						cacheModelJAnnotation.put(clazz.getSimpleName().toLowerCase(), (Model)anno);
-					}else {
-						throw new JpaRuntimeException("不能存在两个相同的类名，否则无法区分跨库多数据源，请修改类名和表名。"+clazz.getSimpleName());
-					}
+//					if(cacheModelJAnnotation.get(clazz.getSimpleName().toLowerCase())==null) {
+//						cacheModelJAnnotation.put(clazz.getSimpleName().toLowerCase(), (Model)anno);
+//					}else {
+//						throw new JpaRuntimeException("不能存在两个相同的类名，否则无法区分跨库多数据源，请修改类名和表名。"+clazz.getSimpleName());
+//					}
 				}
 				//查询缓存
 				if(anno.annotationType().equals(DataModelScanning.class) ){

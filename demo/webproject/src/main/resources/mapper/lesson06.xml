@@ -21,7 +21,13 @@
 	<sql group="lesson06MapperUpdateV3" >
 		update user set age=$age$
 	</sql>
-	<sql group="lesson06MapperSelect" resultClass="zxframe.demo.lesson06.model.User">
+	<sql group="lesson06MapperUpdateV4" >
+		update user set age=#age#
+	</sql>
+	<sql group="lesson06MapperSelect" resultClass="zxframe.demo.lesson06.model.User06">
+		select * from user 
+	</sql>
+	<sql group="lesson06MapperSelectV2" resultClass="java.util.Map">
 		select * from user 
 	</sql>
 </mapper>

@@ -5,10 +5,13 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +33,6 @@ import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.model.DataModel;
 import zxframe.jpa.model.NullObject;
 import zxframe.jpa.util.SQLParsing;
-import zxframe.util.DistributedLocks;
 import zxframe.util.JsonUtil;
 import zxframe.util.LockStringUtil;
 
@@ -54,9 +56,12 @@ public class MysqlTemplate {
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			//存值
 			ArrayList<Object> argsList=new ArrayList<Object>();
-			StringBuffer sql=new StringBuffer();
-			sql.append("insert into ").append(obj.getClass().getSimpleName().toLowerCase()).append("(");
 			Id ida = CacheModelManager.cacheIdAnnotation.get(group);
+			StringBuffer sql=new StringBuffer();
+			if(!ida.auto()) {
+				sql.append(" ");//不需要去查新id
+			}
+			sql.append("insert into ").append(SQLParsing.getTBName(obj.getClass())).append("(");
 			Field idField = CacheModelManager.cacheIdFieldMap.get(group);
 			Map<String, Field> fieldMap = CacheModelManager.cacheFieldsMap.get(group);
 			Iterator<String> iterator = fieldMap.keySet().iterator();
@@ -87,7 +92,12 @@ public class MysqlTemplate {
 				sql.append("?");
 			}
 			sql.append(")");
-			execute(SQLParsing.getDSName(obj.getClass(),null,null),sql.toString(),cm,args);
+			
+			Serializable rid=(Serializable) execute(SQLParsing.getDSName(obj.getClass(),null,null),sql.toString(),cm,args);
+			if(ida.auto()) {
+				id=rid;
+				idField.set(obj, id);
+			}
 			//缓存事务操作
 			if(cm!=null&&id!=null) {
 				ct.put(cm, id.toString(), obj);
@@ -118,7 +128,7 @@ public class MysqlTemplate {
 		}
 		if(obj==null) {
 			//尝试去数据库查
-			String sql="select * from "+clas.getSimpleName().toLowerCase()+" where  "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ? ";
+			String sql="select * from "+SQLParsing.getTBName(clas)+" where  "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ? ";
 			obj=get(clas,sql,cm,id);//单模型不能支持查询缓存，内部getList不会缓存结果
 			
 			//缓存事务操作
@@ -170,7 +180,7 @@ public class MysqlTemplate {
 	public void delete(Class clas, Serializable id) {
 		String group=clas.getName();
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
-		String sql = "delete from "+clas.getSimpleName().toLowerCase()+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
+		String sql = "delete from "+SQLParsing.getTBName(clas)+" where "+CacheModelManager.cacheIdFieldMap.get(group).getName()+" = ?";
 		//执行删除
 		execute(SQLParsing.getDSName(clas, null ,null),sql,cm,id);
 		if(cm!=null) {
@@ -214,7 +224,7 @@ public class MysqlTemplate {
 			id = (Serializable) idField.get(obj);
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			StringBuffer sql=new StringBuffer();
-			sql.append("update ").append(obj.getClass().getSimpleName().toLowerCase()).append(" set ");
+			sql.append("update ").append(SQLParsing.getTBName(obj.getClass())).append(" set ");
 			for (int i = 0; i < length; i++) {
 				String field = fields[i];
 				if((!field.equals(idField))&&(!field.equals(versionField))) {
@@ -394,7 +404,16 @@ public class MysqlTemplate {
 		}
 	}
 	private Object getFValue(Class<?> clas,ResultSet rs,int index,String fname) throws SQLException {
-		if(clas == int.class||clas == Integer.class) {
+		if(clas == Map.class||clas == HashMap.class) {
+			ResultSetMetaData metaData = rs.getMetaData();
+			int columnCount = metaData.getColumnCount();
+			Map map=new HashMap();
+			for (int i = 0; i < columnCount; i++) {
+				String columnName = metaData.getColumnName(i+1);
+				map.put(columnName, rs.getObject(columnName));
+			}
+			return map;
+		}else if(clas == int.class||clas == Integer.class) {
 			if(index>0) {
 				return rs.getInt(index);
 			}
@@ -491,12 +510,25 @@ public class MysqlTemplate {
 			if(con==null) {
 				throw new JpaRuntimeException("不能成功获得数据库连接！");
 			}
+			boolean isInsert=false;
 			// 2.获取语句对象
-			ps = con.prepareStatement(sql);
+			if(sql.startsWith("insert into ")) {
+				ps = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+				isInsert=true;
+			}else {
+				ps = con.prepareStatement(sql);
+			}
 			// 3.赋值：
 			setValues(ps, args);
 			// 4.执行更新(向数据库发送指令)
 			int count= ps.executeUpdate();
+			if(isInsert) {
+				ResultSet rs2 = ps.getGeneratedKeys();
+	            if(rs2.next())
+	            {
+	            	count = rs2.getInt(1);
+	            }
+			}
 			//执行后清理指定组缓存
 			try {
 				if(cm!=null&&cm.getFlushOnExecute()!=null) {

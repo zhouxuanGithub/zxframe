@@ -64,9 +64,70 @@ public class SQLParsing {
 			Iterator<String> iterator = map.keySet().iterator();
 			while(iterator.hasNext()) {
 				String key = iterator.next();
-				sql=sql.replaceAll("\\$"+key+"\\$",String.valueOf(map.get(key)));
+				if(sql.indexOf("$")!=-1) {
+					sql=sql.replaceAll("\\$"+key+"\\$",String.valueOf(map.get(key)));
+				}
+				if(sql.indexOf("#")!=-1) {
+					sql=sql.replaceAll("\\#"+key+"\\#",escapeSQLString(String.valueOf(map.get(key))));
+				}
 			}
 		}
 		return sql;
+	}
+	//获得表名
+	public static String getTBName(Class cls) {
+		Model model = CacheModelManager.cacheModelAnnotation.get(cls.getName());
+		if(model.tbname().equals("")) {
+			return cls.getSimpleName().toLowerCase();
+		}else {
+			return model.tbname();
+		}
+	}
+	//防止SQL注入替换
+	private static String escapeSQLString(String sql) {
+		StringBuilder buf = new StringBuilder();
+		buf.append('\'');
+		for (int i = 0; i < sql.length(); ++i) {
+            char c = sql.charAt(i);
+        		switch (c) {
+                case 0: /* Must be escaped for 'mysql' */
+                    buf.append('\\');
+                    buf.append('0');
+                    break;
+                case '\n': /* Must be escaped for logs */
+                    buf.append('\\');
+                    buf.append('n');
+                    break;
+                case '\r':
+                    buf.append('\\');
+                    buf.append('r');
+                    break;
+                case '\\':
+                    buf.append('\\');
+                    buf.append('\\');
+                    break;
+                case '\'':
+                    buf.append('\\');
+                    buf.append('\'');
+                    break;
+                case '"': 
+                    buf.append('"');
+                    break;
+                case '%':
+                	buf.append("\\%");
+                    break;
+                case '_':
+                	buf.append("\\_");
+                    break;
+                case '\032':
+                    buf.append('\\');
+                    buf.append('Z');
+                    break;
+                default:
+                    buf.append(c);
+            }
+        }
+		buf.append('\'');
+		return buf.toString();
 	}
 }
