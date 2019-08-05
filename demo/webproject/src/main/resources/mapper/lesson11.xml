@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
 	属性介绍：
-	id：唯一标识
+	id：唯一标识，查询group为：namespace.id
 	lcCache：是否使用本地缓存；默认值：false
 	rcCache：是否使用远程缓存；默认值：false
 	rcETime：远程缓存时间，单位秒；默认值：1200
