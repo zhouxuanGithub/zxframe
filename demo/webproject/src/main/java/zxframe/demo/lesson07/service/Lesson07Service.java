@@ -23,6 +23,6 @@ public class Lesson07Service {
 //		u.setAge(MathUtil.nextInt(100));
 //		mysqlTemplate.save(u);
 		//对象查询，走读库，读数据源内部随机选择读取，含异常熔断
-		return mysqlTemplate.getList("lesson07MapperSelect");
+		return mysqlTemplate.getList("lesson07Mapper.select");
 	}
 }

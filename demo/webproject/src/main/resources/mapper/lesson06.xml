@@ -12,24 +12,24 @@
 	strictRW：存在缓存组删除就得开启；不存在缓存组删除就可以关闭，提升效率；默认值：false
  -->
 <mapper>
-	<sql group="lesson06MapperUpdate" >
+	<sql id="lesson06MapperUpdate" >
 		update user set age=18
 	</sql>
-	<sql group="lesson06MapperUpdateV2" >
+	<sql id="lesson06MapperUpdateV2" >
 		update user set age=? where age=?
 	</sql>
 	<!-- $...$符号占位，纯粹的字符串替换 -->
-	<sql group="lesson06MapperUpdateV3" >
+	<sql id="lesson06MapperUpdateV3" >
 		update user set age=$age$
 	</sql>
 	<!-- #...#符号占位，参数替换，可防SQL注入 -->
-	<sql group="lesson06MapperUpdateV4" >
+	<sql id="lesson06MapperUpdateV4" >
 		update user set age=#age#
 	</sql>
-	<sql group="lesson06MapperSelect" resultClass="zxframe.demo.lesson06.model.User06">
+	<sql id="lesson06MapperSelect" resultClass="zxframe.demo.lesson06.model.User06">
 		select * from user 
 	</sql>
-	<sql group="lesson06MapperSelectV2" resultClass="java.util.Map">
+	<sql id="lesson06MapperSelectV2" resultClass="java.util.Map">
 		select * from user 
 	</sql>
 </mapper>

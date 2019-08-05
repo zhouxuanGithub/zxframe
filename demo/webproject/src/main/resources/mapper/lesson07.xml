@@ -11,8 +11,8 @@
 	lcCacheDataClone：本地缓存里的数据每次是否都是克隆取出一份新的数据；默认值：false
 	strictRW：存在缓存组删除就得开启；不存在缓存组删除就可以关闭，提升效率；默认值：false
  -->
-<mapper>
-	<sql group="lesson07MapperSelect" resultClass="zxframe.demo.lesson07.model.User07">
+<mapper  namespace="lesson07Mapper"><!-- 查询group名为：namespace.id -->
+	<sql id="select" resultClass="zxframe.demo.lesson07.model.User07">
 		select * from user07
 	</sql>
 </mapper>
