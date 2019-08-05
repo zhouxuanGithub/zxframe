@@ -128,6 +128,12 @@ public class ZxFrameConfig {
 					Document document = builder.parse(files[i].getInputStream());
 					filePath=document.getDocumentURI();
 					Element root = document.getDocumentElement();
+					String namespace = root.getAttribute("namespace");
+					if(namespace==null||namespace.length()==0) {
+						namespace="";
+					}else {
+						namespace=namespace+".";
+					}
 					NodeList datasourceNodeList = root.getElementsByTagName("sql");
 	                for(int j=0;j<datasourceNodeList.getLength();j++ ) {
 	                	if(datasourceNodeList.item(j).getNodeType() != Node.ELEMENT_NODE){
@@ -136,7 +142,7 @@ public class ZxFrameConfig {
 	                	Element item = (Element)datasourceNodeList.item(j);
 	                	NamedNodeMap attributes = item.getAttributes();
 	                	DataModel dm=new DataModel();
-	                	dm.setGroup(attributes.getNamedItem("group").getNodeValue());
+	                	dm.setGroup(namespace+attributes.getNamedItem("id").getNodeValue());
 	                	dm.setLcCache(attributes.getNamedItem("lcCache")==null?false:attributes.getNamedItem("lcCache").getNodeValue().equals("true"));
 	                	dm.setRcCache(attributes.getNamedItem("rcCache")==null?false:attributes.getNamedItem("rcCache").getNodeValue().equals("true"));
 	                	dm.setStrictRW(attributes.getNamedItem("strictRW")==null?false:attributes.getNamedItem("strictRW").getNodeValue().equals("true"));
