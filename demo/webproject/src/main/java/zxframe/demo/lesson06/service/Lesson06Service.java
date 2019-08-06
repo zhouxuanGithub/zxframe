@@ -51,9 +51,9 @@ public class Lesson06Service {
 //		mysqlTemplate.execute("lesson06MapperUpdateV2",20,30);
 		//更新，map传参
 //		Map map =new HashMap<>();
-//		map.put("age",18);
-//		mysqlTemplate.execute("lesson06MapperUpdateV3",map);//$...$符号占位，纯粹的字符串替换
-//		mysqlTemplate.execute("lesson06MapperUpdateV4",map);//#...#符号占位，参数替换，可防SQL注入
+//		map.put("age",33);
+//		mysqlTemplate.execute("lesson06MapperUpdateV3",map);//${..}符号占位，纯粹的字符串替换
+//		mysqlTemplate.execute("lesson06MapperUpdateV4",map);//#{..}符号占位，参数替换，可防SQL注入
 		//更新，对象转Map传参
 //		User u3 =new User();
 //		u3.setAge(100);

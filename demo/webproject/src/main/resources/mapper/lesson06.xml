@@ -18,13 +18,13 @@
 	<sql id="lesson06MapperUpdateV2" >
 		update user set age=? where age=?
 	</sql>
-	<!-- $...$符号占位，纯粹的字符串替换 -->
+	<!-- ${..}符号占位，纯粹的字符串替换 -->
 	<sql id="lesson06MapperUpdateV3" >
-		update user set age=$age$
+		update user set age=${age}
 	</sql>
-	<!-- #...#符号占位，参数替换，可防SQL注入 -->
+	<!-- #{..}符号占位，参数替换，可防SQL注入 -->
 	<sql id="lesson06MapperUpdateV4" >
-		update user set age=#age#
+		update user set age=#{age}
 	</sql>
 	<sql id="lesson06MapperSelect" resultClass="zxframe.demo.lesson06.model.User06">
 		select * from user 
