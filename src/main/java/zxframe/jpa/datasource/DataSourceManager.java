@@ -210,16 +210,6 @@ public class DataSourceManager {
 //		if(ZxFrameConfig.showlog) {
 //			logger.info("use read dsname:"+dsname);
 //		}
-		//如果当前已经存在写数据源，则使用读数据源进行操作
-		String transactionId = Thread.currentThread().getName();
-		ConcurrentMap<String,Connection> map = DataSourceManager.uwwcMap.get(transactionId);
-		if(map!=null) {
-			Connection connection = map.get(dsname);
-			if(connection!=null) {
-				return connection;
-			}
-		}
-		//取读数据源
 		ArrayList<RDataSourceModel> list = rDataSource.get(dsname);
 		if(list==null) {
 			throw new JpaRuntimeException(dsname+"读数据源为空，未配置");

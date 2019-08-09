@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Resource;
 
@@ -379,13 +380,26 @@ public class MysqlTemplate {
 	}
 	private <T> List<T> getListRun(Class<T> clas,String sql,DataModel cacheModel, Object... args) {
 		Connection con =null;
+		boolean isUseWCon=false;
 		ResultSet rs=null;
 		try {
 			String group=clas.getName();
 			//计算数据源
 			String dsname=SQLParsing.getDSName(cacheModel!=null?cacheModel.getDsClass():null,clas,sql);
 			//打开连接
-			con = DataSourceManager.getRConnection(dsname);
+			//如果当前已经存在写数据源，则使用写数据源进行操作
+			String transactionId = Thread.currentThread().getName();
+			ConcurrentMap<String,Connection> map = DataSourceManager.uwwcMap.get(transactionId);
+			if(map!=null) {
+				Connection connection = map.get(dsname);
+				if(connection!=null) {
+					con=connection;
+					isUseWCon=true;
+				}
+			}
+			if(con==null) {
+				con = DataSourceManager.getRConnection(dsname);
+			}
 			//去数据库获得数据
 			rs = getResult(con,sql,args);
 			Map<String, Field> fieldMap =CacheModelManager.cacheFieldsMap.get(group);
@@ -417,7 +431,11 @@ public class MysqlTemplate {
 		} catch (Exception e) {
 			throw new JpaRuntimeException(e);
 		}finally {
-			closeAll(con,null, rs);
+			if(isUseWCon) {
+				closeAll(null,null, rs);
+			}else{
+				closeAll(con,null, rs);
+			}
 		}
 	}
 	private Object getFValue(Class<?> clas,ResultSet rs,int index,String fname) throws SQLException {
