@@ -92,33 +92,6 @@ public class CacheModelManager {
 			cm.setGroup(cls);
 			//未加载过，尝试获取
 			Class clazz = Class.forName(cls);
-			ConcurrentHashMap<String,Field> groupflds = new ConcurrentHashMap<String,Field>();
-			cacheFieldsMap.put(cls, groupflds);
-			//解析类字段上的注解
-			Field[] field = clazz.getDeclaredFields();  
-	        if(field != null){  
-	            for(Field fie : field){  
-	            	if(!fie.isAccessible()){  
-	                    fie.setAccessible(true);  
-	            	}
-                    //主键注解
-                    Id ida= fie.getAnnotation(Id.class); 
-                    if(ida!=null) {
-                    	cacheIdAnnotation.put(cls, ida);
-                    	cacheIdFieldMap.put(cls, fie);
-                    }
-                    //model版本注解
-                    Version version=fie.getAnnotation(Version.class); 
-                    if(version!=null) {
-                    	cacheIdVersionMap.put(cls, fie);
-                    }
-                    //属性无效注解
-	            	Transient Transient= fie.getAnnotation(Transient.class);
-	            	if(Transient==null) {
-	            		groupflds.put(fie.getName(),fie);
-	            	}
-	            }
-	        }
 			//解析类上面的注解
 			StringBuffer sb=new StringBuffer();
 			sb.append("load model >>>> ").append(cls).append(" ");
@@ -150,6 +123,35 @@ public class CacheModelManager {
 //					}else {
 //						throw new JpaRuntimeException("不能存在两个相同的类名，否则无法区分跨库多数据源，请修改类名和表名。"+clazz.getSimpleName());
 //					}
+					ConcurrentHashMap<String,Field> groupflds = new ConcurrentHashMap<String,Field>();
+					cacheFieldsMap.put(cls, groupflds);
+					//解析类字段上的注解
+					Field[] field = clazz.getDeclaredFields();  
+			        if(field != null){  
+			            for(Field fie : field){  
+			            	if(!fie.isAccessible()){  
+			                    fie.setAccessible(true);  
+			            	}
+		                    //主键注解
+		                    Id ida= fie.getAnnotation(Id.class); 
+		                    if(ida!=null) {
+		                    	cacheIdAnnotation.put(cls, ida);
+		                    	cacheIdFieldMap.put(cls, fie);
+		                    }
+		                    //model版本注解
+		                    Version version=fie.getAnnotation(Version.class); 
+		                    if(version!=null) {
+		                    	cacheIdVersionMap.put(cls, fie);
+		                    }
+		                    //属性无效注解
+			            	Transient Transient= fie.getAnnotation(Transient.class);
+			            	if(Transient==null) {
+			            		if(!fie.getName().equals("serialVersionUID")) {
+			            			groupflds.put(fie.getName(),fie);
+			            		}
+			            	}
+			            }
+			        }
 				}
 				//查询缓存
 				if(anno.annotationType().equals(DataModelScanning.class) ){
