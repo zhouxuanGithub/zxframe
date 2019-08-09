@@ -78,14 +78,26 @@ public class SQLParsing {
 	//sql参数部分增强
 	public static String replaceSQL(String sql, Map map) {
 		if(map!=null) {
-			Iterator<String> iterator = map.keySet().iterator();
-			while(iterator.hasNext()) {
-				String key = iterator.next();
-				if(sql.indexOf("${")!=-1) {
-					sql=sql.replaceAll("\\$\\{"+key+"\\}",String.valueOf(map.get(key)));
+			if(sql.indexOf("${")!=-1) {
+				Iterator<String> iterator = map.keySet().iterator();
+				while(iterator.hasNext()) {
+					String key = iterator.next();
+					if(sql.indexOf("${")!=-1) {
+						sql=sql.replaceAll("\\$\\{"+key+"\\}",String.valueOf(map.get(key)));
+					}else {
+						break;
+					}
 				}
-				if(sql.indexOf("#{")!=-1) {
-					sql=sql.replaceAll("\\#\\{"+key+"\\}",escapeSQLString(String.valueOf(map.get(key))));
+			}
+			if(sql.indexOf("#{")!=-1) {
+				Iterator<String> iterator = map.keySet().iterator();
+				while(iterator.hasNext()) {
+					String key = iterator.next();
+					if(sql.indexOf("#{")!=-1) {
+						sql=sql.replaceAll("\\#\\{"+key+"\\}",escapeSQLString(String.valueOf(map.get(key))));
+					}else {
+						break;
+					}
 				}
 			}
 		}
