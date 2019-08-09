@@ -42,7 +42,6 @@ import zxframe.jpa.model.DataModel;
  */
 @Component
 public class CacheModelManager {
-	private static final Annotation Model = null;
 	private static Logger logger = LoggerFactory.getLogger(CacheModelManager.class);  
 	//缓存模型
 	private static ConcurrentMap<String, DataModel> cacheModelMap=new ConcurrentHashMap<String, DataModel>();
