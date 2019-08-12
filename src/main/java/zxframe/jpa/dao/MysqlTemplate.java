@@ -175,7 +175,7 @@ public class MysqlTemplate {
 	 * @param args sql参数
 	 * @return
 	 */
-	public Object get(String group,Map<String,String> map,Object... args) {
+	public Object get(String group,Map map,Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型，空group:"+group);
