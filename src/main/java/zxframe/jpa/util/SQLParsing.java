@@ -94,7 +94,7 @@ public class SQLParsing {
 				while(iterator.hasNext()) {
 					String key = iterator.next();
 					if(sql.indexOf("#{")!=-1) {
-						sql=sql.replaceAll("\\#\\{"+key+"\\}",escapeSQLString(String.valueOf(map.get(key))));
+						sql=sql.replaceAll("\\#\\{"+key+"\\}",escapeSQLString(map.get(key)));
 					}else {
 						break;
 					}
@@ -113,7 +113,12 @@ public class SQLParsing {
 		}
 	}
 	//防止SQL注入替换
-	private static String escapeSQLString(String sql) {
+	private static String escapeSQLString(Object pm) {
+		String sql=String.valueOf(pm);
+		Class clas = pm.getClass();
+		if(clas == int.class||clas == Integer.class || clas == float.class||clas == Float.class || clas == double.class||clas == Double.class ||clas == long.class||clas == Long.class) {
+			return  sql;
+		}
 		StringBuilder buf = new StringBuilder();
 		buf.append('\'');
 		for (int i = 0; i < sql.length(); ++i) {
