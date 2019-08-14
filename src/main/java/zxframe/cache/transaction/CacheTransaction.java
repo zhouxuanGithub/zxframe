@@ -52,13 +52,15 @@ public class CacheTransaction {
 	 */
 	public void put(DataModel cacheModel,String id,Object value) {
 		try {
-			String transactionId = Thread.currentThread().getName();
-			if(transactionId.startsWith(ServiceAspect.THREADNAMESTARTS)) {
-				if(value!=null&&CacheModelManager.checkDataModel(cacheModel)) {
-					getGroupMap(transactionId, cacheModel.getGroup()).put(id, value);
+			if(CacheModelManager.checkDataModelUseCache(cacheModel)) {
+				String transactionId = Thread.currentThread().getName();
+				if(transactionId.startsWith(ServiceAspect.THREADNAMESTARTS)) {
+					if(value!=null) {
+						getGroupMap(transactionId, cacheModel.getGroup()).put(id, value);
+					}
+				}else {
+					logger.error("cache put失败，未进入事务中。");
 				}
-			}else {
-				logger.error("cache put失败，未进入事务中。");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,8 +73,10 @@ public class CacheTransaction {
 	 */
 	public void remove(String group,String id) {
 		try {
-			//直接删除缓存数据，不做回滚
-			cmm.remove(group, id);
+			if(CacheModelManager.checkDataModelUseCache(group)) {
+				//直接删除缓存数据，不做回滚
+				cmm.remove(group, id);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -84,12 +88,14 @@ public class CacheTransaction {
 	 */
 	public void removePSData(String group,String id) {
 		try {
-			String transactionId = Thread.currentThread().getName();
-			if(transactionId.startsWith(ServiceAspect.THREADNAMESTARTS)) {
-				if(id!=null) {
-					getGroupMap(transactionId, group).remove(id);
-				}else {
-					getGroupMap(transactionId, group).clear();
+			if(CacheModelManager.checkDataModelUseCache(group)) {
+				String transactionId = Thread.currentThread().getName();
+				if(transactionId.startsWith(ServiceAspect.THREADNAMESTARTS)) {
+					if(id!=null) {
+						getGroupMap(transactionId, group).remove(id);
+					}else {
+						getGroupMap(transactionId, group).clear();
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -105,13 +111,15 @@ public class CacheTransaction {
 	 */
 	public Object get(String group,String id) {
 		try {
-			String transactionId = Thread.currentThread().getName();
-			Object object = getGroupMap(transactionId, group).get(id);
-			if(object == null) {
-				//调用缓存manager尝试获取
-				return cmm.get(group, id);
-			}else {
-				return object;
+			if(CacheModelManager.checkDataModelUseCache(group)) {
+				String transactionId = Thread.currentThread().getName();
+				Object object = getGroupMap(transactionId, group).get(id);
+				if(object == null) {
+					//调用缓存manager尝试获取
+					return cmm.get(group, id);
+				}else {
+					return object;
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

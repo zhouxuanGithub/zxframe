@@ -51,11 +51,7 @@ public class CacheManager {
 		try {
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
 			if(cm==null) {
-				logger.error("CacheManager.put失败,DataModel不能为空");
-				return;
-			}
-			if(!CacheModelManager.checkDataModel(cm)) {
-				logger.error("CacheManager.put失败,无效的Group,请给["+cm.getGroup()+"]该对象添加Cache注解。");
+				logger.error("操作失败,group没有对应的数据模型（DataModel）");
 				return;
 			}
 			if(cm.isLcCache()) {
@@ -72,6 +68,10 @@ public class CacheManager {
 	public Object get(String group,String key) {
 		try {
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm==null) {
+				logger.error("CacheManager.get失败,DataModel不能为空");
+				return null;
+			}
 			if(cm.isLcCache()&&cm.isRcCache()) {
 				Object o = lcm.get(group, key);
 				if(o==null) {
@@ -96,6 +96,10 @@ public class CacheManager {
 			ct.removePSData(group, null);
 			//删除缓存中的数据
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm==null) {
+				logger.error("CacheManager.remove失败,DataModel不能为空");
+				return;
+			}
 			if(cm.isLcCache()) {
 				lcm.remove(group);
 			}
@@ -112,6 +116,10 @@ public class CacheManager {
 			ct.removePSData(group, key);
 			//删除缓存中的数据
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm==null) {
+				logger.error("CacheManager.remove失败,DataModel不能为空");
+				return;
+			}
 			if(cm.isLcCache()) {
 				lcm.remove(group,key);
 			}
@@ -133,6 +141,10 @@ public class CacheManager {
 	public void removeQueryCache(String group,Map map,Object... args) {
 		try {
 			DataModel cm = CacheModelManager.getDataModelByGroup(group);
+			if(cm==null) {
+				logger.error("CacheManager.removeQueryCache失败,DataModel不能为空");
+				return;
+			}
 			if(cm.isQueryCache()) {
 				remove(cm.getGroup(),getQueryKey(SQLParsing.replaceSQL(cm.getSql(),map), args));
 			}else {

@@ -45,8 +45,6 @@ public class CacheModelManager {
 	private static Logger logger = LoggerFactory.getLogger(CacheModelManager.class);  
 	//缓存模型
 	private static ConcurrentMap<String, DataModel> cacheModelMap=new ConcurrentHashMap<String, DataModel>();
-	//未开启缓存的模型
-	private static ConcurrentMap<String, Boolean> isNoHasDataModelMap=new ConcurrentHashMap<String, Boolean>();
 	//模型主键字段
 	public static ConcurrentMap<String, Field> cacheIdFieldMap=new ConcurrentHashMap<String, Field>();
 	//模型id字段
@@ -77,9 +75,6 @@ public class CacheModelManager {
 		if(cm!=null) {
 			return cm;
 		}
-		if(isNoHasDataModelMap.containsKey(cls)) {
-			return null;
-		}
 //		else {
 //			if(!cls.startsWith("zxframe")) {//并非自身程序的对象
 //				isNoHasDataModelMap.put(cls, true);
@@ -96,11 +91,9 @@ public class CacheModelManager {
 			sb.append("load model >>>> ").append(cls).append(" ");
 			if(clazz.isAnnotationPresent(DataModelScanning.class)) {
 				sb.append("[mapper]");
-				isNoHasDataModelMap.put(cls, true);
 			}
 			else if(!clazz.isAnnotationPresent(Cache.class)) {
 				sb.append("[no open cache]");
-				isNoHasDataModelMap.put(cls, true);
 			}
 			boolean isQC=false;
 			for (Annotation anno : clazz.getDeclaredAnnotations()) {//获得所有的注解
@@ -181,15 +174,22 @@ public class CacheModelManager {
 		return null;
 	}
 	/**
-	 * 检查缓存模型是否有效
-	 * @param cm
-	 * @return
+	 * 检查模型是否可使用缓存
 	 */
-	public static boolean checkDataModel(DataModel cm) {
-		if(cm==null||isNoHasDataModelMap.containsKey(cm.getGroup())) {
+	public static boolean checkDataModelUseCache(DataModel cm) {
+		if(cm==null) {
+			return false;
+		}
+		if(cm.isLcCache()==false && cm.isRcCache()==false) {
 			return false;
 		}
 		return true;
+	}
+	/**
+	 * 检查模型是否可使用缓存
+	 */
+	public static boolean checkDataModelUseCache(String group) {
+		return checkDataModelUseCache(CacheModelManager.getDataModelByGroup(group));
 	}
 	/**
 	 * 添加查询缓存模型

@@ -17,6 +17,7 @@
  **/
 package zxframe.cache.model;
 
+import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.annotation.DataModelScanning;
 import zxframe.jpa.model.DataModel;
 
@@ -26,7 +27,7 @@ public class FnCacheDataModel {
 	public DataModel initZxframeFdcacheDefault() {
 		DataModel cm =new DataModel();
 		cm.setGroup(zxframeFncacheDefault);
-		cm.setLcCache(false);
+		cm.setLcCache(ZxFrameConfig.ropen==true?false:true);//如果远程缓存未开启，则默认开启本地缓存
 		cm.setRcCache(true);
 		return cm;
 	}
