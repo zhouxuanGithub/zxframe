@@ -275,7 +275,7 @@ public class MysqlTemplate {
 			}
 			//执行
 			int execute = (int) execute(SQLParsing.getDSName(obj.getClass(),null,null),sql.toString(),null,args);
-			if(execute<1 && updateVersion) {
+			if(execute<1 && updateVersion && versionField!=null) {
 				//版本控制出现问题
 				logger.warn("StaleObjectStateException :"+JsonUtil.obj2Json(obj));
 				ct.remove(group, id.toString());
@@ -516,7 +516,7 @@ public class MysqlTemplate {
 	 * @param args 赋值的参数集合
 	 * @return 执行状态
 	 */
-	public Object execute(String group,Map<String,String> map, Object... args) {
+	public Object execute(String group,Map map, Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[execute]，可能你忘了加@DataMapper注解，group:"+group);
