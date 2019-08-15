@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import zxframe.util.WebResultUtil;
+import zxframe.http.Context;
 
 public class WebInterceptor implements HandlerInterceptor{
 	/**
@@ -14,8 +14,8 @@ public class WebInterceptor implements HandlerInterceptor{
      */
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
-    	WebResultUtil.currentRequest.set(httpServletRequest);
-    	WebResultUtil.currentResponse.set(httpServletResponse);
+    	Context.currentRequest.set(httpServletRequest);
+    	Context.currentResponse.set(httpServletResponse);
         return true;
     }
 
@@ -31,7 +31,7 @@ public class WebInterceptor implements HandlerInterceptor{
      */
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
-    	WebResultUtil.currentRequest.remove();
-    	WebResultUtil.currentResponse.remove();
+    	Context.currentRequest.remove();
+    	Context.currentResponse.remove();
     }
 }
