@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.ModelMap;
 
 import zxframe.http.Context;
 import zxframe.util.JsonUtil;
@@ -83,7 +84,7 @@ public class LogAspect {
 				sb.append("[param:{");
 				for (int i = 0; i < args.length; i++) {
 					Object arg = args[i];
-					if(arg instanceof HttpServletRequest || arg instanceof HttpServletResponse || arg instanceof ServerHttpRequest || arg instanceof HttpServletResponse ) {
+					if(arg instanceof HttpServletRequest || arg instanceof HttpServletResponse || arg instanceof ServerHttpRequest || arg instanceof HttpServletResponse|| arg instanceof ModelMap ) {
 						continue;
 					}
 					sb.append(ps[i]);
