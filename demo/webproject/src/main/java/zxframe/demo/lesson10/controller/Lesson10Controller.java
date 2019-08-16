@@ -6,12 +6,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import zxframe.demo.lesson10.service.Lesson10Service;
+import zxframe.log.annotation.FnLog;
 
+@FnLog //记录此类所有方法的入参和返回的日志，使用INFO级别才会记录
 @RestController
 @RequestMapping("lesson10")
 public class Lesson10Controller {
 	@Resource
 	Lesson10Service lesson10Service;
+	
 	@RequestMapping("test1")
 	public Object test1(String name,String time) {
 		return lesson10Service.test1(name,time);

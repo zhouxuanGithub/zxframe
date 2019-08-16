@@ -105,7 +105,9 @@ public class LocalCacheManager {
 		if(cache==null) {
 			ehcache.addCache(group);
 			cache = ehcache.getCache(group);
-			logger.info("ehcache cache init :"+cache.toString());
+			if(ZxFrameConfig.showlog) {
+				logger.info("ehcache cache init :"+cache.toString());
+			}
 		}
 		return cache;
 	}

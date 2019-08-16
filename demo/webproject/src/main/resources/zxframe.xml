@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zxframe>
-	<!-- 输出SQL，Cache，WEB等日志 -->
-	<showlog>true</showlog>
+	<!-- 输出SQL，Cache等日志 -->
+	<showlog>false</showlog>
 	<!-- 使用DB配置properties，支持全服务热更新，需开启useZXTask -->
 	<!-- SpringcloudConfigServer高可用成本较高，本功能只为降低成本，可选用 -->
 	<useDBProperties>false</useDBProperties>
