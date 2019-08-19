@@ -70,61 +70,19 @@ public class LogAspect {
 		}
 		String id=null;
 		if(inLogType==1) {
-			try {
-				Signature signature = pjd.getSignature();
-				MethodSignature methodSignature = (MethodSignature) signature;
-				String[] ps = methodSignature.getParameterNames();
-				Object[] args = pjd.getArgs();
-				//[uuid][execute]-[class]-[fn]-[pm]-[http uri]-[cookie]
-				id=UUID.randomUUID().toString();
-				StringBuffer sb=new StringBuffer();
-				sb.append("["+id+"]");
-				sb.append("[execute:"+pjd.getSignature().getDeclaringType().getName()+"]");
-				sb.append("[function:"+pjd.getSignature().getName()+"]");
-				sb.append("[param:{");
-				for (int i = 0; i < args.length; i++) {
-					Object arg = args[i];
-					if(arg instanceof HttpServletRequest || arg instanceof HttpServletResponse || arg instanceof ServerHttpRequest || arg instanceof HttpServletResponse|| arg instanceof ModelMap ) {
-						continue;
-					}
-					sb.append(ps[i]);
-					sb.append(":");
-					sb.append(JsonUtil.obj2Json(arg));
-					if(i!=args.length-1) {
-						sb.append(",");
-					}
-				}
-				sb.append("}]");
-				HttpServletRequest request = Context.currentRequest.get();
-				if(request!=null) {
-					sb.append("[url:"+request.getRequestURL()+(request.getQueryString()==null?"":("?"+request.getQueryString()))+"]");
-					sb.append("[cookie:{");
-					Cookie[] cookies = request.getCookies();
-					if(cookies!=null) {
-						for(Cookie cookie : cookies){
-					    	sb.append(cookie.getName());
-							sb.append(":");
-							sb.append(cookie.getValue());
-							sb.append(",");
-					    } 
-					}
-				    sb.append("}]");
-				}
-				logger.info(sb.toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			id=printExecute(pjd);
 		}
 		Object result = null;
 		try {
 			result = pjd.proceed();
 		} catch (Throwable e) {
-			if(inLogType==1) {
-				StringBuffer sb=new StringBuffer();
-				sb.append("["+id+"]");
-				sb.append("[error:"+e.getMessage()+"]");
-				logger.info(sb.toString());
+			if(inLogType!=1) {
+				id=printExecute(pjd);
 			}
+			StringBuffer sb=new StringBuffer();
+			sb.append("["+id+"]");
+			sb.append("[error:"+e.getMessage()+"]");
+			logger.info(sb.toString());
 			throw e;
 		}
 		if(inLogType==1) {
@@ -138,5 +96,53 @@ public class LogAspect {
 			}
 		}
 		return result;
+	}
+	private static String printExecute(ProceedingJoinPoint pjd) {
+		String id=null;
+		try {
+			Signature signature = pjd.getSignature();
+			MethodSignature methodSignature = (MethodSignature) signature;
+			String[] ps = methodSignature.getParameterNames();
+			Object[] args = pjd.getArgs();
+			//[uuid][execute]-[class]-[fn]-[pm]-[http uri]-[cookie]
+			id=UUID.randomUUID().toString();
+			StringBuffer sb=new StringBuffer();
+			sb.append("["+id+"]");
+			sb.append("[execute:"+pjd.getSignature().getDeclaringType().getName()+"]");
+			sb.append("[function:"+pjd.getSignature().getName()+"]");
+			sb.append("[param:{");
+			for (int i = 0; i < args.length; i++) {
+				Object arg = args[i];
+				if(arg instanceof HttpServletRequest || arg instanceof HttpServletResponse || arg instanceof ServerHttpRequest || arg instanceof HttpServletResponse|| arg instanceof ModelMap ) {
+					continue;
+				}
+				sb.append(ps[i]);
+				sb.append(":");
+				sb.append(JsonUtil.obj2Json(arg));
+				if(i!=args.length-1) {
+					sb.append(",");
+				}
+			}
+			sb.append("}]");
+			HttpServletRequest request = Context.currentRequest.get();
+			if(request!=null) {
+				sb.append("[url:"+request.getRequestURL()+(request.getQueryString()==null?"":("?"+request.getQueryString()))+"]");
+				sb.append("[cookie:{");
+				Cookie[] cookies = request.getCookies();
+				if(cookies!=null) {
+					for(Cookie cookie : cookies){
+				    	sb.append(cookie.getName());
+						sb.append(":");
+						sb.append(cookie.getValue());
+						sb.append(",");
+				    } 
+				}
+			    sb.append("}]");
+			}
+			logger.info(sb.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return id;
 	}
 }
