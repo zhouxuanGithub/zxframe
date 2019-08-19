@@ -34,6 +34,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -43,6 +44,7 @@ import zxframe.util.JsonUtil;
 
 @Aspect
 @Component
+@Order(1)
 public class LogAspect {
 	private static Map<String,Logger> lmap=new ConcurrentHashMap();
 	@Value("${logging.level.root}")
