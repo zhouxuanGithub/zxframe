@@ -21,7 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import zxframe.cache.mgr.CacheModelManager;
+import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.annotation.Model;
+import zxframe.jpa.inf.ISQLParse;
 
 public class SQLParsing {
 	/**
@@ -99,6 +101,12 @@ public class SQLParsing {
 						break;
 					}
 				}
+			}
+		}
+		if(ZxFrameConfig.sqlParselist!=null) {
+			for (int i = 0; i < ZxFrameConfig.sqlParselist.size(); i++) {
+				ISQLParse isqlParse = ZxFrameConfig.sqlParselist.get(i);
+				sql=isqlParse.sqlParsing(sql);
 			}
 		}
 		return sql;

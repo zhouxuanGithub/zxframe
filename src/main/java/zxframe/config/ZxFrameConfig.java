@@ -18,6 +18,7 @@
 package zxframe.config;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -35,6 +36,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import zxframe.cache.mgr.CacheModelManager;
+import zxframe.jpa.inf.ISQLParse;
 import zxframe.jpa.model.DataModel;  
  
 public class ZxFrameConfig {
@@ -56,6 +58,7 @@ public class ZxFrameConfig {
 	public static String rKeyPrefix="default";
 	//redis clusters;
 	public static String rClusters;
+	public static List<ISQLParse> sqlParselist;
 	public static void loadZxFrameConfig() {
 		 //1.获取jaxp工厂  
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -75,7 +78,7 @@ public class ZxFrameConfig {
             if(root.getElementsByTagName("useZXTask").getLength()>0) {
             	useZXTask=root.getElementsByTagName("useZXTask").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             }
-            if(root.getElementsByTagName("druid").getLength()>0) {
+            if(root.getElementsByTagName("druid").getLength()>0 || root.getElementsByTagName("db").getLength()>0) {//druid保留，兼容历史版本
             	Element commonItem = (Element)root.getElementsByTagName("common").item(0);
                 NodeList commonNL = commonItem.getChildNodes();
                 for(int i=0;i<commonNL.getLength();i++ ) {
@@ -105,6 +108,18 @@ public class ZxFrameConfig {
                     	if(node.getNodeType() == Node.ELEMENT_NODE){  
                     		Element child = (Element) node;  
                     		concurrentHashMap.put(child.getNodeName(), child.getTextContent());
+                    	}
+                    }
+                }
+                if(root.getElementsByTagName("sqlParse").getLength()>0) {
+                	sqlParselist=new ArrayList<>();
+                	Element sqlParse = (Element)root.getElementsByTagName("sqlParse").item(0);
+                    NodeList sqlParseNL = sqlParse.getChildNodes();
+                    for(int i=0;i<sqlParseNL.getLength();i++ ) {
+                    	Node node = sqlParseNL.item(i);
+                    	if(node.getNodeType() == Node.ELEMENT_NODE){  
+                    		Element child = (Element) node;  
+                    		sqlParselist.add((ISQLParse) Class.forName(child.getTextContent()).newInstance());
                     	}
                     }
                 }

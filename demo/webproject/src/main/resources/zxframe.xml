@@ -7,8 +7,8 @@
 	<useDBProperties>false</useDBProperties>
 	<!-- 使用ZXtask定时器 -->
 	<useZXTask>false</useZXTask>
-	<!-- druid数据源配置 -->
-	<druid>
+	<!-- 数据源配置 -->
+	<db>
 		<!-- 公共数据源配置 -->
 		<common>
 			<username>root</username>
@@ -46,7 +46,10 @@
 				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
 			</datasource>
 		</datasources>
-	</druid>
+		<sqlParse><!-- SQL在执行前，会将执行SQL传给配置的类，可自行再加工或者分析。实现ISQLParse接口 -->
+			<class>zxframe.demo.other.SqlParse</class>
+		</sqlParse>
+	</db>
 	<!-- 缓存配置 -->
 	<!-- 
 	<cache>
