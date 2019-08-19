@@ -7,7 +7,7 @@ public class SqlParse implements ISQLParse{
 
 	@Override
 	public String sqlParsing(String sql) {
-		System.out.println("加工SQL："+sql);
+		//System.out.println("加工SQL："+sql);
 		return sql;
 	}
 	
