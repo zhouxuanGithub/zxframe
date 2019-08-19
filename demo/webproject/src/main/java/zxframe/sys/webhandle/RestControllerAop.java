@@ -31,7 +31,7 @@ public class RestControllerAop {
 		try {
 			result = pjd.proceed();
 			if(result!=null) {
-				if(result instanceof SimpleResult || result instanceof BaseResult) {
+				if(result instanceof BaseResult) {
 					return result;
 				}
 				else {
