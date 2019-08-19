@@ -44,7 +44,7 @@ import zxframe.util.JsonUtil;
 
 @Aspect
 @Component
-@Order(1)
+@Order(1)//Order值越小，优先级越高！
 public class LogAspect {
 	private static Map<String,Logger> lmap=new ConcurrentHashMap();
 	@Value("${logging.level.root}")
