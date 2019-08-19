@@ -1,4 +1,4 @@
-package zxframe.sys.interceptor;
+package zxframe.sys.webhandle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
