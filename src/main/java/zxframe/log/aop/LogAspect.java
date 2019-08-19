@@ -17,7 +17,9 @@
  **/
 package zxframe.log.aop;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +44,7 @@ import zxframe.util.JsonUtil;
 @Aspect
 @Component
 public class LogAspect {
-	private static Logger logger = LoggerFactory.getLogger(LogAspect.class); 
+	private static Map<String,Logger> lmap=new ConcurrentHashMap();
 	@Value("${logging.level.root}")
 	private String logLevel;
 	private int inLogType=-1;
@@ -82,7 +84,7 @@ public class LogAspect {
 			StringBuffer sb=new StringBuffer();
 			sb.append("["+id+"]");
 			sb.append("[error:"+e.getMessage()+"]");
-			logger.info(sb.toString());
+			getLogger(pjd).info(sb.toString());
 			throw e;
 		}
 		if(inLogType==1) {
@@ -90,7 +92,7 @@ public class LogAspect {
 				StringBuffer sb=new StringBuffer();
 				sb.append("["+id+"]");
 				sb.append("[result:"+JsonUtil.obj2Json(result)+"]");
-				logger.info(sb.toString());
+				getLogger(pjd).info(sb.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -108,8 +110,7 @@ public class LogAspect {
 			id=UUID.randomUUID().toString();
 			StringBuffer sb=new StringBuffer();
 			sb.append("["+id+"]");
-			sb.append("[execute:"+pjd.getSignature().getDeclaringType().getName()+"]");
-			sb.append("[function:"+pjd.getSignature().getName()+"]");
+			sb.append("[execute:"+pjd.getSignature().getName()+"]");
 			sb.append("[param:{");
 			for (int i = 0; i < args.length; i++) {
 				Object arg = args[i];
@@ -139,10 +140,19 @@ public class LogAspect {
 				}
 			    sb.append("}]");
 			}
-			logger.info(sb.toString());
+			getLogger(pjd).info(sb.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return id;
+	}
+	public static Logger getLogger(ProceedingJoinPoint pjd) {
+		String key=pjd.getSignature().getDeclaringType().getName();
+		Logger logger = lmap.get(key);
+		if(logger==null) {
+			logger= LoggerFactory.getLogger(pjd.getSignature().getDeclaringType()); 
+			lmap.put(key, logger);
+		}
+		return logger;
 	}
 }
