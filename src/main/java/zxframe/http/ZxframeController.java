@@ -17,16 +17,21 @@
  **/
 package zxframe.http;
 
+import java.io.IOException;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import zxframe.util.DateUtil;
 import zxframe.util.SystemUtil;
+import zxframe.util.WebResultUtil;
 
-@RestController
+@Controller
 @RequestMapping("zxframe")
 public class ZxframeController {
 	@Value("${server.tomcat.basedir}")
@@ -34,18 +39,23 @@ public class ZxframeController {
 	private static long ctime=0;
 	//查看运行状态
 	@RequestMapping("error")
-	private synchronized String error() {
+	private synchronized void error(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		String r="";
 		if(!checkRunTime()) {
-			return "访问频率太快，请稍等一下！";
+			r= "访问频率太快，请稍等一下！";
 		}
 		String top="<meta charset=\"utf-8\"/><body onLoad='window.document.body.scrollTop = document.body.scrollHeight;'><pre><xmp>";
 		String content=SystemUtil.exec("tail -n 500 "+basedir+"log/error."+new DateUtil("yyyy-MM-dd").getDate()+".log");
-		String end="</xmp></pre><hr/>"+status()+"</body>";
-		return top+content+end;
+		String end="</xmp></pre><hr/>"+getStatus()+"</body>";
+		r= top+content+end;
+		WebResultUtil.print(request,response, r);
 	}
 	//查看运行状态
 	@RequestMapping("status")
-	private synchronized String status() {
+	private synchronized void status(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		WebResultUtil.print(request,response, getStatus());
+	}
+	private String getStatus() {
 		StringBuffer sb=new StringBuffer();
 		sb.append("<meta charset=\"utf-8\"/>");
 	    long maxMemory = Runtime.getRuntime().maxMemory() / 1024 / 1024; //java虚拟机能取得的最大内存  
