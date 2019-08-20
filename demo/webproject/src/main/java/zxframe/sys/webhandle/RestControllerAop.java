@@ -11,42 +11,35 @@ import org.springframework.stereotype.Component;
 import zxframe.sys.webhandle.result.BaseResult;
 import zxframe.sys.webhandle.result.ResultCode;
 import zxframe.sys.webhandle.result.SimpleResult;
+import zxframe.util.WebResultUtil;
 
 @Aspect
 @Component
-@Order(2)
+@Order(0)
 public class RestControllerAop {
 		
 	@Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
-	public void getAopPointcut() {
-		
-		
-	}
+	public void getAopPointcut() {}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Around(value="getAopPointcut()")
 	public Object aroundMethod(ProceedingJoinPoint pjd) throws Throwable{
-		
 		Object result = null;
 		try {
 			result = pjd.proceed();
 			if(result!=null) {
-				if(result instanceof BaseResult) {
-					return result;
-				}
-				else {
-					return new SimpleResult(ResultCode.Success,"",result);
+				if(!(result instanceof BaseResult)) {
+					result= new SimpleResult(ResultCode.Success,"",result);
 				}
 			}
 			else {
-				return new BaseResult(ResultCode.Success);
+				result= new BaseResult(ResultCode.Success);
 			}
 		} 
 		catch (Throwable e) {			
-			return new BaseResult(ResultCode.Failed,e.getMessage());
+			result= new BaseResult(ResultCode.Failed,e.getMessage());
 		}
-		
-		
+		WebResultUtil.print(null,null, result);
+		return null;
 	}
-
 }
