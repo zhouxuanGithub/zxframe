@@ -34,7 +34,7 @@ public class ZxframeController {
 	private static long ctime=0;
 	//查看运行状态
 	@RequestMapping("error")
-	public synchronized String error() {
+	private synchronized String error() {
 		if(!checkRunTime()) {
 			return "访问频率太快，请稍等一下！";
 		}
