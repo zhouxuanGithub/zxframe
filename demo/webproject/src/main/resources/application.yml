@@ -16,7 +16,7 @@ server:
     max-connections: 5000
     connection-timeout: 10000
     uri-encoding: UTF-8
-    basedir: /opt/webapps/epg_forbid_delete/${spring.application.name}/${server.port}/logs/
+    basedir: /opt/logs/${spring.application.name}/${server.port}/
     
 ##日志配置
 logging:

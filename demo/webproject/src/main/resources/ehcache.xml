@@ -4,7 +4,7 @@
 	monitoring="autodetect">
 	
 	<!--缓存路径-->
-	<diskStore path="${LOG_PATH}/../ehcache/"/>
+	<diskStore path="${LOG_PATH}/ehcache/"/>
 	<defaultCache 
 		maxElementsInMemory="5000" memoryStoreEvictionPolicy="LRU" 
 		maxElementsOnDisk="50000" overflowToDisk="true" diskSpoolBufferSizeMB="300"
