@@ -18,7 +18,6 @@
 package zxframe.config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -188,6 +187,7 @@ public class ZxFrameConfig {
 	                		if(nodeValue==null) {
 	                			nodeValue="map";
 	                		}
+	                		nodeValue=nodeValue.trim();
 	                		if(nodeValue.toLowerCase().equals("int") || nodeValue.toLowerCase().equals("integer") ) {
 	                			nodeValue="java.lang.Integer";
 	                		}else if(nodeValue.toLowerCase().equals("float") ) {
@@ -198,6 +198,8 @@ public class ZxFrameConfig {
 	                			nodeValue="java.lang.String";
 	                		}else if(nodeValue.toLowerCase().equals("map") ) {
 	                			nodeValue="java.util.HashMap";
+	                		}else if(nodeValue.toLowerCase().equals("date") ) {
+	                			nodeValue="java.util.Date";
 	                		}
 	                		dm.setResultClass(Class.forName(nodeValue));
 	                	}
