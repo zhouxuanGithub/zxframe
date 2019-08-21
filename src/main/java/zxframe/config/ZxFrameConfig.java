@@ -18,6 +18,7 @@
 package zxframe.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -183,7 +184,22 @@ public class ZxFrameConfig {
 	                		dm.setRcETime(Integer.parseInt(attributes.getNamedItem("rcETime").getNodeValue()));
 	                	}
 	                	if(attributes.getNamedItem("resultClass")!=null) {
-	                		dm.setResultClass(Class.forName(attributes.getNamedItem("resultClass").getNodeValue()));
+	                		String nodeValue = attributes.getNamedItem("resultClass").getNodeValue();
+	                		if(nodeValue==null) {
+	                			nodeValue="map";
+	                		}
+	                		if(nodeValue.toLowerCase().equals("int") || nodeValue.toLowerCase().equals("integer") ) {
+	                			nodeValue="java.lang.Integer";
+	                		}else if(nodeValue.toLowerCase().equals("float") ) {
+	                			nodeValue="java.lang.Float";
+	                		}else if(nodeValue.toLowerCase().equals("double") ) {
+	                			nodeValue="java.lang.Double";
+	                		}else if(nodeValue.toLowerCase().equals("string")) {
+	                			nodeValue="java.lang.String";
+	                		}else if(nodeValue.toLowerCase().equals("map") ) {
+	                			nodeValue="java.util.HashMap";
+	                		}
+	                		dm.setResultClass(Class.forName(nodeValue));
 	                	}
 	                	if(attributes.getNamedItem("dsClass")!=null) {
 	                		dm.setResultClass(Class.forName(attributes.getNamedItem("dsClass").getNodeValue()));
