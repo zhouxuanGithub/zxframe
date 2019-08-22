@@ -86,7 +86,7 @@ public class LogAspect {
 			StringBuffer sb=new StringBuffer();
 			sb.append("["+id+"]");
 			sb.append("[error:"+e.getMessage()+"]");
-			getLogger(pjd).info(sb.toString());
+			getLogger(pjd).error(sb.toString());
 			throw e;
 		}
 		if(inLogType==1) {
@@ -101,7 +101,7 @@ public class LogAspect {
 		}
 		return result;
 	}
-	private static String printExecute(ProceedingJoinPoint pjd) {
+	private String printExecute(ProceedingJoinPoint pjd) {
 		String id=null;
 		try {
 			Signature signature = pjd.getSignature();
@@ -142,7 +142,13 @@ public class LogAspect {
 				}
 			    sb.append("}]");
 			}
-			getLogger(pjd).info(sb.toString());
+			Logger logger = getLogger(pjd);
+			if(inLogType==1) {
+				logger.info(sb.toString());
+			}
+			else {
+				logger.error(sb.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
