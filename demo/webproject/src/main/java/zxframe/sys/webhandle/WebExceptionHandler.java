@@ -3,8 +3,6 @@ package zxframe.sys.webhandle;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,7 +15,6 @@ import zxframe.util.WebResultUtil;
 @ResponseBody
 @ControllerAdvice
 public class WebExceptionHandler {
-	 Logger logger = LoggerFactory.getLogger(WebExceptionHandler.class); 
 	 @ExceptionHandler(value = Throwable.class)
 	 public Object defaultErrorHandler(HttpServletRequest request,HttpServletResponse response, Throwable e) throws Throwable {
 		 response.setStatus(500);
