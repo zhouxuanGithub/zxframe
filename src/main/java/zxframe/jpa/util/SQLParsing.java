@@ -18,12 +18,20 @@
 package zxframe.jpa.util;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import zxframe.cache.mgr.CacheModelManager;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.annotation.Model;
+import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.inf.ISQLParse;
+import zxframe.jpa.model.DataModel;
 
 public class SQLParsing {
 	/**
@@ -78,7 +86,40 @@ public class SQLParsing {
 		}
 	}
 	//sql参数部分增强
-	public static String replaceSQL(String sql, Map map) {
+	public static String replaceSQL(DataModel dm,Map map) {
+		String sql=dm.getSql();
+		//标签解析
+		if(map!=null) {
+			Map<String, Object> diyDataMap = dm.getDiyDataMap();
+			ExpressionParser parser = null;
+			EvaluationContext context = null;
+			List<String> includeId = (List<String>) diyDataMap.get("mapper-include-id");
+			if(includeId!=null) {
+				for (int i = 0; i < includeId.size(); i++) {
+					String refid = includeId.get(i);
+					DataModel rdm = CacheModelManager.getDataModelByGroup(refid);
+					if(rdm==null) {
+						throw new JpaRuntimeException("mapper id not found:"+refid);
+					}
+					if(rdm.getDiyDataMap().containsKey("mapper-iftest-testList")) {
+						if(parser==null) {
+							parser = new SpelExpressionParser();
+							context = new StandardEvaluationContext(map);
+						}
+					}
+					sql=sql.replace("${mapper-include-"+refid+"}",getMapperIfIcdSQL(rdm,rdm.getSql(),parser,context));
+				}
+			}
+			
+			if(diyDataMap.containsKey("mapper-iftest-testList")) {
+				if(parser==null) {
+					parser = new SpelExpressionParser();
+					context = new StandardEvaluationContext(map);
+				}
+				sql=getMapperIfIcdSQL(dm,sql,parser,context);
+			}
+		}
+		//解析替换字符
 		if(map!=null) {
 			if(sql.indexOf("${")!=-1) {
 				Iterator<String> iterator = map.keySet().iterator();
@@ -107,6 +148,21 @@ public class SQLParsing {
 			for (int i = 0; i < ZxFrameConfig.sqlParselist.size(); i++) {
 				ISQLParse isqlParse = ZxFrameConfig.sqlParselist.get(i);
 				sql=isqlParse.sqlParsing(sql);
+			}
+		}
+		return sql;
+	}
+	private static String getMapperIfIcdSQL(DataModel dm,String sql,ExpressionParser parser,EvaluationContext context) {
+		List<String> testList = (List<String>) dm.getDiyDataMap().get("mapper-iftest-testList");
+		if(testList!=null) {
+			Map<String, String> textMap = (Map<String, String>) dm.getDiyDataMap().get("mapper-iftest-textMap");
+			for (int i = 0; i < testList.size(); i++) {
+				boolean b=(boolean)parser.parseExpression(testList.get(i)).getValue(context);
+				if(b) {
+					sql=sql.replace("${mapper-if-"+i+"}",textMap.get("${mapper-if-"+i+"}"));
+				}else {
+					sql=sql.replace("${mapper-if-"+i+"}","");
+				}
 			}
 		}
 		return sql;

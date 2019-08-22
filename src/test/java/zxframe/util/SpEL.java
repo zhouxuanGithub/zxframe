@@ -12,7 +12,7 @@ public class SpEL {
 	public Object $(String c) {
 		return c;
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ClassNotFoundException {
 		ExpressionParser parser = new SpelExpressionParser();
 		Map map=new HashMap();
 		map.put("value1", 1);

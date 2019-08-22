@@ -180,7 +180,7 @@ public class MysqlTemplate {
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型，空group:"+group);
 		}
-		return get(cm.getResultClass(),SQLParsing.replaceSQL(cm.getSql(),map),cm,args);
+		return get(cm.getResultClass(),SQLParsing.replaceSQL(cm,map),cm,args);
 	}
 	private <T> T get(Class<T> clas, String sql,DataModel cacheModel,Object... args) {
 		List<T> list = getList(clas, sql,cacheModel,args);
@@ -330,7 +330,7 @@ public class MysqlTemplate {
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[getList]，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		return getList(cm.getResultClass(),SQLParsing.replaceSQL(cm.getSql(),map), cm ,args);
+		return getList(cm.getResultClass(),SQLParsing.replaceSQL(cm,map), cm ,args);
 	}
 	private <T> List<T> getList(Class<T> clas,String sql,DataModel cacheModel, Object... args) {
 		String cid = null;
@@ -521,7 +521,7 @@ public class MysqlTemplate {
 		if(cm==null) {
 			throw new JpaRuntimeException("请配置数据模型[execute]，可能你忘了加@DataMapper注解，group:"+group);
 		}
-		String sql=SQLParsing.replaceSQL(cm.getSql(),map);
+		String sql=SQLParsing.replaceSQL(cm,map);
 		return execute(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),sql),sql,cm,args);
 	}
 	/**

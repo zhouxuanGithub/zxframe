@@ -146,7 +146,7 @@ public class CacheManager {
 				return;
 			}
 			if(cm.isQueryCache()) {
-				remove(cm.getGroup(),getQueryKey(SQLParsing.replaceSQL(cm.getSql(),map), args));
+				remove(cm.getGroup(),getQueryKey(SQLParsing.replaceSQL(cm,map), args));
 			}else {
 				throw new JpaRuntimeException("查询缓存清理失败，未开启查询缓存【group:"+group+"】");
 			}

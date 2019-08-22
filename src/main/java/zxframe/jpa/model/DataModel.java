@@ -20,6 +20,8 @@ package zxframe.jpa.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import zxframe.config.ZxFrameConfig;
 
@@ -80,6 +82,10 @@ public class DataModel implements Serializable{
 	 * 本地缓存里的数据每次都是克隆取出，一份新的数据
 	 */
 	private boolean lcCacheDataClone=false;
+	/**
+	 * 自定义数据存储map
+	 */
+	private Map<String,Object> diyDataMap=new ConcurrentHashMap<>();
 	
 	public boolean isLcCache() {
 		return lcCache;
@@ -156,6 +162,12 @@ public class DataModel implements Serializable{
 	}
 	public void setLcCacheDataClone(boolean lcCacheDataClone) {
 		this.lcCacheDataClone = lcCacheDataClone;
+	}
+	public Map<String, Object> getDiyDataMap() {
+		return diyDataMap;
+	}
+	public void setDiyDataMap(Map<String, Object> diyDataMap) {
+		this.diyDataMap = diyDataMap;
 	}
 	@Override
 	public String toString() {

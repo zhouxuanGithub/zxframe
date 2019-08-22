@@ -46,22 +46,25 @@ public class Lesson06Service {
 //			mysqlTemplate.delete(User.class, "68237481-3c0d-461a-bc19-e59f694ba76a");
 		}
 		//更新，不传参
-//		mysqlTemplate.execute("lesson06MapperUpdate");
+//		mysqlTemplate.execute("lesson06Mapper.update");
 		//更新，?传参
-//		mysqlTemplate.execute("lesson06MapperUpdateV2",20,30);
+//		mysqlTemplate.execute("lesson06Mapper.updateV2",20,30);
 		//更新，map传参
 //		Map map =new HashMap<>();
 //		map.put("age",33);
-//		mysqlTemplate.execute("lesson06MapperUpdateV3",map);//${..}符号占位，纯粹的字符串替换
-//		mysqlTemplate.execute("lesson06MapperUpdateV4",map);//#{..}符号占位，参数替换，可防SQL注入
+//		mysqlTemplate.execute("lesson06Mapper.updateV3",map);//${..}符号占位，纯粹的字符串替换
+//		mysqlTemplate.execute("lesson06Mapper.updateV4",map);//#{..}符号占位，参数替换，可防SQL注入
 		//更新，对象转Map传参
 //		User u3 =new User();
 //		u3.setAge(100);
-//		mysqlTemplate.execute("lesson06MapperUpdateV3",JsonUtil.obj2Map(u3));
+//		mysqlTemplate.execute("lesson06Mapper.updateV3",JsonUtil.obj2Map(u3));
 		//查询list
-//		return mysqlTemplate.getList("lesson06MapperSelect");//返回对象 list
-		return mysqlTemplate.getList("lesson06MapperSelectV2");//返回map list
-		//根据<if test>标签判断查询list
-		//...
+//		return mysqlTemplate.getList("lesson06Mapper.select");//返回对象 list
+		return mysqlTemplate.getList("lesson06Mapper.selectV2");//返回map list
+		//支持<if test> <include refid=""/>标签
+//		Map map2 =new HashMap<>();
+//		map2.put("age",33);
+//		map2.put("name","testname");
+//		return mysqlTemplate.getList("lesson06Mapper.selectV3",map2);
 	}
 }

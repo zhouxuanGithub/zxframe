@@ -19,6 +19,7 @@ package zxframe.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -212,6 +213,64 @@ public class ZxFrameConfig {
 	                		for (int k = 0; k < split.length; k++) {
 	                			dm.addFlushOnExecute(split[k]);
 							}
+	                	}
+	                	//标签的支持
+	                	Map<String, Object> diyDataMap = dm.getDiyDataMap();
+	                	NodeList includelist = item.getElementsByTagName("include");
+	                	List<String> includeId=new ArrayList<>();
+	                	for (int k = 0; k < includelist.getLength(); k++) {
+	                		Element iitm = (Element) includelist.item(k);
+	                		String refid = iitm.getAttribute("refid");
+	                		if(namespace.length()>0) {
+	                			if(!refid.startsWith(namespace)) {
+	                				if(refid.indexOf(".")==-1) {
+	                					refid=namespace+refid;
+	                				}
+	                			}
+	                		}
+	                		includeId.add(refid);
+	                		Element tl=document.createElement("temp");
+	                		tl.setTextContent("${mapper-include-"+refid+"}");
+	                		item.replaceChild(tl, iitm);
+	                	}
+	                	if(includeId.size()>0) {
+	                		diyDataMap.put("mapper-include-id", includeId);
+	                	}
+	                	
+	                	List<String> testList=new ArrayList<>();
+	                	Map<String, String> textMap =new ConcurrentHashMap<>();
+	                	NodeList iflist = item.getElementsByTagName("if");
+	                	for (int k = 0; k < iflist.getLength(); k++) {
+	                		Element ifitm = (Element) iflist.item(k);
+	                		String test = ifitm.getAttribute("test");
+	                		test=test.replaceAll("\\$", "get");
+	                		test=test.replaceAll("\\#", "get");
+	                		
+	                		test=test.replaceAll("\\{     ", "(\"");
+	                		test=test.replaceAll("\\     }", "\")");
+	                		test=test.replaceAll("\\{    ", "(\"");
+	                		test=test.replaceAll("\\    }", "\")");
+	                		test=test.replaceAll("\\{   ", "(\"");
+	                		test=test.replaceAll("\\   }", "\")");
+	                		test=test.replaceAll("\\{  ", "(\"");
+	                		test=test.replaceAll("\\  }", "\")");
+	                		test=test.replaceAll("\\{ ", "(\"");
+	                		test=test.replaceAll("\\ }", "\")");
+	                		test=test.replaceAll("\\{", "(\"");
+	                		test=test.replaceAll("\\}", "\")");
+	                		
+	                		test=test.replaceAll(" and ", " && ");
+	                		test=test.replaceAll(" or ", " || ");
+	                		testList.add(test);
+	                		String key="${mapper-if-"+k+"}";
+	                		textMap.put(key,ifitm.getTextContent());
+	                		Element tl=document.createElement("temp");
+	                		tl.setTextContent(key);
+	                		item.replaceChild(tl, ifitm);
+						}
+	                	if(testList.size()>0) {
+	                		diyDataMap.put("mapper-iftest-testList", testList);
+		                	diyDataMap.put("mapper-iftest-textMap", textMap);
 	                	}
 	                	dm.setSql(item.getTextContent());
 	                	CacheModelManager.addQueryDataModel(dm);

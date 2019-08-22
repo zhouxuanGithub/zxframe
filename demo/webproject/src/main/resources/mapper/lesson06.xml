@@ -11,25 +11,40 @@
 	lcCacheDataClone：本地缓存里的数据每次是否都是克隆取出一份新的数据；默认值：false
 	strictRW：存在缓存组删除就得开启；不存在缓存组删除就可以关闭，提升效率；默认值：false
  -->
-<mapper>
-	<sql id="lesson06MapperUpdate" >
+<mapper namespace="lesson06Mapper">
+	<sql id="update" >
 		update user set age=18
 	</sql>
-	<sql id="lesson06MapperUpdateV2" >
+	<sql id="updateV2" >
 		update user set age=? where age=?
 	</sql>
 	<!-- ${..}符号占位，纯粹的字符串替换 -->
-	<sql id="lesson06MapperUpdateV3" >
+	<sql id="updateV3" >
 		update user set age=${age}
 	</sql>
 	<!-- #{..}符号占位，参数替换，可防SQL注入 -->
-	<sql id="lesson06MapperUpdateV4" >
+	<sql id="updateV4" >
 		update user set age=#{age}
 	</sql>
-	<sql id="lesson06MapperSelect" resultClass="zxframe.demo.lesson06.model.User06">
+	<sql id="select" resultClass="zxframe.demo.lesson06.model.User06">
 		select * from user 
 	</sql>
-	<sql id="lesson06MapperSelectV2" resultClass="java.util.Map">
+	<sql id="selectV2" resultClass="java.util.Map">
 		select * from user 
+	</sql>
+	<!-- 支持if和include -->
+	<sql id="selectV3" resultClass="java.util.Map">
+		select * from user where 1=1
+		<if test="#{name} != null">
+			and age=#{name}
+		</if>
+		and 2=2
+		<include refid="includesql"/>
+		and 3=3
+	</sql>
+	<sql id="includesql">
+		<if test="#{age} != null">
+			and age=#{age}
+		</if>
 	</sql>
 </mapper>
