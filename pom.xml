@@ -4,7 +4,7 @@
 
   <groupId>com.github.zhouxuanGithub</groupId>
   <artifactId>zxframe</artifactId>
-  <version>1.4.2</version>
+  <version>1.5</version>
   <packaging>jar</packaging>
   <name>zxframe</name>
   <description>ZxFrame为JAVA框架-支持JPA，多级缓存，读写分离，分库分表；支持通用分布式锁；配置热更新；防缓存击穿，缓存穿透，缓存雪崩；</description>
