@@ -36,7 +36,7 @@
 	<sql id="selectV3" resultClass="java.util.Map">
 		select * from user where 1=1
 		<if test="#{name} != null">
-			and age=#{name}
+			and name=#{name}
 		</if>
 		and 2=2
 		<include refid="includesql"/>
@@ -44,7 +44,7 @@
 	</sql>
 	<sql id="includesql">
 		<if test="#{age} != null">
-			and age=#{age}
+			and age=${age}
 		</if>
 	</sql>
 </mapper>

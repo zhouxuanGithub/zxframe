@@ -126,7 +126,7 @@ public class SQLParsing {
 				while(iterator.hasNext()) {
 					String key = iterator.next();
 					if(sql.indexOf("${")!=-1) {
-						sql=sql.replaceAll("\\$\\{"+key+"\\}",String.valueOf(map.get(key)));
+						sql=sql.replace("${"+key+"}",String.valueOf(map.get(key)));
 					}else {
 						break;
 					}
@@ -137,7 +137,7 @@ public class SQLParsing {
 				while(iterator.hasNext()) {
 					String key = iterator.next();
 					if(sql.indexOf("#{")!=-1) {
-						sql=sql.replaceAll("\\#\\{"+key+"\\}",escapeSQLString(map.get(key)));
+						sql=sql.replace("#{"+key+"}",escapeSQLString(map.get(key)));
 					}else {
 						break;
 					}
