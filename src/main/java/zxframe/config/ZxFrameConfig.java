@@ -39,7 +39,6 @@ import org.w3c.dom.NodeList;
 import zxframe.cache.mgr.CacheModelManager;
 import zxframe.jpa.inf.ISQLParse;
 import zxframe.jpa.model.DataModel;
-import zxframe.util.JsonUtil;
 import zxframe.util.ServiceLocator;  
  
 public class ZxFrameConfig {
