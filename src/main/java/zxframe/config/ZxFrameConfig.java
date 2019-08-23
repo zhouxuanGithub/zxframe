@@ -38,7 +38,9 @@ import org.w3c.dom.NodeList;
 
 import zxframe.cache.mgr.CacheModelManager;
 import zxframe.jpa.inf.ISQLParse;
-import zxframe.jpa.model.DataModel;  
+import zxframe.jpa.model.DataModel;
+import zxframe.util.JsonUtil;
+import zxframe.util.ServiceLocator;  
  
 public class ZxFrameConfig {
 	//是否输出普通日志
@@ -120,7 +122,7 @@ public class ZxFrameConfig {
                     	Node node = sqlParseNL.item(i);
                     	if(node.getNodeType() == Node.ELEMENT_NODE){  
                     		Element child = (Element) node;  
-                    		sqlParselist.add((ISQLParse) Class.forName(child.getTextContent()).newInstance());
+                    		sqlParselist.add((ISQLParse)ServiceLocator.getSpringBean(child.getTextContent().trim()));
                     	}
                     }
                 }

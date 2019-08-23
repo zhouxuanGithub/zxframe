@@ -48,7 +48,7 @@
 		</datasources>
 		<!-- SQL在执行前，会将执行SQL传给配置的类，可自行再加工或者分析。 -->
 		<sqlParse>
-			<class>zxframe.demo.other.SqlParse</class><!-- 实现ISQLParse接口，类全路径 -->
+			<spingBeanId>sqlParse</spingBeanId><!-- 实现ISQLParse接口，写 spirng bean id -->
 		</sqlParse>
 	</db>
 	<!-- 缓存配置 -->
