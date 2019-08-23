@@ -217,10 +217,14 @@ public class ZxFrameConfig {
 	                	}
 	                	//标签的支持
 	                	Map<String, Object> diyDataMap = dm.getDiyDataMap();
-	                	NodeList includelist = item.getElementsByTagName("include");
 	                	List<String> includeId=new ArrayList<>();
+	                	NodeList includelist = item.getElementsByTagName("include");
+	                	List<Element> includelistTemp=new ArrayList<>();
 	                	for (int k = 0; k < includelist.getLength(); k++) {
-	                		Element iitm = (Element) includelist.item(k);
+	                		includelistTemp.add((Element) includelist.item(k));
+	                	}
+	                	for (int k = 0; k < includelistTemp.size(); k++) {
+	                		Element iitm = includelistTemp.get(k);
 	                		String refid = iitm.getAttribute("refid");
 	                		if(namespace.length()>0) {
 	                			if(!refid.startsWith(namespace)) {
@@ -241,8 +245,12 @@ public class ZxFrameConfig {
 	                	List<String> testList=new ArrayList<>();
 	                	Map<String, String> textMap =new ConcurrentHashMap<>();
 	                	NodeList iflist = item.getElementsByTagName("if");
+	                	List<Element> iflistTemp=new ArrayList<>();
 	                	for (int k = 0; k < iflist.getLength(); k++) {
-	                		Element ifitm = (Element) iflist.item(k);
+	                		iflistTemp.add((Element) iflist.item(k));
+	                	}
+	                	for (int k = 0; k < iflistTemp.size(); k++) {
+	                		Element ifitm = iflistTemp.get(k);
 	                		String test = ifitm.getAttribute("test");
 	                		test=test.replaceAll("\\$", "get");
 	                		test=test.replaceAll("\\#", "get");
@@ -273,6 +281,18 @@ public class ZxFrameConfig {
 	                		diyDataMap.put("mapper-iftest-testList", testList);
 		                	diyDataMap.put("mapper-iftest-textMap", textMap);
 	                	}
+	                	NodeList brlist = item.getElementsByTagName("br");
+	                	List<Element> brlistTemp=new ArrayList<>();
+	                	for (int k = 0; k < brlist.getLength(); k++) {
+	                		brlistTemp.add((Element) brlist.item(k));
+	                	}
+	                	for (int k = 0; k < brlistTemp.size(); k++) {
+	                		Element britm = brlistTemp.get(k);
+	                		Element tl=document.createElement("temp");
+	                		tl.setTextContent("<br/>");
+	                		item.replaceChild(tl, britm);
+	                	}
+	                	System.out.println(item.getTextContent());
 	                	dm.setSql(item.getTextContent());
 	                	CacheModelManager.addQueryDataModel(dm);
 	                }

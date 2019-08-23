@@ -328,7 +328,7 @@ public class MysqlTemplate {
 	public List getList(String group,Map map, Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
-			throw new JpaRuntimeException("请配置数据模型[getList]，可能你忘了加@DataMapper注解，group:"+group);
+			throw new JpaRuntimeException("未找到group:"+group+"，可能你忘了加命名空间或者@DataMapper注解");
 		}
 		return getList(cm.getResultClass(),SQLParsing.replaceSQL(cm,map), cm ,args);
 	}
@@ -519,7 +519,7 @@ public class MysqlTemplate {
 	public Object execute(String group,Map map, Object... args) {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm==null) {
-			throw new JpaRuntimeException("请配置数据模型[execute]，可能你忘了加@DataMapper注解，group:"+group);
+			throw new JpaRuntimeException("未找到group:"+group+"，可能你忘了加命名空间或者@DataMapper注解");
 		}
 		String sql=SQLParsing.replaceSQL(cm,map);
 		return execute(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),sql),sql,cm,args);
@@ -587,7 +587,76 @@ public class MysqlTemplate {
 			// 5.关闭连接
 			closeAll(null, ps, rs);
 		}
-		
+	}
+	/**
+	 * 批量SQL执行
+	 * @param group 数据模型组
+	 * @return 执行状态
+	 */
+	public Object executeBatch(String group) {
+		return executeBatch(group,null);
+	}
+	/**
+	 * 批量SQL执行
+	 * @param group 数据模型组
+	 * @param map sql增强部分替换
+	 * @return 执行状态
+	 */
+	public Object executeBatch(String group,Map map) {
+		DataModel cm = CacheModelManager.getDataModelByGroup(group);
+		if(cm==null) {
+			throw new JpaRuntimeException("未找到group:"+group+"，可能你忘了加命名空间或者@DataMapper注解");
+		}
+		String sql=SQLParsing.replaceSQL(cm,map);
+		return executeBatch(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),sql),sql,cm);
+	}
+	private Object executeBatch(String dsname,String sql,DataModel cm) {
+		Connection con = null;
+		Statement ps = null;
+		try {
+			// 1.打开连接
+			con = DataSourceManager.getCurrentWConnection(dsname);
+			if(con==null) {
+				throw new JpaRuntimeException("不能成功获得数据库连接！");
+			}
+			// 2.获取语句对象
+			ps = con.createStatement();
+			// 3.sql放入
+			String[] ss = sql.split("<br/>");
+			for (int i = 0; i < ss.length; i++) {
+				String sss = ss[i];
+				if(sss.trim().length()>0) {
+					ps.addBatch(sss);
+				}
+			}
+			// 4.执行(向数据库发送指令)
+			int[] count = ps.executeBatch();
+			//执行后清理指定组缓存
+			try {
+				if(cm!=null&&cm.getFlushOnExecute()!=null) {
+					List l = cm.getFlushOnExecute();
+					for (int i = 0; i < l.size(); i++) {
+						Object o = l.get(i);
+						if(o instanceof Class) {
+							cacheManager.remove(((Class) o).getName());
+						}else {
+							cacheManager.remove(o.toString());
+						}
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return count;
+		}catch (Exception e) {
+			throw new JpaRuntimeException(e);
+		} finally {
+			try{
+	          if(ps!=null)
+	        	  ps.close();
+	        }catch(SQLException se2){
+	        }
+		}
 	}
 	/**
 	 * 通有的查询方法

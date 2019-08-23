@@ -47,4 +47,10 @@
 			and age=${age}
 		</if>
 	</sql>
+	<!-- 批SQL执行,每行必须使用 br标签 分割 -->
+	<sql id="executeBatchSQL">
+		INSERT INTO `testid` (`value`) VALUES ('1') ; <br/>
+		INSERT INTO `testid` (`value`) VALUES ('2') ; <br/>
+		INSERT INTO `testid` (`value`) VALUES ('3') ; <br/>
+	</sql>
 </mapper>

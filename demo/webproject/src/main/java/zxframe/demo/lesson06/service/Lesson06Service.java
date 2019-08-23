@@ -58,6 +58,8 @@ public class Lesson06Service {
 //		User u3 =new User();
 //		u3.setAge(100);
 //		mysqlTemplate.execute("lesson06Mapper.updateV3",JsonUtil.obj2Map(u3));
+		//批sql执行
+//		mysqlTemplate.executeBatch("lesson06Mapper.executeBatchSQL");
 		//查询list
 //		return mysqlTemplate.getList("lesson06Mapper.select");//返回对象 list
 		return mysqlTemplate.getList("lesson06Mapper.selectV2");//返回map list
