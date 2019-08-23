@@ -292,7 +292,6 @@ public class ZxFrameConfig {
 	                		tl.setTextContent("<br/>");
 	                		item.replaceChild(tl, britm);
 	                	}
-	                	System.out.println(item.getTextContent());
 	                	dm.setSql(item.getTextContent());
 	                	CacheModelManager.addQueryDataModel(dm);
 	                }
