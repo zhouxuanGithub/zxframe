@@ -6,14 +6,15 @@
 	<!--缓存路径-->
 	<diskStore path="${LOG_PATH}/ehcache/"/>
 	<defaultCache 
-		maxElementsInMemory="5000" memoryStoreEvictionPolicy="LRU" 
-		maxElementsOnDisk="50000" overflowToDisk="true" diskSpoolBufferSizeMB="300"
+		maxElementsInMemory="10000" memoryStoreEvictionPolicy="LRU" 
+		maxElementsOnDisk="1000000" overflowToDisk="true" diskSpoolBufferSizeMB="300"
 		eternal="false" timeToIdleSeconds="1200" timeToLiveSeconds="7200"
 		diskPersistent="false" diskExpiryThreadIntervalSeconds="300"/>
+		
 	<!-- 
 	<cache name="group" 
-		maxElementsInMemory="5000" memoryStoreEvictionPolicy="LRU" 
-		maxElementsOnDisk="50000" overflowToDisk="true" diskSpoolBufferSizeMB="300"
+		maxElementsInMemory="10000" memoryStoreEvictionPolicy="LRU" 
+		maxElementsOnDisk="100000" overflowToDisk="true" diskSpoolBufferSizeMB="300"
 		eternal="false" timeToIdleSeconds="1200" timeToLiveSeconds="7200"
 		diskPersistent="false" diskExpiryThreadIntervalSeconds="300" />
 	 -->
