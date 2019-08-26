@@ -88,10 +88,18 @@ public class DataModel implements Serializable{
 	private Map<String,Object> diyDataMap=new ConcurrentHashMap<>();
 	
 	public boolean isLcCache() {
-		return lcCache;
+		if(ZxFrameConfig.lopen) {
+			return lcCache;
+		}else {
+			return false;
+		}
 	}
 	public void setLcCache(boolean lcCache) {
-		this.lcCache = lcCache;
+		if(ZxFrameConfig.lopen) {
+			this.lcCache = lcCache;
+		}else {
+			this.lcCache= false;
+		}
 	}
 	public boolean isRcCache() {
 		if(ZxFrameConfig.ropen) {
@@ -101,7 +109,11 @@ public class DataModel implements Serializable{
 		}
 	}
 	public void setRcCache(boolean rcCache) {
-		this.rcCache = rcCache;
+		if(ZxFrameConfig.ropen) {
+			this.rcCache = rcCache;
+		}else {
+			this.rcCache = false;
+		}
 	}
 	public String getGroup() {
 		return group;

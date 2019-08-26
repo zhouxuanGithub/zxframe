@@ -54,6 +54,8 @@ public class ZxFrameConfig {
 	public static ConcurrentMap<String, ArrayList<ConcurrentHashMap<String, String>>> datasources=new ConcurrentHashMap<String, ArrayList<ConcurrentHashMap<String, String>>>();
 	//redis open
 	public static boolean ropen=false;
+	//本地ehcahce open
+	public static boolean lopen=false;
 	//redis password
 	public static String rPassword;
 	//redis key前缀
@@ -126,7 +128,18 @@ public class ZxFrameConfig {
                     }
                 }
             }
-//            eopen=root.getElementsByTagName("ehcache").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
+            if(root.getElementsByTagName("ehcache").getLength()>0) {
+              NodeList childNodes = root.getElementsByTagName("ehcache").item(0).getChildNodes();
+              for(int i=0;i<childNodes.getLength();i++ ) {
+              	Node node = childNodes.item(i);
+              	if(node.getNodeType() == Node.ELEMENT_NODE){  
+              		Element child = (Element) node;
+              		if(child.getNodeName().equals("open")) {
+              			lopen=child.getTextContent().equals("true")?true:false;
+              		}
+              	}
+              }
+            }
             if(root.getElementsByTagName("redis").getLength()>0) {
             	NodeList childNodes = root.getElementsByTagName("redis").item(0).getChildNodes();
                 for(int i=0;i<childNodes.getLength();i++ ) {
