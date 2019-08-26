@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 /**
  * base64 效率超越sun自带
  * 
- * @author zhouxuan
  * @preserve
  */
 public final class Base64 {

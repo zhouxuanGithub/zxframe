@@ -5,8 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
- * from the internet  
- * from the org.apache.commons
+ * String Utils
+ * @from the internet   
+ * @from the org.apache.commons
  */
 public final class StringUtils {
 	private static final String submoneyCN[] = { "", "拾", "佰", "仟" };
