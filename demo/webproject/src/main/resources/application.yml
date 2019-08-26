@@ -5,6 +5,7 @@ spring:
   profiles:
     include:
       - lesson04
+      - config
     
 ##服务配置
 server: 
