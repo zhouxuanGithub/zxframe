@@ -12,16 +12,30 @@ import java.util.List;
  */
 public final class StringUtil {
 	private static final String submoneyCN[] = { "", "拾", "佰", "仟" };
-	private static final String submoneyCNN[] = { "零", "壹", "贰", "叁", "肆", "伍",
-			"陆", "柒", "捌", "玖" };
+	private static final String submoneyCNN[] = { "零", "壹", "贰", "叁", "肆", "伍","陆", "柒", "捌", "玖" };
+	
+	/**
+	 * 判断是否是数字
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        int sz = str.length();
+        for (int i = 0; i < sz; i++) {
+            if (Character.isDigit(str.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 	/**
 	 * 检测字符串是否包含非法字符
-	 * 
-	 * @param str
-	 *            需要被检测的字符串
-	 * @param list
-	 *            过滤字典
+	 * @param str 需要被检测的字符串
+	 * @param list 过滤字典
 	 * @return true表示通过 检测 false表示不通过检测
 	 */
 	public static boolean cheackStr(String str, List<String> list) {
@@ -733,23 +747,6 @@ public final class StringUtil {
 		}
 		return pyBuffer.toString().trim().toLowerCase();
 	}
-	/**
-	 * 判断是否是数字
-	 * @param str
-	 * @return
-	 */
-	public static boolean isNumeric(String str) {
-        if (str == null) {
-            return false;
-        }
-        int sz = str.length();
-        for (int i = 0; i < sz; i++) {
-            if (Character.isDigit(str.charAt(i)) == false) {
-                return false;
-            }
-        }
-        return true;
-    }
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		String readFile = FileUtil.readFile("d:\\single.txt", "@@@@@","GBK");
 		String[] split = readFile.split("@@@@@");
