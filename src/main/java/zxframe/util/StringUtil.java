@@ -733,7 +733,23 @@ public final class StringUtil {
 		}
 		return pyBuffer.toString().trim().toLowerCase();
 	}
-
+	/**
+	 * 判断是否是数字
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        int sz = str.length();
+        for (int i = 0; i < sz; i++) {
+            if (Character.isDigit(str.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		String readFile = FileUtil.readFile("d:\\single.txt", "@@@@@","GBK");
 		String[] split = readFile.split("@@@@@");
