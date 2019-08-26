@@ -39,7 +39,8 @@ import org.w3c.dom.NodeList;
 import zxframe.cache.mgr.CacheModelManager;
 import zxframe.jpa.inf.ISQLParse;
 import zxframe.jpa.model.DataModel;
-import zxframe.util.ServiceLocator;  
+import zxframe.util.ServiceLocator;
+import zxframe.util.StringUtils;  
  
 public class ZxFrameConfig {
 	//是否输出普通日志
@@ -197,27 +198,29 @@ public class ZxFrameConfig {
 	                	if(attributes.getNamedItem("rcETime")!=null) {
 	                		dm.setRcETime(Integer.parseInt(attributes.getNamedItem("rcETime").getNodeValue()));
 	                	}
+	                	String resultClassValue =null;
 	                	if(attributes.getNamedItem("resultClass")!=null) {
-	                		String nodeValue = attributes.getNamedItem("resultClass").getNodeValue();
-	                		if(nodeValue==null) {
-	                			nodeValue="map";
-	                		}
-	                		nodeValue=nodeValue.trim();
-	                		if(nodeValue.toLowerCase().equals("int") || nodeValue.toLowerCase().equals("integer") ) {
-	                			nodeValue="java.lang.Integer";
-	                		}else if(nodeValue.toLowerCase().equals("float") ) {
-	                			nodeValue="java.lang.Float";
-	                		}else if(nodeValue.toLowerCase().equals("double") ) {
-	                			nodeValue="java.lang.Double";
-	                		}else if(nodeValue.toLowerCase().equals("string")) {
-	                			nodeValue="java.lang.String";
-	                		}else if(nodeValue.toLowerCase().equals("map") ) {
-	                			nodeValue="java.util.HashMap";
-	                		}else if(nodeValue.toLowerCase().equals("date") ) {
-	                			nodeValue="java.util.Date";
-	                		}
-	                		dm.setResultClass(Class.forName(nodeValue));
+	                		resultClassValue = attributes.getNamedItem("resultClass").getNodeValue();
 	                	}
+                		if(StringUtils.isBlank(resultClassValue)) {
+                			resultClassValue="map";
+                		}
+                		resultClassValue=resultClassValue.trim();
+                		if(resultClassValue.toLowerCase().equals("int") || resultClassValue.toLowerCase().equals("integer") ) {
+                			resultClassValue="java.lang.Integer";
+                		}else if(resultClassValue.toLowerCase().equals("float") ) {
+                			resultClassValue="java.lang.Float";
+                		}else if(resultClassValue.toLowerCase().equals("double") ) {
+                			resultClassValue="java.lang.Double";
+                		}else if(resultClassValue.toLowerCase().equals("string")) {
+                			resultClassValue="java.lang.String";
+                		}else if(resultClassValue.toLowerCase().equals("map") ) {
+                			resultClassValue="java.util.HashMap";
+                		}else if(resultClassValue.toLowerCase().equals("date") ) {
+                			resultClassValue="java.util.Date";
+                		}
+                		dm.setResultClass(Class.forName(resultClassValue));
+	                		
 	                	if(attributes.getNamedItem("dsClass")!=null) {
 	                		dm.setResultClass(Class.forName(attributes.getNamedItem("dsClass").getNodeValue()));
 	                	}
