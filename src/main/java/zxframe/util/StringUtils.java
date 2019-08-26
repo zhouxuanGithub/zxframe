@@ -5,12 +5,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
- * 字符串处理工具类
- * 
- * @author 周璇 wing - V 1.0.4
- * 
+ * from the internet  
+ * from the org.apache.commons
  */
-public final class StringUtil {
+public final class StringUtils {
 	private static final String submoneyCN[] = { "", "拾", "佰", "仟" };
 	private static final String submoneyCNN[] = { "零", "壹", "贰", "叁", "肆", "伍","陆", "柒", "捌", "玖" };
 	

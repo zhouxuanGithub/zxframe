@@ -265,7 +265,7 @@ public final class EncodingUtil {
 	 */
 	public static byte[] stringToByte(String value) {
 		try {
-			if (StringUtil.removeNull(value).equals("")) {
+			if (StringUtils.removeNull(value).equals("")) {
 				return null;
 			} else {
 				return value.getBytes("gb2312");
