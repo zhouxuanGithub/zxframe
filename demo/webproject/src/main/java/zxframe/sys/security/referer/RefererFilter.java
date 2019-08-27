@@ -41,7 +41,7 @@ public class RefererFilter implements Filter {
 //		System.out.println(request.getRequestURI());
 //		System.out.println(request.getServerName());
 		if(referer==null) {
-			if(request.getRequestURI().startsWith("/zxframe/") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("localhost")) {
+			if(request.getRequestURI().startsWith("/zxframe/") || request.getRequestURI().startsWith("/druid/") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("localhost")) {
 				chain.doFilter(request, response);
 			}else {
 				badRequest(request,response);
