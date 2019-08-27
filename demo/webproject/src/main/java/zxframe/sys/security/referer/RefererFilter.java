@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.util.WebUtils;
 
 import zxframe.sys.webhandle.result.BaseResult;
@@ -23,7 +24,8 @@ import zxframe.util.WebResultUtil;
 @WebFilter(asyncSupported = true, filterName = "/RefererFilter", urlPatterns = { "/*" })
 public class RefererFilter implements Filter {
 	//允许访问的集合,自行配置在配置文件
-	private String[] allowAccessReferer= {"http://127.0.0.1","http://localhost"};
+	@Value("${sys.security.allowAccessReferer}")
+	private String[] allowAccessReferer;
 	Logger logger = LoggerFactory.getLogger(RefererFilter.class);
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -35,27 +37,33 @@ public class RefererFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		response.setContentType("text/html; charset=UTF-8");
 		String referer = request.getHeader("referer");
-		if(allowAccessReferer==null || request.getRequestURI().equals("/") || request.getRequestURI().equals("/index.html") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("localhost")) {
-			//入口地址不做检查
-			chain.doFilter(request, response);
-		}else if (referer == null) {
-			badRequest(request,response);
-		}
-		
-		boolean allowAccess = false;
-		for(int i=0;i<allowAccessReferer.length;i++){
-			String filter = allowAccessReferer[i];
-			if(referer!=null && referer.startsWith(filter)){
-				allowAccess = true;
-				break;
+//		System.out.println(request.getRequestURI());
+//		System.out.println(request.getServerName());
+		if(referer==null) {
+			if(request.getRequestURI().startsWith("/zxframe/") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("localhost")) {
+				chain.doFilter(request, response);
+			}else {
+				badRequest(request,response);
 			}
-		}
-		if(allowAccess==false){
-			badRequest(request,response);
-		}else{
-			chain.doFilter(request, response);
+		}else {
+			if(request.getRequestURI().equals("/") || request.getRequestURI().equals("/index.html")) {
+				chain.doFilter(request, response);
+			}else {
+				boolean allowAccess = false;
+				for(int i=0;i<allowAccessReferer.length;i++){
+					String filter = allowAccessReferer[i];
+					if(filter.equals("*") || referer.startsWith(filter)){
+						allowAccess = true;
+						break;
+					}
+				}
+				if(allowAccess==false){
+					badRequest(request,response);
+				}else{
+					chain.doFilter(request, response);
+				}
+			}
 		}
 	}
 	
