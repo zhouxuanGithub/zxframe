@@ -52,8 +52,6 @@ public class FnCacheAspect {
 	@Resource
 	private CacheManager cacheManager;
 	private static ConcurrentHashMap<String,ConcurrentHashMap<String,FnCache>> serviceFnMap=new ConcurrentHashMap<>();
-	//当前线程执行的命令【-1删除 | 0正常 】
-	public static ThreadLocal<Integer> currentFnCacheCmd = new ThreadLocal<Integer>();
 	@Pointcut("@annotation(zxframe.cache.annotation.FnCache)")
 	public void getAopPointcut() {
 	}
@@ -63,22 +61,17 @@ public class FnCacheAspect {
 		FnCache sfc = getServiceFnCache(pjd);
 		String group=sfc.group();
 		String key=getCacheKey(pjd,sfc);
-		Integer cmd = currentFnCacheCmd.get();
-		if(cmd==null) {
-			HttpServletRequest request = Context.currentRequest.get();
-			if(request!=null) {
-				if(request.getQueryString()!=null) {
-					if(request.getQueryString().indexOf("fncachecmd=-1")!=-1) {
-						cmd=-1;
-					}
+		
+		HttpServletRequest request = Context.currentRequest.get();
+		if(request!=null) {
+			if(request.getQueryString()!=null) {
+				if(request.getQueryString().indexOf("fncachecmd=-1")!=-1) {
+					cacheManager.remove(group, key);
 				}
 			}
 		}
-		if(cmd!=null && cmd==-1){
-			cacheManager.remove(group, key);
-		}else {
-			result=cacheManager.get(group, key);
-		}
+		
+		result=cacheManager.get(group, key);
 		if(result==null) {
 			synchronized (LockStringUtil.getLock(key)) {//防止缓存击穿
 				result=cacheManager.get(group, key);
