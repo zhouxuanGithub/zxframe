@@ -178,6 +178,9 @@ public class SQLParsing {
 	}
 	//防止SQL注入替换
 	private static String escapeSQLString(Object pm) {
+		if(pm==null){
+			return "null";
+		}
 		String sql=String.valueOf(pm);
 		Class clas = pm.getClass();
 		if(clas == int.class||clas == Integer.class || clas == float.class||clas == Float.class || clas == double.class||clas == Double.class ||clas == long.class||clas == Long.class) {
