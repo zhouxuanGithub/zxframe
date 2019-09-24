@@ -444,7 +444,7 @@ public class MysqlTemplate {
 			int columnCount = metaData.getColumnCount();
 			Map map=new HashMap();
 			for (int i = 0; i < columnCount; i++) {
-				String columnName = metaData.getColumnName(i+1);
+				String columnName = metaData.getColumnLabel(i+1);
 				map.put(columnName, rs.getObject(columnName));
 			}
 			return map;
