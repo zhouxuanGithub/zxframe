@@ -47,6 +47,10 @@ public class TaskModel implements Runnable{
 	 * 计算时间的方式
 	 */
 	private TimeUnit timeUnit;
+	/**
+	 * 最后一次运行时间
+	 */
+	private long lastRunTime=0;
 	public void run() {
 		try {
 			taskRunnable.run();
@@ -61,23 +65,28 @@ public class TaskModel implements Runnable{
 	{
 		if(timeUnit==TimeUnit.DAYS)//天
 		{
-			runTime=1000*60*60*24*value;
+			value=1000*60*60*24*value;
 		}
 		else if(timeUnit==TimeUnit.HOURS)//小时
 		{
-			runTime=1000*60*60*value;
+			value=1000*60*60*value;
 		}
 		else if(timeUnit==TimeUnit.MINUTES)//分钟
 		{
-			runTime=1000*60*value;
+			value=1000*60*value;
 		}else if(timeUnit==TimeUnit.SECONDS)//秒
 		{ 
-			runTime=1000*value;
+			value=1000*value;
 		}else//毫秒
 		{
-			runTime=value;
+			
 		}
-		runTime=System.currentTimeMillis()+runTime;
+		if(lastRunTime==0) {
+			lastRunTime=System.currentTimeMillis();
+		}else if(runTime<=System.currentTimeMillis()){
+			lastRunTime=runTime;
+		}
+		runTime=lastRunTime+value;
 	}
 	/**
 	 * @preserve
