@@ -32,10 +32,10 @@
 	<sql id="selectV2" resultClass="java.util.Map">
 		select * from user 
 	</sql>
-	<!-- 支持if和include -->
+	<!-- 支持if和include，支持长度判断 -->
 	<sql id="selectV3" resultClass="java.util.Map">
 		select * from user where 1=1
-		<if test="#{name} != null">
+		<if test="#{name} != null and #{name}.length()>=2">
 			and name=#{name}
 		</if>
 		and 2=2
