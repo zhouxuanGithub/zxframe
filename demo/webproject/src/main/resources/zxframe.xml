@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zxframe>
 	<!-- 输出SQL，Cache等日志 -->
-	<showlog>false</showlog>
-	<!-- 使用DB配置properties，支持全服务热更新，需开启useZXTask -->
-	<!-- SpringcloudConfigServer高可用成本较高，本功能只为降低成本，可选用 -->
-	<useDBProperties>false</useDBProperties>
-	<!-- 使用ZXtask定时器 -->
+	<showlog>true</showlog>
+	<!-- 使用ZXTask定时器 -->
 	<useZXTask>false</useZXTask>
+	<!-- 使用DBproperties，支持全服务配置热更新。可用SpringcloudConfigServer替代，本功能只为降低成本。需开启useZXTask -->
+	<useDBProperties>false</useDBProperties>
+	<!-- 使用ZXData，支持20亿以下的键值对数据快速存取（KEY,VALUE）。可用Hbase替代，本功能只为降低成本，使用mysql存储。需要自动清理过期数据，则需开启useZXTask -->
+	<useZXData>false</useZXData>
 	<!-- 数据源配置 -->
 	<db>
 		<!-- 公共数据源配置 -->
@@ -28,22 +29,27 @@
 		<datasources>
 			<datasource>
 				<dsname>default</dsname><!-- default为Model无注解标识使用数据源时，默认使用这项 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000&serverTimezone=GMT%2B8]]></url>
 			</datasource>
 			<datasource><!-- 读写分离的dsname配置相同，写数据源 -->
 				<dsname>lesson07ds</dsname>
 				<pattern>w</pattern><!-- w:写使用这个数据源 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_01?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000&serverTimezone=GMT%2B8]]></url>
 			</datasource>
 			<datasource><!-- 读写分离，读数据源 -->
 				<dsname>lesson07ds</dsname>
 				<pattern>r</pattern><!-- r:读使用这个数据源 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000&serverTimezone=GMT%2B8]]></url>
 			</datasource>
 			<datasource><!-- 读写分离，读数据源 ，可配置多个-->
 				<dsname>lesson07ds</dsname>
 				<pattern>r</pattern><!-- r:读使用这个数据源 -->
-				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000]]></url>
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_test_02?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000&serverTimezone=GMT%2B8]]></url>
+			</datasource>
+			<datasource><!-- zxdata专用数据源，建议单独一个库，启动服务后内部表结构会自行创建-->
+				<dsname>zxdata</dsname>
+				<pattern>wr</pattern><!-- r:读使用这个数据源 -->
+				<url><![CDATA[jdbc:mysql://127.0.0.1:3300/zxframe_zxdata?characterEncoding=UTF-8&useSSL=false&connectTimeout=2000&socketTimeout=60000&serverTimezone=GMT%2B8]]></url>
 			</datasource>
 		</datasources>
 		<!-- SQL在执行前，会将执行SQL传给配置的类，可自行再加工或者分析。 -->
