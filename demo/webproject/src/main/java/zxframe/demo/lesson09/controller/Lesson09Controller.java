@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import zxframe.demo.lesson09.service.Lesson09Service;
 import zxframe.log.annotation.FnLog;
 
-@FnLog //记录此类所有方法的入参和返回的日志，使用INFO级别才会记录
+@FnLog //记录此类所有方法的入参和返回的日志
 @RestController
 @RequestMapping("lesson09")
 public class Lesson09Controller {

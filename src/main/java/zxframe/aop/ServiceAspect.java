@@ -41,8 +41,8 @@ import zxframe.util.CServerUUID;
 public class ServiceAspect {
 	private  Logger logger = LoggerFactory.getLogger(ServiceAspect.class); 
 	public final static String THREADNAMESTARTS="zxframe";
-	public static String[] requiredTx= {"add","save","init","create","insert","upd","del","do"};
-	public static int rl=8;
+	public static String[] requiredTx= {"add","put","save","init","create","insert","upd","del","rem","do"};
+	public static int rl=10;
 	@Resource
 	CacheTransaction ct;
 	@Resource

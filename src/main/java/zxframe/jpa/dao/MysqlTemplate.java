@@ -533,9 +533,7 @@ public class MysqlTemplate {
 	 * @return 执行状态
 	 */
 	private Object execute(String dsname,String sql,DataModel cm, Object... args) {
-		if(ZxFrameConfig.showlog) {
-			logger.info(sql+" args "+JsonUtil.obj2Json(args));
-		}
+		long t=System.currentTimeMillis();
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -579,6 +577,9 @@ public class MysqlTemplate {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+			if(ZxFrameConfig.showlog) {
+				logger.info(sql+" args:"+JsonUtil.obj2Json(args)+" time:"+(System.currentTimeMillis()-t));
 			}
 			return count;
 		}catch (Exception e) {
@@ -669,20 +670,25 @@ public class MysqlTemplate {
 	 * @throws Exception
 	 */
 	private ResultSet getResult(Connection con,String sql, Object... args) {
-		if(ZxFrameConfig.showlog) {
-			logger.info("query:"+sql.toString()+" args "+JsonUtil.obj2Json(args));
-		}
+		long t=System.currentTimeMillis();
 		PreparedStatement ps = null;
+		ResultSet r=null;
 		try {
 			// 2.获取语句对象
 			ps = con.prepareStatement(sql);
 			// 3.赋值：
 			setValues(ps, args);
 			// 4.执行更新(向数据库发送指令)
-			return ps.executeQuery();
+			r= ps.executeQuery();
 		} catch (Exception e) {
 			throw new JpaRuntimeException(e);
 		}
+		//慢查询记录
+		t=System.currentTimeMillis()-t;
+		if(t>=30000 || ZxFrameConfig.showlog) {
+			logger.error(sql.toString()+" args:"+JsonUtil.obj2Json(args)+" time:"+t);
+		}
+		return r;
 		// Result(断开式连接)和ResultSet(只有在连接状态下才能操作内部数据)的区别:
 	}
 

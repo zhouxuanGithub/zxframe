@@ -188,8 +188,10 @@ public class DataSourceManager {
 			}
 			Connection connection = map.get(dsname);
 			if(connection==null) {
-				connection = DataSourceManager.wDataSource.get(dsname).getConnection();
-				if(connection==null) {
+				try {
+					connection = DataSourceManager.wDataSource.get(dsname).getConnection();
+				} catch (Exception e) {
+					e.printStackTrace();
 					throw new JpaRuntimeException(dsname+"写数据源为空，未配置");
 				}
 				connection.setAutoCommit(false);// 更改JDBC事务的默认提交方式 
