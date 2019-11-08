@@ -10,7 +10,7 @@
 -->SpringCloudConfigServer高可用成本较高，运维成本提升<br/>
 -->本功能只为降低成本，可选用<br/>
 *.支持20亿条键值对数据的快速存取（KEY,VALUE）<br/>
--->自动建表扩容
+-->自动建表扩容<br/>
 -->可用Hbase替代，本功能只为降低成本<br/>
 *.封装本地和远程任意缓存存储,使用极其简单,支持对缓存组删除<br/>
 -->zxframe.cache.mgr.CacheManager<br/>
