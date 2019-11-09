@@ -533,7 +533,6 @@ public class MysqlTemplate {
 	 * @return 执行状态
 	 */
 	private Object execute(String dsname,String sql,DataModel cm, Object... args) {
-		long t=System.currentTimeMillis();
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -543,6 +542,7 @@ public class MysqlTemplate {
 			if(con==null) {
 				throw new JpaRuntimeException("不能成功获得数据库连接！");
 			}
+			long t=System.currentTimeMillis();
 			boolean isInsert=false;
 			// 2.获取语句对象
 			if(sql.startsWith("insert into ")) {
@@ -562,6 +562,10 @@ public class MysqlTemplate {
 	            	count = rs2.getInt(1);
 	            }
 			}
+			t=System.currentTimeMillis()-t;
+			if(t>=30000 || ZxFrameConfig.showlog) {
+				logger.error(sql+" args:"+JsonUtil.obj2Json(args)+" time:"+(System.currentTimeMillis()-t));
+			}
 			//执行后清理指定组缓存
 			try {
 				if(cm!=null&&cm.getFlushOnExecute()!=null) {
@@ -577,9 +581,6 @@ public class MysqlTemplate {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			if(ZxFrameConfig.showlog) {
-				logger.info(sql+" args:"+JsonUtil.obj2Json(args)+" time:"+(System.currentTimeMillis()-t));
 			}
 			return count;
 		}catch (Exception e) {
