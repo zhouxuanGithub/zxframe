@@ -564,7 +564,12 @@ public class MysqlTemplate {
 			}
 			t=System.currentTimeMillis()-t;
 			if(t>=30000 || ZxFrameConfig.showlog) {
-				logger.error(sql+" args:"+JsonUtil.obj2Json(args)+" time:"+(System.currentTimeMillis()-t));
+				String log= sql+" args:"+JsonUtil.obj2Json(args)+" time:"+(System.currentTimeMillis()-t);
+				if(ZxFrameConfig.showlog) {
+					logger.info(log);
+				}else {
+					logger.error(log);
+				}
 			}
 			//执行后清理指定组缓存
 			try {
@@ -687,7 +692,13 @@ public class MysqlTemplate {
 		//慢查询记录
 		t=System.currentTimeMillis()-t;
 		if(t>=30000 || ZxFrameConfig.showlog) {
-			logger.error(sql.toString()+" args:"+JsonUtil.obj2Json(args)+" time:"+t);
+			String log=sql.toString()+" args:"+JsonUtil.obj2Json(args)+" time:"+t;
+			if(ZxFrameConfig.showlog) {
+				logger.info(log);
+			}else {
+				logger.error(log);
+			}
+			
 		}
 		return r;
 		// Result(断开式连接)和ResultSet(只有在连接状态下才能操作内部数据)的区别:
