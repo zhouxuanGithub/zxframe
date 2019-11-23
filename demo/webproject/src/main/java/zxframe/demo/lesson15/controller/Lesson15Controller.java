@@ -18,16 +18,16 @@ public class Lesson15Controller {
 	@RequestMapping("test")
 	public Object test() {
 		//插入数据
-		for (int i = 0; i < 10; i++) {
-			m.put(UUID.randomUUID().toString(), UUID.randomUUID().toString());
-		}
+//		m.put("qq-1164429680", UUID.randomUUID().toString());
+//		m.put("qq-404557187", UUID.randomUUID().toString());
+//		m.put("qq-303810790", UUID.randomUUID().toString());
 		//查询数据
-		String key="c51dd50a-d5c2-49a0-b06c-d5ac82ec000f";
-		String value = m.get(key);
+		String key="qq-1164429680";
 		//改数据
-//		m.update(key,"123");
+//		m.update(key,"123456");
 		//删除数据
 //		m.remove(key);
+		String value = m.get(key);
 		return value==null?"null":value;
 	}
 }
