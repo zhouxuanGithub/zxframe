@@ -1,7 +1,7 @@
 <h3>ZXData：</h3>
 <ul>
 <li>支持100亿条键值对数据的快速存取（KEY,VALUE）。可用Hbase替代，本功能只为降低成本。 </li>
-<li>使用mysql存储，支持读写分离。</li>
+<li>使用mysql存储，支持将数据分片存储到多个DB服务，并每个都支持读写分离，支持乐观锁。</li>
 <li>用file目录下的db-zxdata.sql创建存储过程，执行存储过程创建表</li>
 <li>配置zxframe.xml里的数据源dsname，dsname为mark+序号[0-9]，mark默认为zxdata</li>
 <li>操作类：zxframe.data.mgr.ZXDataTemplate</li>

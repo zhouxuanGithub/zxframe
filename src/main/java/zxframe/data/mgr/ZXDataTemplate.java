@@ -65,7 +65,7 @@ public class ZXDataTemplate extends MysqlTemplate{
 			String sql="update "+mark+tc[0]+".data"+tc[1]+" set `value`=? where `key`=?";
 			rcount= (int)mysqlTemplate.executeBySql(mark+tc[0], sql, value,key);
 		}else {
-			String sql="update "+mark+tc[0]+".data"+tc[1]+" set `value`=? where `key`=? and `version`=?";
+			String sql="update "+mark+tc[0]+".data"+tc[1]+" set `value`=?, `version`=`version`+1 where `key`=? and `version`=?";
 			rcount= (int)mysqlTemplate.executeBySql(mark+tc[0], sql, value,key,version);
 			if(rcount<1) {
 				//版本控制出现问题
