@@ -34,7 +34,7 @@ public class MySqlUtil {
 	 * @param password 密码
 	 * @param dataName 数据库名称
 	 */
-	public static void BackData(String path,String loginName,String password,String dataName)
+	public static void backData(String path,String loginName,String password,String dataName)
 	{
 			path=path.toLowerCase();
 			//存储路径和文件名称
@@ -88,7 +88,7 @@ public class MySqlUtil {
 	 * @param password 密码
 	 * @param dataName 数据库名称
 	 */
-	public static void ImportData(String path,String loginName,String password,String dataName)
+	public static void importData(String path,String loginName,String password,String dataName)
 	{
 		path=path.toLowerCase();
 		//存储路径和文件名称
