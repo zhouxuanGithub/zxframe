@@ -29,7 +29,7 @@ import zxframe.jpa.dao.MysqlTemplate;
 import zxframe.jpa.ex.DataExpiredException;
 
 @Service
-public class ZXDataTemplate extends MysqlTemplate{
+public class ZXDataTemplate{
 
 	@Resource
 	private MysqlTemplate mysqlTemplate;
