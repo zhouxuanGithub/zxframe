@@ -339,15 +339,16 @@ public class MysqlTemplate {
 			cid = CacheManager.getQueryKey(sql, args);
 			list=(List<T>) ct.get(cacheModel.getGroup(), cid);
 		}
+		String dsname=SQLParsing.getDSName(cacheModel!=null?cacheModel.getDsClass():null,clas,sql);
 		if(list==null) {
 			if(cid==null) {//没有缓存，直接查
-				list= getListRun(clas,sql,cacheModel,args);
+				list= getListBySql(dsname,clas,sql,args);
 			}else {
 				//防止缓存击穿
 				synchronized (LockStringUtil.getLock(cacheModel.getGroup()+cid)) {
 					list=(List<T>) ct.get(cacheModel.getGroup(), cid);
 					if(list==null) {
-						list = getListRun(clas,sql,cacheModel,args);//list不会为空，防止缓存穿透
+						list = getListBySql(dsname,clas,sql,args);//list不会为空，防止缓存穿透
 						try {
 							//放置缓存
 							if(DataSourceManager.uwwcMap.containsKey(Thread.currentThread().getName())) {
@@ -378,14 +379,22 @@ public class MysqlTemplate {
 		}
 		return list;
 	}
-	private <T> List<T> getListRun(Class<T> clas,String sql,DataModel cacheModel, Object... args) {
+	/**
+	 * 根据sql和数据源去查询数据
+	 * @param dsname 数据源名
+	 * @param clas 返回类型
+	 * @param sql sql
+	 * @param args 参数
+	 * @return 查询结果
+	 */
+	public <T> List<T> getListBySql(String dsname,Class<T> clas,String sql, Object... args) {
 		Connection con =null;
 		boolean isUseWCon=false;
 		ResultSet rs=null;
 		try {
 			String group=clas.getName();
 			//计算数据源
-			String dsname=SQLParsing.getDSName(cacheModel!=null?cacheModel.getDsClass():null,clas,sql);
+			//String dsname=SQLParsing.getDSName(cacheModel!=null?cacheModel.getDsClass():null,clas,sql);
 			//打开连接
 			//如果当前已经存在写数据源，则使用写数据源进行操作
 			String transactionId = Thread.currentThread().getName();
@@ -523,6 +532,16 @@ public class MysqlTemplate {
 		}
 		String sql=SQLParsing.replaceSQL(cm,map);
 		return execute(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),sql),sql,cm,args);
+	}
+	/**
+	 * 根据sql和数据源直接执行
+	 * @param dsname 数据源名
+	 * @param sql sql
+	 * @param args 参数
+	 * @return 执行结果
+	 */
+	public Object executeBySql(String dsname,String sql, Object... args) {
+		return execute(dsname,sql,null,args);
 	}
 	/**
 	 * 数据更新(增删改)

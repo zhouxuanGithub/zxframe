@@ -28,8 +28,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import zxframe.data.mgr.ZXDataTemplate;
 import zxframe.data.model.ZXData;
-import zxframe.data.service.ZXDataManager;
 import zxframe.util.DateUtil;
 import zxframe.util.SystemUtil;
 import zxframe.util.WebResultUtil;
@@ -41,7 +41,7 @@ public class ZxframeController {
 	private String basedir;
 	private static long ctime=0;
 	@Resource
-	private ZXDataManager zds;
+	private ZXDataTemplate zds;
 	//查看运行状态
 	@RequestMapping("error")
 	private synchronized void error(HttpServletRequest request,HttpServletResponse response) throws IOException {
@@ -67,7 +67,7 @@ public class ZxframeController {
 		if(!checkRunTime()) {
 			r= "访问频率太快，请稍等一下！";
 		}else{
-			ZXData zxData = zds.get(key);
+			ZXData zxData = zds.getZXData(key);
 			if(zxData==null) {
 				r="null";
 			}else {

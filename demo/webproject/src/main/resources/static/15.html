@@ -2,9 +2,10 @@
 <ul>
 <li>支持100亿条键值对数据的快速存取（KEY,VALUE）。可用Hbase替代，本功能只为降低成本。 </li>
 <li>使用mysql存储，支持读写分离。</li>
-<li>配置zxframe.xml里的数据源dsname，dsname为group+序号[01-10]</li>
-<li>操作类：zxframe.data.service.ZXDataManager</li>
-<li>方法：get,put,update,remove，不传group，默认为zxdata</li>
+<li>用file目录下的db-zxdata.sql创建存储过程，执行存储过程创建表</li>
+<li>配置zxframe.xml里的数据源dsname，dsname为mark+序号[01-10]，mark默认为zxdata</li>
+<li>操作类：zxframe.data.mgr.ZXDataTemplate</li>
+<li>方法：get,put,update,remove，不传mark，默认为zxdata</li>
 <li>测试地址：http://127.0.0.1:8888/lesson15/test</li>
 </ul>
 
