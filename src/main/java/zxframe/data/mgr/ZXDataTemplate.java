@@ -17,7 +17,11 @@
  **/
 package zxframe.data.mgr;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -26,6 +30,7 @@ import org.springframework.stereotype.Service;
 import zxframe.data.model.ZXData;
 import zxframe.jpa.dao.MysqlTemplate;
 import zxframe.jpa.ex.DataExpiredException;
+import zxframe.jpa.util.SQLParsing;
 
 /**
  * 使用ZXData，支持100亿的键值对数据快速存取（KEY,VALUE）。可用Hbase替代，本功能只为降低成本，使用mysql存储。
@@ -44,10 +49,61 @@ public class ZXDataTemplate{
 	}
 	public void put(String mark,String key, String value) {
 		String[] tc = getTableCode(key);
-		String sql="insert  into "+mark+tc[0]+".data"+tc[1]+" (`key`,`value`,`version`) values(?,?,0)";
+		String sql="insert  into "+createPutSQL(tc,mark,key,value);
 		mysqlTemplate.executeBySql(mark+tc[0], sql, key,value);
 	}
-	
+	/**
+	 * 批量替换插入
+	 * @param list
+	 */
+	public void replaceBatch(List<ZXData> list) {
+		replaceBatch("zxdata",list);
+	}
+	/**
+	 * 批量替换插入
+	 * @param list
+	 */
+	public void replaceBatch(String mark,List<ZXData> list) {
+		execPutBatch("replace into ",mark,list);
+	}
+	/**
+	 * 批量替换插入
+	 * @param list
+	 */
+	public void putIgnoreBatch(List<ZXData> list) {
+		putIgnoreBatch("zxdata",list);
+	}
+	/**
+	 * 批量替换插入
+	 * @param list
+	 */
+	public void putIgnoreBatch(String mark,List<ZXData> list) {
+		execPutBatch("insert ignore into ",mark,list);
+	}
+	private void execPutBatch(String fsql,String mark,List<ZXData> list) {
+		Map<String,ArrayList<String>> als=new HashMap<>(); 
+		for (int i = 0; i < list.size(); i++) {
+			ZXData zxData = list.get(i);
+			String[] tc = getTableCode(zxData.getKey());
+			String sql=fsql+createPutSQL(tc,mark,zxData.getKey(),zxData.getValue());
+			String dsname=mark+tc[0];
+			ArrayList<String> arrayList = als.get(dsname);
+			if(arrayList==null) {
+				arrayList=new ArrayList<>();
+				als.put(dsname, arrayList);
+			}
+			arrayList.add(sql);
+		}
+		Iterator<String> iterator = als.keySet().iterator();
+		while(iterator.hasNext()) {
+			String dsname = iterator.next();
+			ArrayList<String> sqls = als.get(dsname);
+			mysqlTemplate.executeBatchBySqlList(dsname, sqls);
+		}
+	}
+	private String createPutSQL(String[] tableCode,String mark,String key, String value) {
+		return " "+mark+tableCode[0]+".data"+tableCode[1]+" (`key`,`value`,`version`) values("+SQLParsing.escapeSQLString(key)+","+SQLParsing.escapeSQLString(value)+",0)";
+	}
 	public int update(String key, String value) {
 		return update("zxdata",key,value);
 	}

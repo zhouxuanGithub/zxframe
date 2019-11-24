@@ -177,7 +177,7 @@ public class SQLParsing {
 		}
 	}
 	//防止SQL注入替换
-	private static String escapeSQLString(Object pm) {
+	public static String escapeSQLString(Object pm) {
 		if(pm==null){
 			return "null";
 		}

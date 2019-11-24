@@ -634,9 +634,20 @@ public class MysqlTemplate {
 			throw new JpaRuntimeException("未找到group:"+group+"，可能你忘了加命名空间或者@DataMapper注解");
 		}
 		String sql=SQLParsing.replaceSQL(cm,map);
-		return executeBatch(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),sql),sql,cm);
+		String[] ss = sql.split("<br/>");
+		List<String> alist=new ArrayList<>();
+		for (int i = 0; i < ss.length; i++) {
+			String sss = ss[i];
+			if(sss.trim().length()>0) {
+				alist.add(sss);
+			}
+		}
+		return executeBatch(SQLParsing.getDSName(cm.getDsClass(),cm.getResultClass(),sql),alist,cm);
 	}
-	private Object executeBatch(String dsname,String sql,DataModel cm) {
+	public Object executeBatchBySqlList(String dsname,List<String> sqls) {
+		return executeBatch(dsname,sqls,null);
+	}
+	private Object executeBatch(String dsname,List<String> sqls,DataModel cm) {
 		Connection con = null;
 		Statement ps = null;
 		try {
@@ -648,12 +659,8 @@ public class MysqlTemplate {
 			// 2.获取语句对象
 			ps = con.createStatement();
 			// 3.sql放入
-			String[] ss = sql.split("<br/>");
-			for (int i = 0; i < ss.length; i++) {
-				String sss = ss[i];
-				if(sss.trim().length()>0) {
-					ps.addBatch(sss);
-				}
+			for (int i = 0; i < sqls.size(); i++) {
+				ps.addBatch(sqls.get(i));
 			}
 			// 4.执行(向数据库发送指令)
 			int[] count = ps.executeBatch();
