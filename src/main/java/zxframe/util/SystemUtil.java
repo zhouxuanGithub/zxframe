@@ -1,6 +1,7 @@
 package zxframe.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -11,7 +12,21 @@ import java.io.InputStreamReader;
  * 
  */
 public final class SystemUtil {
-	
+	/**
+	 * 判断系统  true:windows   false:linux  
+	 * @return
+	 */
+	public static boolean isWindows()
+	{
+		//windows:\\  linux/
+		if(File.separator.equals("\\"))
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
 	/**
 	 * 执行系统sh cmd 指令
 	 * 

@@ -148,20 +148,4 @@ public final class FileUtil {
 	public static String getPath() {
 		return System.getProperty("user.dir");
 	}
-	/**
-	 * 判断系统  true:windows   false:linux  
-	 * @return
-	 */
-	public static boolean isWindows()
-	{
-		//windows:\\  linux/
-		if(File.separator.equals("\\"))
-		{
-			return true;
-		}else
-		{
-			return false;
-		}
-	}
-
 }
