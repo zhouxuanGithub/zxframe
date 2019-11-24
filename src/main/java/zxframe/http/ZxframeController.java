@@ -54,7 +54,8 @@ public class ZxframeController {
 		}else{
 			String top="<meta charset=\"utf-8\"/><body onLoad='window.document.body.scrollTop = document.body.scrollHeight;'><pre><xmp>";
 			String content=SystemUtil.exec("tail -n 500 "+basedir+"log/error."+new DateUtil("yyyy-MM-dd").getDate()+".log");
-			String end="</xmp></pre><hr/>"+getStatus()+"</body>";
+//			String end="</xmp></pre><hr/>"+getStatus()+"</body>";
+			String end="</xmp></pre></body>";
 			r= top+content+end;
 		}
 		WebResultUtil.print(request,response, r);
