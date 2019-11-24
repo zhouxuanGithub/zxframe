@@ -583,7 +583,7 @@ public class MysqlTemplate {
 			}
 			t=System.currentTimeMillis()-t;
 			if(t>=30000 || ZxFrameConfig.showlog) {
-				String log= sql+" args:"+JsonUtil.obj2Json(args)+" time:"+(System.currentTimeMillis()-t);
+				String log= sql+" args:"+JsonUtil.obj2Json(args)+" time:"+t;
 				if(ZxFrameConfig.showlog) {
 					logger.info(log);
 				}else {
