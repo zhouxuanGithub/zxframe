@@ -46,7 +46,10 @@ public class ZxframeController {
 	@RequestMapping("error")
 	private synchronized void error(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		String r="";
-		if(!checkRunTime()) {
+		if(SystemUtil.isWindows()) {
+			r= "本功能不支持windos！";
+		}
+		else if(!checkRunTime()) {
 			r= "访问频率太快，请稍等一下！";
 		}else{
 			String top="<meta charset=\"utf-8\"/><body onLoad='window.document.body.scrollTop = document.body.scrollHeight;'><pre><xmp>";
