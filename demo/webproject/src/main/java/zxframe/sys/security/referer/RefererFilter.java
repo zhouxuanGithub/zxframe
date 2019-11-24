@@ -40,30 +40,23 @@ public class RefererFilter implements Filter {
 		String referer = request.getHeader("referer");
 //		System.out.println(request.getRequestURI());
 //		System.out.println(request.getServerName());
-		if(referer==null) {
-			if(request.getRequestURI().startsWith("/zxframe/") || request.getRequestURI().startsWith("/druid/") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("localhost")) {
-				chain.doFilter(request, response);
-			}else {
+		if(request.getRequestURI().equals("/") || request.getRequestURI().equals("/index.html") || request.getRequestURI().startsWith("/zxframe/") || request.getRequestURI().startsWith("/druid/") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("localhost")) {
+			chain.doFilter(request, response);
+		}else  {
+			boolean allowAccess = false;
+			for(int i=0;i<allowAccessReferer.length;i++){
+				String filter = allowAccessReferer[i];
+				if(filter.equals("*") || (referer!=null && referer.startsWith(filter))){
+					allowAccess = true;
+					break;
+				}
+			}
+			if(allowAccess==false){
 				badRequest(request,response);
-			}
-		}else {
-			if(request.getRequestURI().equals("/") || request.getRequestURI().equals("/index.html")) {
+			}else{
 				chain.doFilter(request, response);
-			}else {
-				boolean allowAccess = false;
-				for(int i=0;i<allowAccessReferer.length;i++){
-					String filter = allowAccessReferer[i];
-					if(filter.equals("*") || referer.startsWith(filter)){
-						allowAccess = true;
-						break;
-					}
-				}
-				if(allowAccess==false){
-					badRequest(request,response);
-				}else{
-					chain.doFilter(request, response);
-				}
 			}
+			
 		}
 	}
 	
