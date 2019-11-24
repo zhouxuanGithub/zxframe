@@ -101,7 +101,7 @@ public class ZxframeController {
 	}
 	private boolean checkRunTime() {
 		boolean r=false;
-		if(ctime+2000<System.currentTimeMillis()) {
+		if(ctime+500<System.currentTimeMillis()) {
 			ctime=System.currentTimeMillis();
 			r=true;
 		}
