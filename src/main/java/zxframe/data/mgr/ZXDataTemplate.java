@@ -23,11 +23,16 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import zxframe.config.ZxFrameConfig;
 import zxframe.data.model.ZXData;
 import zxframe.jpa.dao.MysqlTemplate;
 import zxframe.jpa.ex.DataExpiredException;
 
+/**
+ * 使用ZXData，支持100亿的键值对数据快速存取（KEY,VALUE）。可用Hbase替代，本功能只为降低成本，使用mysql存储。
+ * 用/demo/webproject/file/db-zxdata.sql创建存储过程，可自定义mark，创建需要的数据库
+ * 支持将数据分片存储到多个DB服务，并每个都支持读写分离，支持乐观锁。
+ * @author zx
+ */
 @Service
 public class ZXDataTemplate{
 
@@ -38,9 +43,6 @@ public class ZXDataTemplate{
 		put("zxdata",key,value);
 	}
 	public void put(String mark,String key, String value) {
-		if(!ZxFrameConfig.useZXData) {
-			return;
-		}
 		String[] tc = getTableCode(key);
 		String sql="insert into "+mark+tc[0]+".data"+tc[1]+" (`key`,`value`,`version`) values(?,?,0)";
 		mysqlTemplate.executeBySql(mark+tc[0], sql, key,value);
@@ -56,9 +58,6 @@ public class ZXDataTemplate{
 		return update("zxdata",key,value,version);
 	}
 	public int update(String mark,String key, String value,Integer version) {
-		if(!ZxFrameConfig.useZXData) {
-			return 0;
-		}
 		int rcount= 0;
 		String[] tc = getTableCode(key);
 		if(version==null) {
@@ -78,9 +77,6 @@ public class ZXDataTemplate{
 		remove("zxdata",key);
 	}
 	public void remove(String mark,String key) {
-		if(!ZxFrameConfig.useZXData) {
-			return;
-		}
 		String[] tc = getTableCode(key);
 		String sql="delete from "+mark+tc[0]+".data"+tc[1]+" where `key`=?";
 		mysqlTemplate.executeBySql(mark+tc[0], sql, key);

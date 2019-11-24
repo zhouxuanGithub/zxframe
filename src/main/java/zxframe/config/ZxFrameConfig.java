@@ -49,8 +49,6 @@ public class ZxFrameConfig {
 	public static boolean useDBProperties=false;
 	//是否使用zxTask
 	public static boolean useZXTask=false;
-	//是否使用自动扩容的zxdata
-	public static boolean useZXData=false;
 	//数据源公共配置
 	public static ConcurrentMap<String, String> common=new ConcurrentHashMap<String, String>();
 	//数据源具体配置
@@ -84,9 +82,6 @@ public class ZxFrameConfig {
             }
             if(root.getElementsByTagName("useZXTask").getLength()>0) {
             	useZXTask=root.getElementsByTagName("useZXTask").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
-            }
-            if(root.getElementsByTagName("useZXData").getLength()>0) {
-            	useZXData=root.getElementsByTagName("useZXData").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
             }
             if(root.getElementsByTagName("druid").getLength()>0 || root.getElementsByTagName("db").getLength()>0) {//druid保留，兼容历史版本
             	Element commonItem = (Element)root.getElementsByTagName("common").item(0);
