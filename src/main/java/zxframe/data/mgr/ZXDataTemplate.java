@@ -44,7 +44,7 @@ public class ZXDataTemplate{
 	}
 	public void put(String mark,String key, String value) {
 		String[] tc = getTableCode(key);
-		String sql="insert into "+mark+tc[0]+".data"+tc[1]+" (`key`,`value`,`version`) values(?,?,0)";
+		String sql="insert  into "+mark+tc[0]+".data"+tc[1]+" (`key`,`value`,`version`) values(?,?,0)";
 		mysqlTemplate.executeBySql(mark+tc[0], sql, key,value);
 	}
 	

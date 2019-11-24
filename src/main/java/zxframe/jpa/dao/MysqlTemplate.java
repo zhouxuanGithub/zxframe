@@ -564,7 +564,7 @@ public class MysqlTemplate {
 			long t=System.currentTimeMillis();
 			boolean isInsert=false;
 			// 2.获取语句对象
-			if(sql.startsWith("insert into ")) {
+			if(sql.startsWith("insert into")) {
 				ps = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 				isInsert=true;
 			}else {
