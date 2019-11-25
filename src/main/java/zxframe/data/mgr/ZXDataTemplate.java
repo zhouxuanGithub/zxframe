@@ -17,7 +17,6 @@
  **/
 package zxframe.data.mgr;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,9 +47,9 @@ public class ZXDataTemplate{
 		put("zxdata",key,value);
 	}
 	public void put(String mark,String key, String value) {
-		String[] tc = getTableCode(key);
+		String tc = getTableCode(key);
 		String sql="insert  into "+createPutSQL(tc,mark,key,value);
-		mysqlTemplate.executeBySql(mark+tc[0], sql, key,value);
+		mysqlTemplate.executeBySql(mark+tc, sql, key,value);
 	}
 	/**
 	 * 批量替换插入
@@ -85,13 +84,13 @@ public class ZXDataTemplate{
 		Map<String,StringBuffer> als=new HashMap<>(); 
 		for (int i = 0; i < list.size(); i++) {
 			ZXData zxData = list.get(i);
-			String[] tc = getTableCode(zxData.getKey());
-			String dsname=mark+tc[0];
+			String tc = getTableCode(zxData.getKey());
+			String dsname=mark+tc;
 			StringBuffer sb = als.get(dsname);
 			if(sb==null) {
 				sb=new StringBuffer();
 				als.put(dsname, sb);
-				sb.append(fsql+" "+mark+tc[0]+".data"+tc[1]+" (`key`,`value`,`version`) values ");
+				sb.append(fsql+" "+dsname+".data (`key`,`value`,`version`) values ");
 			}else {
 				sb.append(",");
 			}
@@ -103,29 +102,9 @@ public class ZXDataTemplate{
 			StringBuffer sb = als.get(dsname);
 			mysqlTemplate.executeBySql(dsname, sb.toString());
 		}
-		//批量SQL版
-//		Map<String,ArrayList<String>> als=new HashMap<>(); 
-//		for (int i = 0; i < list.size(); i++) {
-//			ZXData zxData = list.get(i);
-//			String[] tc = getTableCode(zxData.getKey());
-//			String sql=fsql+createPutSQL(tc,mark,zxData.getKey(),zxData.getValue());
-//			String dsname=mark+tc[0];
-//			ArrayList<String> arrayList = als.get(dsname);
-//			if(arrayList==null) {
-//				arrayList=new ArrayList<>();
-//				als.put(dsname, arrayList);
-//			}
-//			arrayList.add(sql);
-//		}
-//		Iterator<String> iterator = als.keySet().iterator();
-//		while(iterator.hasNext()) {
-//			String dsname = iterator.next();
-//			ArrayList<String> sqls = als.get(dsname);
-//			mysqlTemplate.executeBatchBySqlList(dsname, sqls);
-//		}
 	}
-	private String createPutSQL(String[] tableCode,String mark,String key, String value) {
-		return " "+mark+tableCode[0]+".data"+tableCode[1]+" (`key`,`value`,`version`) values("+SQLParsing.escapeSQLString(key)+","+SQLParsing.escapeSQLString(value)+",0)";
+	private String createPutSQL(String tableCode,String mark,String key, String value) {
+		return " "+mark+tableCode+".data (`key`,`value`,`version`) values("+SQLParsing.escapeSQLString(key)+","+SQLParsing.escapeSQLString(value)+",0)";
 	}
 	public int update(String key, String value) {
 		return update("zxdata",key,value);
@@ -138,13 +117,13 @@ public class ZXDataTemplate{
 	}
 	public int update(String mark,String key, String value,Integer version) {
 		int rcount= 0;
-		String[] tc = getTableCode(key);
+		String tc = getTableCode(key);
 		if(version==null) {
-			String sql="update "+mark+tc[0]+".data"+tc[1]+" set `value`=? where `key`=?";
-			rcount= (int)mysqlTemplate.executeBySql(mark+tc[0], sql, value,key);
+			String sql="update "+mark+tc+".data set `value`=? where `key`=?";
+			rcount= (int)mysqlTemplate.executeBySql(mark+tc, sql, value,key);
 		}else {
-			String sql="update "+mark+tc[0]+".data"+tc[1]+" set `value`=?, `version`=`version`+1 where `key`=? and `version`=?";
-			rcount= (int)mysqlTemplate.executeBySql(mark+tc[0], sql, value,key,version);
+			String sql="update "+mark+tc+".data set `value`=?, `version`=`version`+1 where `key`=? and `version`=?";
+			rcount= (int)mysqlTemplate.executeBySql(mark+tc, sql, value,key,version);
 			if(rcount<1) {
 				//版本控制出现问题
 				throw new DataExpiredException("数据 version 已过期。");
@@ -156,9 +135,9 @@ public class ZXDataTemplate{
 		remove("zxdata",key);
 	}
 	public void remove(String mark,String key) {
-		String[] tc = getTableCode(key);
-		String sql="delete from "+mark+tc[0]+".data"+tc[1]+" where `key`=?";
-		mysqlTemplate.executeBySql(mark+tc[0], sql, key);
+		String tc = getTableCode(key);
+		String sql="delete from "+mark+tc+".data where `key`=?";
+		mysqlTemplate.executeBySql(mark+tc, sql, key);
 	}
 	public String get(String key) {
 		return get("zxdata",key);
@@ -174,22 +153,17 @@ public class ZXDataTemplate{
 		return getZXData("zxdata",key);
 	}
 	public ZXData getZXData(String mark,String key) {
-		String[] tc = getTableCode(key);
-		String sql="select * from "+mark+tc[0]+".data"+tc[1]+" where `key`=? ";
-		List<ZXData> zxdatas = mysqlTemplate.getListBySql(mark+tc[0], ZXData.class, sql, key);
+		String tc = getTableCode(key);
+		String sql="select * from "+mark+tc+".data where `key`=? ";
+		List<ZXData> zxdatas = mysqlTemplate.getListBySql(mark+tc, ZXData.class, sql, key);
 		if(zxdatas==null||zxdatas.size()==0) {
 			return null;
 		}
 		return zxdatas.get(0);
 	}
-	public String[] getTableCode(String key) {
+	public String getTableCode(String key) {
 		String hashCode = String.valueOf(key.hashCode());
 		int length = hashCode.length();
-		if(length<3) {
-			hashCode="000"+hashCode;
-			length=length+3;
-		}
-		String[] r={hashCode.substring(length-1,length),hashCode.substring(length-3,length-1)};
-		return r;
+		return hashCode.substring(length-1,length);
 	}
 }
