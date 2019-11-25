@@ -81,25 +81,48 @@ public class ZXDataTemplate{
 		execPutBatch("insert ignore into ",mark,list);
 	}
 	private void execPutBatch(String fsql,String mark,List<ZXData> list) {
-		Map<String,ArrayList<String>> als=new HashMap<>(); 
+		//一条SQL版
+		Map<String,StringBuffer> als=new HashMap<>(); 
 		for (int i = 0; i < list.size(); i++) {
 			ZXData zxData = list.get(i);
 			String[] tc = getTableCode(zxData.getKey());
-			String sql=fsql+createPutSQL(tc,mark,zxData.getKey(),zxData.getValue());
 			String dsname=mark+tc[0];
-			ArrayList<String> arrayList = als.get(dsname);
-			if(arrayList==null) {
-				arrayList=new ArrayList<>();
-				als.put(dsname, arrayList);
+			StringBuffer sb = als.get(dsname);
+			if(sb==null) {
+				sb=new StringBuffer();
+				als.put(dsname, sb);
+				sb.append(fsql+" "+mark+tc[0]+".data"+tc[1]+" (`key`,`value`,`version`) values ");
+			}else {
+				sb.append(",");
 			}
-			arrayList.add(sql);
+			sb.append("("+SQLParsing.escapeSQLString(zxData.getKey())+","+SQLParsing.escapeSQLString(zxData.getValue())+",0)");
 		}
 		Iterator<String> iterator = als.keySet().iterator();
 		while(iterator.hasNext()) {
 			String dsname = iterator.next();
-			ArrayList<String> sqls = als.get(dsname);
-			mysqlTemplate.executeBatchBySqlList(dsname, sqls);
+			StringBuffer sb = als.get(dsname);
+			mysqlTemplate.executeBySql(dsname, sb.toString());
 		}
+		//批量SQL版
+//		Map<String,ArrayList<String>> als=new HashMap<>(); 
+//		for (int i = 0; i < list.size(); i++) {
+//			ZXData zxData = list.get(i);
+//			String[] tc = getTableCode(zxData.getKey());
+//			String sql=fsql+createPutSQL(tc,mark,zxData.getKey(),zxData.getValue());
+//			String dsname=mark+tc[0];
+//			ArrayList<String> arrayList = als.get(dsname);
+//			if(arrayList==null) {
+//				arrayList=new ArrayList<>();
+//				als.put(dsname, arrayList);
+//			}
+//			arrayList.add(sql);
+//		}
+//		Iterator<String> iterator = als.keySet().iterator();
+//		while(iterator.hasNext()) {
+//			String dsname = iterator.next();
+//			ArrayList<String> sqls = als.get(dsname);
+//			mysqlTemplate.executeBatchBySqlList(dsname, sqls);
+//		}
 	}
 	private String createPutSQL(String[] tableCode,String mark,String key, String value) {
 		return " "+mark+tableCode[0]+".data"+tableCode[1]+" (`key`,`value`,`version`) values("+SQLParsing.escapeSQLString(key)+","+SQLParsing.escapeSQLString(value)+",0)";
