@@ -48,7 +48,7 @@ public class ZXDataTemplate{
 	}
 	public void put(String mark,String key, String value) {
 		String tc = getTableCode(key);
-		String sql="insert  into "+createPutSQL(tc,mark,key,value);
+		String sql="insert  into "+mark+tc+".data (`key`,`value`,`version`) values(?,?,0)";
 		mysqlTemplate.executeBySql(mark+tc, sql, key,value);
 	}
 	/**
@@ -102,9 +102,6 @@ public class ZXDataTemplate{
 			StringBuffer sb = als.get(dsname);
 			mysqlTemplate.executeBySql(dsname, sb.toString());
 		}
-	}
-	private String createPutSQL(String tableCode,String mark,String key, String value) {
-		return " "+mark+tableCode+".data (`key`,`value`,`version`) values("+SQLParsing.escapeSQLString(key)+","+SQLParsing.escapeSQLString(value)+",0)";
 	}
 	public int update(String key, String value) {
 		return update("zxdata",key,value);
