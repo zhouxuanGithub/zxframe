@@ -56,14 +56,14 @@ public class ZXDataTemplate{
 	 * 批量替换插入
 	 * @param list
 	 */
-	public void replaceBatch(List<ZXData> list) {
-		replaceBatch("zxdata",list);
+	public void putReplaceBatch(List<ZXData> list) {
+		putReplaceBatch("zxdata",list);
 	}
 	/**
 	 * 批量替换插入
 	 * @param list
 	 */
-	public void replaceBatch(String mark,List<ZXData> list) {
+	public void putReplaceBatch(String mark,List<ZXData> list) {
 		execPutBatch("replace into ",mark,list);
 	}
 	/**
