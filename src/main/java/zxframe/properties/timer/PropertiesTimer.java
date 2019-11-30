@@ -19,21 +19,20 @@ package zxframe.properties.timer;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
+
 import zxframe.config.ZxFrameConfig;
 import zxframe.properties.PropertiesCache;
 import zxframe.properties.service.PropertiesService;
 import zxframe.task.TaskRunnable;
 import zxframe.task.ThreadResource;
 import zxframe.task.Timer;
-import zxframe.util.ServiceLocator;
 @Timer
 public class PropertiesTimer implements TaskRunnable{
-	private static PropertiesService propertiesService;
+	@Resource
+	private PropertiesService propertiesService;
 	public void run() {
 		String version=PropertiesCache.get("system-version");
-		if(propertiesService==null) {
-			propertiesService = ServiceLocator.getSpringBean("propertiesService");
-		}
 		String cversion=propertiesService.getListVersion();
 		if(!cversion.equals(version)) {
 			PropertiesCache.init();
