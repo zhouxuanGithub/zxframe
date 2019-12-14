@@ -556,6 +556,9 @@ public class MysqlTemplate {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
+			if(ZxFrameConfig.showlog) {
+				logger.info(sql+" args:"+JsonUtil.obj2Json(args));
+			}
 			// 1.打开连接
 			con = DataSourceManager.getCurrentWConnection(dsname);
 			if(con==null) {
@@ -582,13 +585,8 @@ public class MysqlTemplate {
 	            }
 			}
 			t=System.currentTimeMillis()-t;
-			if(t>=30000 || ZxFrameConfig.showlog) {
-				String log= sql+" args:"+JsonUtil.obj2Json(args)+" time:"+t;
-				if(ZxFrameConfig.showlog) {
-					logger.info(log);
-				}else {
-					logger.error(log);
-				}
+			if(t>=30000) {
+				logger.error("slow_sql:"+sql+" args:"+JsonUtil.obj2Json(args)+" time:"+t);
 			}
 			//执行后清理指定组缓存
 			try {
@@ -702,6 +700,9 @@ public class MysqlTemplate {
 	 * @throws Exception
 	 */
 	private ResultSet getResult(Connection con,String sql, Object... args) {
+		if(ZxFrameConfig.showlog) {
+			logger.info(sql.toString()+" args:"+JsonUtil.obj2Json(args));
+		}
 		long t=System.currentTimeMillis();
 		PreparedStatement ps = null;
 		ResultSet r=null;
@@ -717,14 +718,8 @@ public class MysqlTemplate {
 		}
 		//慢查询记录
 		t=System.currentTimeMillis()-t;
-		if(t>=30000 || ZxFrameConfig.showlog) {
-			String log=sql.toString()+" args:"+JsonUtil.obj2Json(args)+" time:"+t;
-			if(ZxFrameConfig.showlog) {
-				logger.info(log);
-			}else {
-				logger.error(log);
-			}
-			
+		if(t>=30000) {
+			logger.error("slow_sql:"+sql.toString()+" args:"+JsonUtil.obj2Json(args)+" time:"+t);
 		}
 		return r;
 		// Result(断开式连接)和ResultSet(只有在连接状态下才能操作内部数据)的区别:
