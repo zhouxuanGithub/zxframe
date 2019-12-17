@@ -103,7 +103,11 @@ public class LocalCacheManager {
 	public Cache getCache(String group) {
 		Cache cache = ehcache.getCache(group);
 		if(cache==null) {
-			ehcache.addCache(group);
+			try {
+				ehcache.addCache(group);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			cache = ehcache.getCache(group);
 			if(ZxFrameConfig.showlog) {
 				logger.info("ehcache cache init :"+cache.toString());
