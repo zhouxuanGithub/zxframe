@@ -5,18 +5,17 @@
 *.支持多层次缓存：本地一级缓存，本地全局二级缓存，远程缓存，查询缓存，方法级别缓存<br/>
 *.支持缓存融入事务，业务异常不提交缓存数据<br/>
 *.支持通用分布式锁<br/>
-*.支持服务运行状态和日志查询，便于快速定位问题<br/>
 *.支持全服务热更新配置<br/>
--->SpringCloudConfigServer高可用成本较高，运维成本提升<br/>
--->本功能只为降低成本，可选用<br/>
+	-->SpringCloudConfigServer高可用成本较高，运维成本提升<br/>
+	-->本功能只为降低成本，可选用<br/>
 *.支持100亿条键值对数据的快速存取（KEY,VALUE）<br/>
--->可用Hbase替代，本功能只为降低成本<br/>
+	-->可用Hbase替代，本功能只为降低成本<br/>
 *.封装本地和远程任意缓存存储,使用极其简单,支持对缓存组删除<br/>
--->zxframe.cache.mgr.CacheManager<br/>
-*.建议代理层使用nginx+keepalived，或其他类似的代替。反向代理，动静分离，请求结果缓存，静的资源也可以放CDN<br/>
+	-->zxframe.cache.mgr.CacheManager<br/>
+*.支持服务运行状态和日志查询，便于快速定位问题<br/>
 *.建议使用SpringBoot构建，也可使用SpringMVC构建<br/>
--->SpringBoot：启动类加上注解即可，@ZxFrameComponentScan<br/>
--->SpringMVC：加上包扫描即可，<context:component-scan base-package="zxframe"/> <br/>
+	-->SpringBoot：启动类加上注解即可，@ZxFrameComponentScan<br/>
+	-->SpringMVC：加上包扫描即可，<context:component-scan base-package="zxframe"/> <br/>
 
 # demo运行步骤
 *.导入项目，Maven构建，源码相对路径：/demo/webproject<br/>
