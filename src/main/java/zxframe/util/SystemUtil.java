@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 /**
  * 服务器系统工具
  * 
@@ -83,5 +86,110 @@ public final class SystemUtil {
 			}
 		}
 		return sb.toString();
+	}
+	public static String getCade() {
+		StringBuilder builder = new StringBuilder();
+		try {
+			builder.append("{");
+			builder.append("os.name:");
+			builder.append(System.getProperty("os.name").toLowerCase());// 系统名
+			builder.append(",os.arch:");
+			builder.append(System.getProperty("os.arch").toLowerCase());// 系统的架构
+			builder.append(",os.version:");
+			builder.append(System.getProperty("os.version").toLowerCase());// 系统版本
+			builder.append(",java.home:");
+			builder.append(System.getProperty("java.home").toLowerCase());
+			builder.append(",java.class.version:");
+			builder.append(System.getProperty("java.class.version").toLowerCase());
+			builder.append(",user.dir:");
+			builder.append(System.getProperty("user.dir").toLowerCase());
+			builder.append(",user.name:");
+			builder.append(System.getProperty("user.name").toLowerCase());
+			builder.append(",os.hostname:");
+			builder.append(getHostName());// 用户名
+			if(isWindows()) {
+				builder.append(",disk:");
+				builder.append(getDiskNumber());// C盘序列卷号
+			}
+			builder.append(",cpu:");
+			builder.append(Runtime.getRuntime().availableProcessors());
+			builder.append("}");
+//			builder.append(getHostAddress());// ip
+//			builder.append(getMAC());// mac地址
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(builder.toString());
+		return Base64.encode(builder.toString().getBytes());
+	}
+
+	// 获得本机IP
+	private static String getHostAddress() throws UnknownHostException {
+		InetAddress addr = InetAddress.getLocalHost();
+		return addr.getHostAddress();
+	}
+
+	// 获得计算机名
+	private static String getHostName() throws UnknownHostException {
+		InetAddress addr = InetAddress.getLocalHost();
+		return addr.getHostName();
+	}
+
+	// 获得MAC地址
+	private static String getMAC() throws IOException {
+
+		try {
+			Enumeration<NetworkInterface> el = NetworkInterface
+					.getNetworkInterfaces();
+			StringBuilder builder = new StringBuilder();
+
+			while (el.hasMoreElements()) {
+				NetworkInterface networkInterface = el.nextElement();
+				builder.append("name:").append(networkInterface.getName())
+						.append(",");
+				builder.append("displayName:")
+						.append(networkInterface.getDisplayName()).append(",");
+				builder.append("mac:");
+				byte[] mac = networkInterface.getHardwareAddress();
+				if (mac == null) {
+					builder.append(";");
+					continue;
+				}
+				for (byte b : mac) {
+					builder.append(Integer.toHexString(b & 0xff));
+					builder.append("-");
+				}
+				builder.append(";");
+			}
+			return builder.toString();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public static String getDiskNumber() {
+		String line = "";
+		String HdSerial = "";// 记录硬盘序列号
+		try {
+			Process proces = Runtime.getRuntime().exec("cmd /c dir c:");// 获取命令行参数
+			BufferedReader buffreader = new BufferedReader(
+					new InputStreamReader(proces.getInputStream(), "gbk"));
+			while ((line = buffreader.readLine()) != null) {
+				if (line.indexOf("卷的序列号是") != -1) { // 读取参数并获取硬盘序列号
+					HdSerial = line.substring(
+							line.indexOf("卷的序列号是") + "卷的序列号是".length(),
+							line.length());
+					break;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return HdSerial.trim();
+	}
+	public static void main(String[] args) {
+		System.out.println(getCade());
 	}
 }
