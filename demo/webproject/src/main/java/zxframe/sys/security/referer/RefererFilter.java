@@ -37,9 +37,12 @@ public class RefererFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		//允许跨域访问
+//		response.setHeader("Access-Control-Allow-Origin", "*");  
+//      response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");  
+//      response.setHeader("Access-Control-Max-Age", "3600");  
+//      response.setHeader("Access-Control-Allow-Headers", "x-requested-with");  
 		String referer = request.getHeader("referer");
-//		System.out.println(request.getRequestURI());
-//		System.out.println(request.getServerName());
 		if(request.getRequestURI().equals("/") || request.getRequestURI().equals("/index.html") || request.getRequestURI().startsWith("/zxframe/") || request.getRequestURI().startsWith("/druid/") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("localhost")) {
 			chain.doFilter(request, response);
 		}else  {
