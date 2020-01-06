@@ -27,7 +27,7 @@ public class WebSessionInterceptor implements HandlerInterceptor{
 //    		if(WebSession.validitySession(request)) {
 //    			return true;
 //    		}else {
-//    			WebResultUtil.print(request, response, new BaseResult(ResultCode.Failed,"Invalid session"));
+//    			WebResultUtil.print(request, response, new BaseResult(ResultCode.Failed,"会话异常，请重新登录 - Invalid session"));
 //    			return false;
 //    		}
 //    	}
