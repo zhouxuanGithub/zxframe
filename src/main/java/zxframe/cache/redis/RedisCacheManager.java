@@ -62,9 +62,9 @@ public class RedisCacheManager {
         //最大空闲连接数, 默认8个
         config.setMaxIdle(8);
         //最大连接数, 默认8个
-        config.setMaxTotal(100);
+        config.setMaxTotal(300);
         //获取连接时的最大等待毫秒数(如果设置为阻塞时BlockWhenExhausted),如果超时就抛异常, 小于零:阻塞不确定的时间,  默认-1
-        config.setMaxWaitMillis(1000);
+        config.setMaxWaitMillis(2000);
         //逐出连接的最小空闲时间 默认1800000毫秒(30分钟)
         config.setMinEvictableIdleTimeMillis(1800000);
         //最小空闲连接数, 默认0
@@ -90,7 +90,7 @@ public class RedisCacheManager {
             nodes.add(new HostAndPort(ipPortPair[0].trim(), Integer.valueOf(ipPortPair[1].trim())));
         }
         //注意：这里超时时间不要太短，他会有超时重试机制。而且其他像httpclient、dubbo等RPC框架也要注意这点
-        cluster = new JedisCluster(nodes, 1000, 1000, 1, ZxFrameConfig.rPassword,config);
+        cluster = new JedisCluster(nodes, 2000, 2000, 1, ZxFrameConfig.rPassword,config);
 	}
 	public void put(String group,String key,Object value) {
 		if(value==null) {
