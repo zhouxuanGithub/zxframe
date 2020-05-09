@@ -48,7 +48,7 @@ public class LocalCacheManager {
 			Cache cache = getCache(group);
 			Element element = cache.get(key);
 			if(element!=null) {
-				if(dm==null||dm.isLcCacheDataClone()) {
+				if(dm!=null&&dm.isLcCacheDataClone()) {
 					value =SerializeUtils.deSerialize((byte[]) element.getObjectValue());
 				}else {
 					value=element.getObjectValue();
@@ -68,7 +68,7 @@ public class LocalCacheManager {
 		if(dm==null||dm.isLcCache()) {
 			Cache cache = getCache(group);
 			Element element=null;
-			if(dm==null||dm.isLcCacheDataClone()) {
+			if(dm!=null&&dm.isLcCacheDataClone()) {
 				element = new Element(key,SerializeUtils.serialize(value));
 			}else {
 				element = new Element(key,value);
