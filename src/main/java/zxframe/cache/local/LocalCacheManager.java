@@ -44,11 +44,11 @@ public class LocalCacheManager {
 	public Object get(String group,String key) {
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
 		Object value = null;
-		if(dm.isLcCache()) {
+		if(dm==null||dm.isLcCache()) {
 			Cache cache = getCache(group);
 			Element element = cache.get(key);
 			if(element!=null) {
-				if(dm.isLcCacheDataClone()) {
+				if(dm==null||dm.isLcCacheDataClone()) {
 					value =SerializeUtils.deSerialize((byte[]) element.getObjectValue());
 				}else {
 					value=element.getObjectValue();
@@ -65,10 +65,10 @@ public class LocalCacheManager {
 			return;
 		}
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
-		if(dm.isLcCache()) {
+		if(dm==null||dm.isLcCache()) {
 			Cache cache = getCache(group);
 			Element element=null;
-			if(dm.isLcCacheDataClone()) {
+			if(dm==null||dm.isLcCacheDataClone()) {
 				element = new Element(key,SerializeUtils.serialize(value));
 			}else {
 				element = new Element(key,value);
@@ -82,7 +82,7 @@ public class LocalCacheManager {
 	}
 	public void remove(String group,String key) {
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
-		if(dm.isLcCache()) {
+		if(dm==null||dm.isLcCache()) {
 			Cache cache = getCache(group);
 			cache.remove(key);
 			if(ZxFrameConfig.showlog) {
@@ -92,7 +92,7 @@ public class LocalCacheManager {
 	}
 	public void remove(String group){
 		DataModel dm = CacheModelManager.getDataModelByGroup(group);
-		if(dm.isLcCache()) {
+		if(dm==null||dm.isLcCache()) {
 			Cache cache = getCache(group);
 			cache.removeAll();
 			if(ZxFrameConfig.showlog) {
