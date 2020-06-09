@@ -17,6 +17,7 @@
  **/
 package zxframe.cache.redis;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -100,13 +101,13 @@ public class RedisCacheManager {
 		if(cm.isRcCache()) {
 			try {
 				key = getNewKey(cm,key);
-				int seconds= cm.getRcETime()+MathUtil.nextInt(300);//防止缓存雪崩，*秒随机间隔
+				int seconds= cm.getRcETime()+MathUtil.nextInt(60);//防止缓存雪崩，*秒随机间隔
 				if(value instanceof NullObject) {
-					seconds=30;//防止缓存穿透
+					seconds=5;//防止缓存穿透
 				}
 				if(value instanceof List) {
 					if(((List)value).size()==0) {
-						seconds=30;//防止缓存穿透
+						seconds=5;//防止缓存穿透
 					}
 				}
 				cluster.setex(key.getBytes(),seconds,SerializeUtils.serialize(value));
@@ -122,7 +123,7 @@ public class RedisCacheManager {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm.isRcCache()) {
 			try {
-				key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
+				key = getNewKey(cm,key);
 				byte[] bs = cluster.get(key.getBytes());
 				Object value=null;
 				if(bs!=null&&cm!=null) {
@@ -142,7 +143,7 @@ public class RedisCacheManager {
 		DataModel cm = CacheModelManager.getDataModelByGroup(group);
 		if(cm.isRcCache()) {
 			try {
-				key = getNewKey(CacheModelManager.getDataModelByGroup(group),key);
+				key = getNewKey(cm,key);
 				cluster.del(key.getBytes());
 				if(ZxFrameConfig.showlog) {
 					logger.info("redis remove group:"+group+" key:"+key);
@@ -154,7 +155,7 @@ public class RedisCacheManager {
 	}
 	/**
 	 * 组删除采用group版本控制，并非真正的删除。
-	 * 需要缓存机制实现方式有过期时间控制和内存满后淘汰策略（移除设置过过期时间并且最近最少使用的key）
+	 * 需要缓存机制实现方式有过期时间控制和内存满后淘汰策略（移除设置过过期时间并且最少使用的key）
 	 * @param group
 	 */
 	public void remove(String group){
@@ -214,7 +215,7 @@ public class RedisCacheManager {
 	 * @return
 	 */
 	private String getNewGroupVersion() {
-		return MathUtil.nextInt(100000)+"_"+CServerUUID.getSequenceId();
+		return new Date().getTime()+"_"+MathUtil.nextInt(100000)+"_"+CServerUUID.getSequenceId();
 	}
 	private String getGroupVsKey(DataModel cm) {
 		return ZxFrameConfig.rKeyPrefix+"_"+cm.getGroup()+"_vs";
