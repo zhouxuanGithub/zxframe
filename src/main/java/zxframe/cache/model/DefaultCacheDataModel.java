@@ -22,13 +22,16 @@ import zxframe.jpa.annotation.DataModelScanning;
 import zxframe.jpa.model.DataModel;
 
 @DataModelScanning
-public class FnCacheDataModel {
-	public static String zxframeFncacheDefault="zxframe-fncache-default";
-	public DataModel initZxframeFdcacheDefault() {
+public class DefaultCacheDataModel {
+	public final static String zxframeDefaultCacheModelGroup="zxframe-cache-default";
+	public DataModel initZxframeDefaultCacheModel() {
+		//如果远程缓存开启，则优先使用远程缓存
+		//否则使用本地缓存
+		//远程和本地二选一
 		DataModel cm =new DataModel();
-		cm.setGroup(zxframeFncacheDefault);
-		cm.setLcCache(ZxFrameConfig.ropen==true?false:true);//如果远程缓存未开启，则默认开启本地缓存
-		cm.setRcCache(true);
+		cm.setGroup(zxframeDefaultCacheModelGroup);
+		cm.setLcCache(ZxFrameConfig.ropen==true?false:true);
+		cm.setRcCache(ZxFrameConfig.ropen);
 		return cm;
 	}
 }
