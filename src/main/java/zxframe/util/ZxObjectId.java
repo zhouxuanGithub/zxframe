@@ -71,14 +71,14 @@ public class ZxObjectId {
 		sb.append(clusterSequenceId);
 		return Long.parseLong(sb.toString());
 	}
-	public long tilNext() {
+	private long tilNext() {
         long timestamp = timeGen();
         while (timestamp <= lastTimestamp) {
             timestamp = timeGen();
         }
         return timestamp;
     }
-	public long timeGen() {
+	private long timeGen() {
         return System.currentTimeMillis()/1000;
     }
 	public static void main(String[] args) {
