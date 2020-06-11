@@ -24,7 +24,7 @@ import java.net.UnknownHostException;
  * 分布式ID生成
  * 参考snowflake，改进时间回拨问题，改进使用年限短的问题，ID生产速度提高4倍
  * 可选设置workerId，不设置则用当前机器的IP后3位
- * 历史累加时间戳10+机器线程3+计数器6，单机1秒可产生100万ID
+ * 历史累加时间戳10+workerId3+计数器6，单机1秒可产生100万ID
  * @author zhouxuan
  */
 public class ZxObjectId {
