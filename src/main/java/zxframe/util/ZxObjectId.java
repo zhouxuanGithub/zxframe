@@ -55,6 +55,10 @@ public class ZxObjectId {
 	 */
 	public synchronized long getObjectId()
 	{
+		long timestamp = timeGen();
+        if (timestamp < time) {
+            throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", time - timestamp));
+        }
 		if(++clusterSequenceId>=1000000)
 		{
 			lastTimestamp = tilNext();
