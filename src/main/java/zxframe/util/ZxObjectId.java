@@ -22,7 +22,10 @@ import java.net.UnknownHostException;
 
 /**
  * 分布式ID生成
- * @author zx
+ * 参考snowflake，改进时间回拨问题，改进使用年限短的问题，ID生产速度提高4倍
+ * 可选设置workerId，不设置则用当前机器的IP后3位
+ * 历史累加时间戳10+机器线程3+计数器6，单机1秒可产生100万ID
+ * @author zhouxuan
  */
 public class ZxObjectId {
 	private long time=System.currentTimeMillis()/1000-1591782121l;
@@ -48,9 +51,6 @@ public class ZxObjectId {
 	}
 	/**
 	 * 获得分布式ID
-	 * 参考snowflake，改进时间回拨问题，改进使用年限短的问题
-	 * 可选设置workerId，不设置则用当前机器的IP后3位
-	 * 历史累加时间戳10+机器线程3+计数器6，单机1秒可产生100万ID
 	 * @return 分布式ID
 	 */
 	public synchronized long getObjectId()
