@@ -51,9 +51,9 @@ public class ZxObjectId {
 	}
 	/**
 	 * 获得分布式ID
-	 * 参考snowflake，改进时间回拨问题，改进使用年限问题
+	 * 参考snowflake，改进时间回拨问题，改进使用年限短的问题
 	 * 可选设置workerId，不设置则用当前机器的IP后3位
-	 * 历史累加时间戳10+机器线程3+计数器6，单机1秒可产生100WID
+	 * 历史累加时间戳10+机器线程3+计数器6，单机1秒可产生100万ID
 	 * @return 分布式ID
 	 */
 	public synchronized long getObjectId()
