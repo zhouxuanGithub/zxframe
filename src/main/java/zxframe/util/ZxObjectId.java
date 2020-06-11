@@ -31,14 +31,11 @@ public class ZxObjectId {
 	private long lastTimestamp = System.currentTimeMillis()/1000;
 	/**
 	 * 默认使用当前机器的IP后3位作为workerId
+	 * @throws UnknownHostException 
 	 */
-	public ZxObjectId() {
-		try {
-			String ip=InetAddress.getLocalHost().getHostAddress().replace(".","");
-			workerId=Integer.parseInt(ip.substring(ip.length()-3));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+	public ZxObjectId() throws UnknownHostException {
+		String ip=InetAddress.getLocalHost().getHostAddress().replace(".","");
+		workerId=Integer.parseInt(ip.substring(ip.length()-3));
 	}
 	/**
 	 * 设置workerId(0~999)，不设置则用当前机器的IP后3位
@@ -60,7 +57,6 @@ public class ZxObjectId {
 	{
 		if(++clusterSequenceId>=1000000)
 		{
-			//控制单机每秒最多生产100W个ID
 			lastTimestamp = tilNext();
 			clusterSequenceId=0;
 			time++;
@@ -81,7 +77,7 @@ public class ZxObjectId {
 	private long timeGen() {
         return System.currentTimeMillis()/1000;
     }
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnknownHostException {
 		System.out.println("start");
 		ZxObjectId objectid=new ZxObjectId();
 		long t=System.currentTimeMillis();
