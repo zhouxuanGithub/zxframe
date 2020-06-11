@@ -26,7 +26,7 @@ import java.net.UnknownHostException;
  */
 public class ZxObjectId {
 	private long time=System.currentTimeMillis()/1000-1591782121l;
-	private int workerId=-1;
+	private int workerId=0;
 	private int clusterSequenceId=0;
 	private long lastTimestamp = System.currentTimeMillis()/1000;
 	/**
