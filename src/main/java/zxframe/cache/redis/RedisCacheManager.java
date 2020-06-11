@@ -34,7 +34,7 @@ import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.model.DataModel;
 import zxframe.jpa.model.NullObject;
-import zxframe.util.CServerUUID;
+import zxframe.util.ZxSequenceId;
 import zxframe.util.JsonUtil;
 import zxframe.util.MathUtil;
 import zxframe.util.SerializeUtils;
@@ -215,7 +215,7 @@ public class RedisCacheManager {
 	 * @return
 	 */
 	private String getNewGroupVersion() {
-		return new Date().getTime()+"_"+MathUtil.nextInt(100000)+"_"+CServerUUID.getSequenceId();
+		return new Date().getTime()+"_"+MathUtil.nextInt(100000)+"_"+ZxSequenceId.getSequenceId();
 	}
 	private String getGroupVsKey(DataModel cm) {
 		return ZxFrameConfig.rKeyPrefix+"_"+cm.getGroup()+"_vs";

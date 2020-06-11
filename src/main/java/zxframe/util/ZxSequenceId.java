@@ -1,12 +1,12 @@
 package zxframe.util;
 
 /**
- * 当前单一服务器环境下的UUID生成，为了避免使用较长的32位UUID
- * 使用时要避免递增完一圈后从0开始重复id问题
+ * 获得顺序ID，0~Integer.MAX_VALUE循环
+ * 使用时要注意递增完一圈后从0开始重复id问题，否则使用ZxObjectId
  * @author zx
  *
  */
-public class CServerUUID {
+public class ZxSequenceId {
 	private static int sequenceId=0;//生成id使用，递增
 	/**
 	 * @preserve

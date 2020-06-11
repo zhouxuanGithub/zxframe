@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 
 import zxframe.cache.transaction.CacheTransaction;
 import zxframe.jpa.transaction.DataTransaction;
-import zxframe.util.CServerUUID;
+import zxframe.util.ZxSequenceId;
 
 /**
  * 业务逻辑层切面，控制redis的事务，防止缓存错误
@@ -52,7 +52,7 @@ public class ServiceAspect {
 	@Before("getAopPointcut()")
 	public void beforeMethod(JoinPoint joinPoint) {
 		if(!Thread.currentThread().getName().startsWith(ServiceAspect.THREADNAMESTARTS)) {
-			String transactionId= ServiceAspect.getJoinPointUUID(joinPoint)+"_"+CServerUUID.getSequenceId();
+			String transactionId= ServiceAspect.getJoinPointUUID(joinPoint)+"_"+ZxSequenceId.getSequenceId();
 			Thread.currentThread().setName(transactionId);
 //			if(ZxFrameConfig.showlog) {
 //				logger.info("service aspect start:"+transactionId);

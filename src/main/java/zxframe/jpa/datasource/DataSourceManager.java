@@ -36,7 +36,7 @@ import zxframe.aop.ServiceAspect;
 import zxframe.config.ZxFrameConfig;
 import zxframe.jpa.ex.JpaRuntimeException;
 import zxframe.jpa.model.RDataSourceModel;
-import zxframe.util.CServerUUID;
+import zxframe.util.ZxSequenceId;
 import zxframe.util.JsonUtil;
 import zxframe.util.LockStringUtil;
 import zxframe.util.MathUtil;
@@ -115,7 +115,7 @@ public class DataSourceManager {
 			        		rDataSource.put(keysplitValue, arrayList);
 			        	}
 			        	RDataSourceModel rdsm=new RDataSourceModel();
-			        	rdsm.setId(CServerUUID.getSequenceId());
+			        	rdsm.setId(ZxSequenceId.getSequenceId());
 			        	rdsm.setDataSource(datasource);
 			        	arrayList.add(rdsm);
 					}
