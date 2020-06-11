@@ -4,7 +4,9 @@
 *.支持防缓存穿透，防缓存击穿，防缓存雪崩<br/>
 *.支持多层次缓存：本地一级缓存，本地全局二级缓存，远程缓存，查询缓存，方法级别缓存<br/>
 *.支持缓存融入事务，业务异常不提交缓存数据<br/>
-*.支持通用分布式锁<br/>
+*.支持通用分布式锁，分布式ID生产<br/>
+	-->zxframe.util.DistributedLocks
+	-->zxframe.util.ZxObjectId
 *.支持全服务热更新配置<br/>
 	-->SpringCloudConfigServer高可用成本较高，运维成本提升<br/>
 	-->本功能只为降低成本，可选用<br/>
