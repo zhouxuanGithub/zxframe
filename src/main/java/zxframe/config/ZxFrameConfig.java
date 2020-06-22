@@ -64,7 +64,10 @@ public class ZxFrameConfig {
 	//redis clusters;
 	public static String rClusters;
 	public static List<ISQLParse> sqlParselist;
-	public static void loadZxFrameConfig() {
+	static {
+		loadZxFrameConfig(false);
+	}
+	public static void loadZxFrameConfig(boolean loadAll) {
 		 //1.获取jaxp工厂  
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {  
@@ -82,52 +85,6 @@ public class ZxFrameConfig {
             }
             if(root.getElementsByTagName("useZXTask").getLength()>0) {
             	useZXTask=root.getElementsByTagName("useZXTask").item(0).getFirstChild().getNodeValue().equals("true")?true:false;
-            }
-            if(root.getElementsByTagName("druid").getLength()>0 || root.getElementsByTagName("db").getLength()>0) {//druid保留，兼容历史版本
-            	Element commonItem = (Element)root.getElementsByTagName("common").item(0);
-                NodeList commonNL = commonItem.getChildNodes();
-                for(int i=0;i<commonNL.getLength();i++ ) {
-                	Node node = commonNL.item(i);
-                	if(node.getNodeType() == Node.ELEMENT_NODE){  
-                		Element child = (Element) node;  
-                		common.put(child.getNodeName(), child.getTextContent());
-                	}
-                }
-                NodeList datasourceNodeList = root.getElementsByTagName("datasource");
-                for(int j=0;j<datasourceNodeList.getLength();j++ ) {
-                	if(datasourceNodeList.item(j).getNodeType() != Node.ELEMENT_NODE){
-                		continue;
-                	}
-                	Element datasourceItem = (Element)datasourceNodeList.item(j);
-                	String key=datasourceItem.getElementsByTagName("dsname").item(0).getFirstChild().getNodeValue();
-                	ArrayList<ConcurrentHashMap<String, String>> list = datasources.get(key);
-            		if(list==null) {
-            			list=new ArrayList<ConcurrentHashMap<String, String>>();
-            			datasources.put(key, list);
-            		}
-            		ConcurrentHashMap concurrentHashMap=new ConcurrentHashMap<String, String>();
-            		list.add(concurrentHashMap);
-            		NodeList datasourceNL = datasourceItem.getChildNodes();
-                    for(int i=0;i<datasourceNL.getLength();i++ ) {
-                    	Node node = datasourceNL.item(i);
-                    	if(node.getNodeType() == Node.ELEMENT_NODE){  
-                    		Element child = (Element) node;  
-                    		concurrentHashMap.put(child.getNodeName(), child.getTextContent());
-                    	}
-                    }
-                }
-                if(root.getElementsByTagName("sqlParse").getLength()>0) {
-                	sqlParselist=new ArrayList<>();
-                	Element sqlParse = (Element)root.getElementsByTagName("sqlParse").item(0);
-                    NodeList sqlParseNL = sqlParse.getChildNodes();
-                    for(int i=0;i<sqlParseNL.getLength();i++ ) {
-                    	Node node = sqlParseNL.item(i);
-                    	if(node.getNodeType() == Node.ELEMENT_NODE){  
-                    		Element child = (Element) node;  
-                    		sqlParselist.add((ISQLParse)ServiceLocator.getSpringBean(child.getTextContent().trim()));
-                    	}
-                    }
-                }
             }
             if(root.getElementsByTagName("ehcache").getLength()>0) {
               NodeList childNodes = root.getElementsByTagName("ehcache").item(0).getChildNodes();
@@ -157,6 +114,54 @@ public class ZxFrameConfig {
                 			rKeyPrefix=child.getTextContent();
                 		}
                 	}
+                }
+            }
+            if(loadAll) {
+            	if(root.getElementsByTagName("druid").getLength()>0 || root.getElementsByTagName("db").getLength()>0) {//druid保留，兼容历史版本
+                	Element commonItem = (Element)root.getElementsByTagName("common").item(0);
+                    NodeList commonNL = commonItem.getChildNodes();
+                    for(int i=0;i<commonNL.getLength();i++ ) {
+                    	Node node = commonNL.item(i);
+                    	if(node.getNodeType() == Node.ELEMENT_NODE){  
+                    		Element child = (Element) node;  
+                    		common.put(child.getNodeName(), child.getTextContent());
+                    	}
+                    }
+                    NodeList datasourceNodeList = root.getElementsByTagName("datasource");
+                    for(int j=0;j<datasourceNodeList.getLength();j++ ) {
+                    	if(datasourceNodeList.item(j).getNodeType() != Node.ELEMENT_NODE){
+                    		continue;
+                    	}
+                    	Element datasourceItem = (Element)datasourceNodeList.item(j);
+                    	String key=datasourceItem.getElementsByTagName("dsname").item(0).getFirstChild().getNodeValue();
+                    	ArrayList<ConcurrentHashMap<String, String>> list = datasources.get(key);
+                		if(list==null) {
+                			list=new ArrayList<ConcurrentHashMap<String, String>>();
+                			datasources.put(key, list);
+                		}
+                		ConcurrentHashMap concurrentHashMap=new ConcurrentHashMap<String, String>();
+                		list.add(concurrentHashMap);
+                		NodeList datasourceNL = datasourceItem.getChildNodes();
+                        for(int i=0;i<datasourceNL.getLength();i++ ) {
+                        	Node node = datasourceNL.item(i);
+                        	if(node.getNodeType() == Node.ELEMENT_NODE){  
+                        		Element child = (Element) node;  
+                        		concurrentHashMap.put(child.getNodeName(), child.getTextContent());
+                        	}
+                        }
+                    }
+                    if(root.getElementsByTagName("sqlParse").getLength()>0) {
+                    	sqlParselist=new ArrayList<>();
+                    	Element sqlParse = (Element)root.getElementsByTagName("sqlParse").item(0);
+                        NodeList sqlParseNL = sqlParse.getChildNodes();
+                        for(int i=0;i<sqlParseNL.getLength();i++ ) {
+                        	Node node = sqlParseNL.item(i);
+                        	if(node.getNodeType() == Node.ELEMENT_NODE){  
+                        		Element child = (Element) node;  
+                        		sqlParselist.add((ISQLParse)ServiceLocator.getSpringBean(child.getTextContent().trim()));
+                        	}
+                        }
+                    }
                 }
             }
         } catch (Exception e) {  

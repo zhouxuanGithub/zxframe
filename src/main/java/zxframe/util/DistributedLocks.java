@@ -1,5 +1,7 @@
 package zxframe.util;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Component;
 
 import zxframe.cache.redis.RedisCacheManager;
@@ -11,6 +13,8 @@ import zxframe.config.ZxFrameConfig;
  */
 @Component
 public class DistributedLocks {
+	@Resource
+	RedisCacheManager rcm;
 	/**
 	 * 尝试获得锁
 	 * 获取成功或失败都会返回，不阻塞
@@ -24,12 +28,12 @@ public class DistributedLocks {
 		}
 		boolean success=false;
 		try {
-			if(RedisCacheManager.cluster.setnx(key, String.valueOf(System.currentTimeMillis()+ms))==1) {
+			if(rcm.cluster.setnx(key, String.valueOf(System.currentTimeMillis()+ms))==1) {
 				success=true;
 			}else {
-				String oldExpireTime=RedisCacheManager.cluster.get(key);
+				String oldExpireTime=rcm.cluster.get(key);
 				if(oldExpireTime!=null&&Long.valueOf(oldExpireTime)<System.currentTimeMillis()) {
-					String oldExpireTimeTemp = RedisCacheManager.cluster.getSet(key,String.valueOf(System.currentTimeMillis()+ms));
+					String oldExpireTimeTemp = rcm.cluster.getSet(key,String.valueOf(System.currentTimeMillis()+ms));
 					if(oldExpireTimeTemp!=null && (oldExpireTimeTemp).equals(oldExpireTime)) {
 						success=true;
 					}
@@ -71,7 +75,7 @@ public class DistributedLocks {
 			throw new RuntimeException("请先开启redis缓存才能使用分布式锁！");
 		}
 		try {
-			RedisCacheManager.cluster.del(key);
+			rcm.cluster.del(key);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
