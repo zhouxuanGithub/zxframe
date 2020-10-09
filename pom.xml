@@ -1,10 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
+  <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>2.2.9.RELEASE</version>
+  </parent>
   <groupId>com.github.zhouxuanGithub</groupId>
   <artifactId>zxframe</artifactId>
-  <version>1.5.1</version>
+  <version>1.5.2</version>
   <packaging>jar</packaging>
   <name>zxframe</name>
   <description>ZxFrame为JAVA框架-支持JPA，多级缓存，读写分离，分库分表；支持通用分布式锁；配置热更新；防缓存击穿，缓存穿透，缓存雪崩；</description>
@@ -14,10 +18,29 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <spring.version>4.3.24.RELEASE</spring.version>
+    <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+    <!--<spring.version>4.3.24.RELEASE</spring.version>-->
   </properties>
   
   <dependencies>
+  	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-test</artifactId>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-actuator</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-aop</artifactId>
+	</dependency>
+  	<!-- 
   	<dependency>
 	    <groupId>org.springframework</groupId>
 	    <artifactId>spring-core</artifactId>
@@ -54,6 +77,12 @@
 	    <version>2.9.10.4</version>
 	</dependency>
 	<dependency>
+	    <groupId>org.apache.tomcat</groupId>
+	    <artifactId>tomcat-servlet-api</artifactId>
+	    <version>9.0.13</version>
+	</dependency>
+	 -->
+	<dependency>
 	    <groupId>com.alibaba</groupId>
 	    <artifactId>druid</artifactId>
 	    <version>1.1.6</version>
@@ -73,11 +102,6 @@
 	    <artifactId>ehcache</artifactId>
 	    <version>2.10.4</version>
 	</dependency> 
-	<dependency>
-	    <groupId>org.apache.tomcat</groupId>
-	    <artifactId>tomcat-servlet-api</artifactId>
-	    <version>9.0.13</version>
-	</dependency>
 	<!--test start-->
 	<dependency>
 	    <groupId>junit</groupId>

@@ -61,7 +61,7 @@
     <dependency>
          <groupId>com.github.zhouxuanGithub</groupId>
          <artifactId>zxframe</artifactId>
-         <version>1.5.1</version>
+         <version>1.5.2</version>
     </dependency>
    </dependencies>
 	<repositories>
