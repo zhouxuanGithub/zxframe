@@ -18,7 +18,8 @@ server:
     connection-timeout: 10000
     uri-encoding: UTF-8
     basedir: /opt/logs/${spring.application.name}/${server.port}/
-    
+    accesslog:
+      enabled: true
 ##日志配置
 logging:
   path: ${server.tomcat.basedir}
